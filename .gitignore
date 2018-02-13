@@ -1,0 +1,43 @@
+### Intellij ###
+.idea/
+*.ipr
+*.iws
+
+## File-based project format:
+*.iws
+
+## Plugin-specific files:
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
+
+### Intellij Patch ###
+# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+
+# *.iml
+# modules.xml
+# .idea/misc.xml
+# *.ipr
+
+### Scala ###
+*.class
+*.log
+target
+logs
+lib_managed
+dist/
+data/
+*.class
+*.log
+*.iml
+*.zip
+*.jar
+*.env
+.env
+project/project/
+project/plugins/project/
+!lib/*.jar
+
+# Custom
+.DS_Store
