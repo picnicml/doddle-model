@@ -4,7 +4,8 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class BaseTest extends FlatSpec with Matchers {
 
-  "todo" should "todo" in {
-    "todo" should be("todo")
+  "Base" should "base" in {
+    val base = new Base()
+    base.base should be(true)
   }
 }

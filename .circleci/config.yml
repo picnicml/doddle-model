@@ -12,17 +12,14 @@ jobs:
 
     steps:
       - checkout
-
       - restore_cache:
           keys:
           - v1-dependencies-{{ checksum "build.sbt" }}
           - v1-dependencies-
-
       - run: cat /dev/null | sbt test:compile
-
       - save_cache:
           paths:
             - ~/.m2
           key: v1-dependencies--{{ checksum "build.sbt" }}
-
-      - run: cat /dev/null | sbt test
+      - run: cat /dev/null | sbt clean coverage test coverageReport
+      - run: bash <(curl -s https://codecov.io/bash) || echo 'Codecov failed to upload'
