@@ -1,9 +1,9 @@
 package com.doddle.base
 
-import breeze.linalg.DenseMatrix
+import com.doddle.Types.RealMatrix
 
-abstract class Transformer[A] extends Estimator {
+abstract class Transformer extends Estimator {
 
-  def fit(x: DenseMatrix[A]): Transformer[A]
-  def transform(x: DenseMatrix[A]): DenseMatrix[A]
+  def fit(x: RealMatrix): Unit
+  def transform(x: RealMatrix): RealMatrix
 }

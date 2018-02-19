@@ -1,9 +1,10 @@
 package com.doddle.base
 
-import breeze.linalg.{DenseMatrix, DenseVector}
+import breeze.linalg.DenseVector
+import com.doddle.Types.RealMatrix
 
-abstract class Predictor[A, B] extends Estimator {
+abstract class Predictor[A] extends Estimator {
 
-  def fit(x: DenseMatrix[A], y: DenseVector[B]): Predictor[A, B]
-  def predict(x: DenseMatrix[A]): DenseVector[B]
+  def fit(x: RealMatrix, y: DenseVector[A]): Unit
+  def predict(x: RealMatrix): DenseVector[A]
 }
