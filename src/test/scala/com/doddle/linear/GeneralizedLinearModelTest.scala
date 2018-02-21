@@ -24,7 +24,7 @@ class GeneralizedLinearModelTest extends FlatSpec with Matchers {
     an [IllegalArgumentException] should be thrownBy model.fit(x, y)
   }
 
-  "GLM" should "implement predictor functions" in {
+  it should "implement predictor functions" in {
     val x = DenseMatrix.rand[Double](10, 5)
     val y = DenseVector.rand[Double](10)
     val model = new DummyLinear()
