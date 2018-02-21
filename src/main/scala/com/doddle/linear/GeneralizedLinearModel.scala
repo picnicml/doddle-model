@@ -8,9 +8,14 @@ import com.doddle.base.Predictor
 trait GeneralizedLinearModel[A] {
   this: Predictor[A] =>
 
-  private[linear] def meanFunction(latent: RealVector): DenseVector[A]
-  private[linear] def loss(w: RealVector, x: RealMatrix, y: DenseVector[A]): Double
-  private[linear] def lossGrad(w: RealVector, x: RealMatrix, y: DenseVector[A]): RealVector
+  /** Should implement a function that maps a real valued input to the support of a mean. */
+  protected[linear] def meanFunction(latent: RealVector): DenseVector[A]
+
+  /** Should implement a function that calculates the value of the loss function. */
+  protected[linear] def loss(w: RealVector, x: RealMatrix, y: DenseVector[A]): Double
+
+  /** Should implement a function that calculates the gradient of the loss function wrt. model parameters. */
+  protected[linear] def lossGrad(w: RealVector, x: RealMatrix, y: DenseVector[A]): RealVector
 
   private var w: RealVector = _
 

@@ -9,9 +9,9 @@ class GeneralizedLinearModelTest extends FlatSpec with Matchers {
 
   private class DummyLinear extends Regressor with GeneralizedLinearModel[Double] {
 
-    private[linear] def meanFunction(latent: RealVector) = latent
-    private[linear] def loss(w: RealVector, x: RealMatrix, y: RealVector) = 0
-    override private[linear] def lossGrad(w: RealVector, x: RealMatrix, y: RealVector) = w
+    protected[linear] def meanFunction(latent: RealVector): RealVector = latent
+    protected[linear] def loss(w: RealVector, x: RealMatrix, y: RealVector): Double = 0
+    protected[linear] def lossGrad(w: RealVector, x: RealMatrix, y: RealVector): RealVector = w
   }
 
   "GLM" should "prevent invalid model states" in {
