@@ -5,5 +5,3 @@
 [![Github Tag](https://img.shields.io/github/tag/inejc/doddle.svg?label=release)](https://github.com/inejc/doddle/releases)
 
 Doddle is an in-memory machine learning library built on top of [Breeze](https://github.com/scalanlp/breeze).
-
-todo everything :)

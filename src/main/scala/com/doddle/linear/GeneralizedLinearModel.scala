@@ -22,13 +22,13 @@ trait GeneralizedLinearModel[A] {
   override def fit(x: RealMatrix, y: DenseVector[A]): Unit = {
     require(this.w == null, "Called fit on a model that is already trained")
 
-    val xWithOnes = xWithBiasTerm(x)
+    val xWithColOfOnes = xWithBiasTerm(x)
     val diffFunction = new DiffFunction[RealVector] {
-      override def calculate(a: RealVector): (Double, RealVector) =
-        (loss(a, xWithOnes, y), lossGrad(a, xWithOnes, y))
+      override def calculate(w: RealVector): (Double, RealVector) =
+        (loss(w, xWithColOfOnes, y), lossGrad(w, xWithColOfOnes, y))
     }
 
-    this.w = minimize(diffFunction, DenseVector.zeros[Double](xWithOnes.cols))
+    this.w = minimize(diffFunction, DenseVector.zeros[Double](xWithColOfOnes.cols))
   }
 
   override def predict(x: RealMatrix): DenseVector[A] = {

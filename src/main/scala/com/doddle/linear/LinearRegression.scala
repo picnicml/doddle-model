@@ -18,8 +18,8 @@ class LinearRegression private (val lambda: Double) extends Regressor with Gener
   protected[linear] def meanFunction(latent: RealVector): RealVector = latent
 
   protected[linear] def loss(w: RealVector, x: RealMatrix, y: RealVector): Double = {
-    val diff = y - predict(w, x)
-    .5 * (1.0 / x.rows * (diff.t * diff) + this.lambda * (w(1 to -1).t * w(1 to -1)))
+    val d = y - predict(w, x)
+    .5 * (1.0 / x.rows * (d.t * d) + this.lambda * (w(1 to -1).t * w(1 to -1)))
   }
 
   protected[linear] def lossGrad(w: RealVector, x: RealMatrix, y: RealVector): RealVector = {
