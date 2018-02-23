@@ -38,7 +38,9 @@ trait GeneralizedLinearModel[A] {
     predict(this.w, this.xWithBiasTerm(x))
   }
 
-  protected def predict(w: RealVector, x: RealMatrix): DenseVector[A] = meanFunction(x * w)
+  protected def predict(w: RealVector, x: RealMatrix): DenseVector[A] =
+    meanFunction(x * w)
 
-  private def xWithBiasTerm(x: RealMatrix): RealMatrix = DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)
+  private def xWithBiasTerm(x: RealMatrix): RealMatrix =
+    DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)
 }

@@ -16,9 +16,11 @@ import com.doddle.base.{Predictor, Regressor}
 class LinearRegression private (val lambda: Double, protected val w: RealVector)
   extends Regressor with GeneralizedLinearModel[Double] {
 
-  override protected def newInstance(w: RealVector): Predictor[Double] = new LinearRegression(this.lambda, w)
+  override protected def newInstance(w: RealVector): Predictor[Double] =
+    new LinearRegression(this.lambda, w)
 
-  override protected[linear] def meanFunction(latent: RealVector): RealVector = latent
+  override protected[linear] def meanFunction(latent: RealVector): RealVector =
+    latent
 
   override protected[linear] def loss(w: RealVector, x: RealMatrix, y: RealVector): Double = {
     val d = y - predict(w, x)
