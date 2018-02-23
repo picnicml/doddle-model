@@ -1,7 +1,7 @@
 package com.doddle.base
 
 import breeze.linalg.DenseVector
-import com.doddle.Types.RealMatrix
+import com.doddle.TypeAliases.RealMatrix
 
 abstract class Predictor[A] extends Estimator {
 

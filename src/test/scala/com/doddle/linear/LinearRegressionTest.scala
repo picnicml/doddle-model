@@ -3,7 +3,7 @@ package com.doddle.linear
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.optimize.ApproximateGradientFunction
 import com.doddle.TestUtils
-import com.doddle.Types.{RealMatrix, RealVector}
+import com.doddle.TypeAliases.{RealMatrix, RealVector}
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 

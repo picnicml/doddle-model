@@ -1,6 +1,6 @@
 package com.doddle.linear
 
-import com.doddle.Types.{RealMatrix, RealVector}
+import com.doddle.TypeAliases.{RealMatrix, RealVector}
 import com.doddle.base.Regressor
 
 /** A multiple linear regression model with ridge regularization.

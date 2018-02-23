@@ -1,7 +1,7 @@
 package com.doddle.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-import com.doddle.Types.{RealMatrix, RealVector}
+import com.doddle.TypeAliases.{RealMatrix, RealVector}
 import com.doddle.base.Regressor
 import org.scalatest.{FlatSpec, Matchers}
 

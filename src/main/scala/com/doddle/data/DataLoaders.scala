@@ -3,7 +3,7 @@ package com.doddle.data
 import java.io.File
 
 import breeze.linalg.csvread
-import com.doddle.Types.{RealMatrix, RealVector}
+import com.doddle.TypeAliases.{RealMatrix, RealVector}
 
 object DataLoaders {
 

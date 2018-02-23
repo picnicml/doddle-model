@@ -2,7 +2,7 @@ package com.doddle
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 
-object Types {
+object TypeAliases {
 
   type IntVector = DenseVector[Int]
   type RealVector = DenseVector[Double]

@@ -1,7 +1,7 @@
 package com.doddle.metrics
 
 import breeze.numerics.sqrt
-import com.doddle.Types.RealVector
+import com.doddle.TypeAliases.RealVector
 
 object RegressionMetrics {
 

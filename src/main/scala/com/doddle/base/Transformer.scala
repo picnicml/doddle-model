@@ -1,6 +1,6 @@
 package com.doddle.base
 
-import com.doddle.Types.RealMatrix
+import com.doddle.TypeAliases.RealMatrix
 
 abstract class Transformer extends Estimator {
 
