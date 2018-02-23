@@ -28,7 +28,8 @@ trait GeneralizedLinearModel[A] {
         (loss(w, xWithColOfOnes, y), lossGrad(w, xWithColOfOnes, y))
     }
 
-    this.w = minimize(diffFunction, DenseVector.zeros[Double](xWithColOfOnes.cols))
+    val lbfgs = new LBFGS[DenseVector[Double]]()
+    this.w = lbfgs.minimize(diffFunction, DenseVector.zeros[Double](xWithColOfOnes.cols))
   }
 
   override def predict(x: RealMatrix): DenseVector[A] = {

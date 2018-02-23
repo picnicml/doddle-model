@@ -8,9 +8,9 @@ import com.doddle.base.Regressor
   * @param lambda L2 regularization strength, 0 means no regularization
   *
   * Examples:
-  * // initialize a model without regularization
+  * // initialize a model without L2 regularization
   * val model = LinearRegression()
-  * // initialize a model with regularization
+  * // initialize a model with L2 regularization
   * val model = LinearRegression(lambda = 1.5)
   */
 class LinearRegression private (val lambda: Double) extends Regressor with GeneralizedLinearModel[Double] {
@@ -19,11 +19,11 @@ class LinearRegression private (val lambda: Double) extends Regressor with Gener
 
   protected[linear] def loss(w: RealVector, x: RealMatrix, y: RealVector): Double = {
     val d = y - predict(w, x)
-    .5 * (1.0 / x.rows * (d.t * d) + this.lambda * (w(1 to -1).t * w(1 to -1)))
+    .5 * ((d.t * d) / x.rows.toDouble + this.lambda * (w(1 to -1).t * w(1 to -1)))
   }
 
   protected[linear] def lossGrad(w: RealVector, x: RealMatrix, y: RealVector): RealVector = {
-    val grad = -1.0 / x.rows * ((y - predict(w, x)).t * x).t
+    val grad = ((y - predict(w, x)).t * x).t / (-x.rows.toDouble)
     grad(1 to -1) += this.lambda * w(1 to -1)
     grad
   }
