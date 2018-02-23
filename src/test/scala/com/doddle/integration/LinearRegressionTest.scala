@@ -1,18 +1,17 @@
 package com.doddle.integration
 
-import com.doddle.data.DataLoaders.loadBoston
+import com.doddle.data.DataLoaders.loadBostonDataset
 import com.doddle.linear.LinearRegression
 import com.doddle.metrics.RegressionMetrics.rmse
 import org.scalatest.{FlatSpec, Matchers}
 
 class LinearRegressionTest extends FlatSpec with Matchers {
 
-  "LinearRegression" should "achieve a resonable score on the Boston housing dataset" in {
-    val (x, y) = loadBoston
-    val model = LinearRegression()
-
-    model.fit(x, y)
-    val yPred = model.predict(x)
+  "Linear regression" should "achieve a reasonable score on the Boston housing dataset" in {
+    // todo: calculate and test a CV score
+    val (x, y) = loadBostonDataset
+    val trainedModel = LinearRegression().fit(x, y)
+    val yPred = trainedModel.predict(x)
 
     rmse(y, yPred) should be < 5.0
   }

@@ -9,7 +9,7 @@ object DataLoaders {
 
   private val datasetsDir = "datasets"
 
-  def loadBoston: (RealMatrix, RealVector) = {
+  def loadBostonDataset: (RealMatrix, RealVector) = {
     val data = csvread(new File(getDatasetPath("boston_housing_prices.csv")), skipLines = 1)
     (data(::, 0 to -2), data(::, -1))
   }

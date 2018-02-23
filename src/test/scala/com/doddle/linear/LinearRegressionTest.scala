@@ -11,7 +11,7 @@ class LinearRegressionTest extends FlatSpec with Matchers with TestUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 
-  "LinearRegression" should "calculate the value of the loss function" in {
+  "Linear regression" should "calculate the value of the loss function" in {
     val w = DenseVector(1.0, 2.0, 3.0)
     val x = DenseMatrix((3.0, 1.0, 2.0), (-1.0, -2.0, 2.0))
     val y = DenseVector(3.0, 4.0)
