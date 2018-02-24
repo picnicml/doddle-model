@@ -1,18 +1,53 @@
 ## Doddle
-[![CircleCI](https://circleci.com/gh/inejc/doddle.svg?style=shield)](https://circleci.com/gh/inejc/doddle)
-[![codecov](https://codecov.io/gh/inejc/doddle/branch/master/graph/badge.svg)](https://codecov.io/gh/inejc/doddle)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Github Tag](https://img.shields.io/github/tag/inejc/doddle.svg?label=release)](https://github.com/inejc/doddle/releases)
+<table>
+<tr>
+  <td>Latest Release</td>
+  <td>
+    <a href="https://github.com/inejc/doddle/releases">
+    <img src="https://img.shields.io/github/release/inejc/doddle.svg?style=flat-square&label=version" alt="latest release"/>
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>Build Status</td>
+  <td>
+    <a href="https://circleci.com/gh/inejc/doddle">
+    <img src="https://img.shields.io/circleci/project/github/inejc/doddle.svg?style=flat-square" alt="build status"/>
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>Coverage</td>
+  <td>
+    <a href="https://codecov.io/gh/inejc/doddle">
+    <img src="https://img.shields.io/codecov/c/github/inejc/doddle.svg?style=flat-square&label=codecov" alt="coverage"/>
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>Code Quality</td>
+  <td>
+    <a href="https://app.codacy.com/app/inejc/doddle">
+    <img src="https://img.shields.io/codacy/grade/4b13da3c6435458dac117ac4cd2deca8.svg?style=flat-square&label=codacy" alt="code quality"/>
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>License</td>
+  <td>
+    <a href="https://github.com/inejc/doddle/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/inejc/doddle.svg?style=flat-square" alt="license"/>
+    </a>
+  </td>
+</tr>
+</table>
 
 Doddle is an in-memory machine learning library built on top of [Breeze](https://github.com/scalanlp/breeze). It provides immutable objects that are a _doddle_ to use in parallel code.
-
-### Installation
-todo
 
 ### Example usage
 To train a linear regression model run:
 ```scala
-import com.doddle.data.DataLoaders.loadBoston
+import com.doddle.data.DataLoaders.loadBostonDataset
 import com.doddle.linear.LinearRegression
 import com.doddle.metrics.Regression.rmse
 
