@@ -1,5 +1,3 @@
 package com.doddle.modelselection
 
-class CrossValidation {
-
-}
+class CrossValidation

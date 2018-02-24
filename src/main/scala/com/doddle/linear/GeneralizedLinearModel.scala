@@ -9,7 +9,7 @@ trait GeneralizedLinearModel[A] {
   this: Predictor[A] =>
 
   /** Parameters (weights) of a linear model. */
-  protected val w: RealVector
+  protected val w: Option[RealVector]
   /** Should implement a function that returns a new instance with model parameters w. */
   protected def newInstance(w: RealVector): Predictor[A]
   /** Should implement a function that maps a real valued input to the support of a mean. */
@@ -20,7 +20,7 @@ trait GeneralizedLinearModel[A] {
   protected[linear] def lossGrad(w: RealVector, x: RealMatrix, y: DenseVector[A]): RealVector
 
   override def fit(x: RealMatrix, y: DenseVector[A]): Predictor[A] = {
-    require(this.w == null, "Called fit on a model that is already trained")
+    require(this.w.isEmpty, "Called fit on a model that is already trained")
 
     val xWithColOfOnes = this.xWithBiasTerm(x)
     val diffFunction = new DiffFunction[RealVector] {
@@ -34,8 +34,8 @@ trait GeneralizedLinearModel[A] {
   }
 
   override def predict(x: RealMatrix): DenseVector[A] = {
-    require(this.w != null, "Called predict on a model that is not trained yet")
-    predict(this.w, this.xWithBiasTerm(x))
+    require(this.w.isDefined, "Called predict on a model that is not trained yet")
+    predict(this.w.get, this.xWithBiasTerm(x))
   }
 
   protected def predict(w: RealVector, x: RealMatrix): DenseVector[A] =
