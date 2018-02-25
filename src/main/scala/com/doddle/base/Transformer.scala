@@ -1,9 +1,9 @@
 package com.doddle.base
 
-import com.doddle.TypeAliases.RealMatrix
+import com.doddle.data.DataTypes.Features
 
 abstract class Transformer extends Estimator {
 
-  def fit(x: RealMatrix): Transformer
-  def transform(x: RealMatrix): RealMatrix
+  def fit(x: Features): Transformer
+  def transform(x: Features): Features
 }

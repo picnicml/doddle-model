@@ -1,10 +1,9 @@
 package com.doddle.base
 
-import breeze.linalg.DenseVector
-import com.doddle.TypeAliases.RealMatrix
+import com.doddle.data.DataTypes.{Features, Target}
 
 abstract class Predictor[A] extends Estimator {
 
-  def fit(x: RealMatrix, y: DenseVector[A]): Predictor[A]
-  def predict(x: RealMatrix): DenseVector[A]
+  def fit(x: Features, y: Target[A]): Predictor[A]
+  def predict(x: Features): Target[A]
 }

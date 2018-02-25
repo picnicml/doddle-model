@@ -1,17 +1,17 @@
 package com.doddle.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-import com.doddle.TypeAliases.{RealMatrix, RealVector}
 import com.doddle.base.{Predictor, Regressor}
+import com.doddle.data.DataTypes.{Features, RealVector, Target}
 import org.scalatest.{FlatSpec, Matchers}
 
 class GeneralizedLinearModelTest extends FlatSpec with Matchers {
 
   private class DummyLinear(val w: Option[RealVector]) extends Regressor with GeneralizedLinearModel[Double] {
     protected def newInstance(w: RealVector): Predictor[Double] = new DummyLinear(Some(w))
-    protected[linear] def meanFunction(latent: RealVector): RealVector = latent
-    protected[linear] def loss(w: RealVector, x: RealMatrix, y: RealVector): Double = 0
-    protected[linear] def lossGrad(w: RealVector, x: RealMatrix, y: RealVector): RealVector = w
+    protected[linear] def meanFunction(latent: RealVector): Target[Double] = latent
+    protected[linear] def loss(w: RealVector, x: Features, y: Target[Double]): Double = 0
+    protected[linear] def lossGrad(w: RealVector, x: Features, y: Target[Double]): RealVector = w
   }
 
   "Generalized linear model" should "throw exception when using fit, predict on trained, untrained models" in {

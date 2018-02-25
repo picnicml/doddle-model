@@ -4,5 +4,5 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class CrossValidationTest extends FlatSpec with Matchers {
 
-  "Cross validation" should "" in {}
+  "Cross validation" should "todo" in {}
 }

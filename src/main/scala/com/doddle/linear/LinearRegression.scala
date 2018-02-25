@@ -1,16 +1,14 @@
 package com.doddle.linear
 
-import com.doddle.TypeAliases.{RealMatrix, RealVector}
 import com.doddle.base.{Predictor, Regressor}
+import com.doddle.data.DataTypes.{Features, RealVector, Target}
 
 /** An immutable multiple linear regression model with ridge regularization.
   *
-  * @param lambda L2 regularization strength, 0 means no regularization
+  * @param lambda L2 regularization strength, must be positive, 0 means no regularization
   *
   * Examples:
-  * // initialize a model without L2 regularization
   * val model = LinearRegression()
-  * // initialize a model with L2 regularization
   * val model = LinearRegression(lambda = 1.5)
   */
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
@@ -19,15 +17,15 @@ class LinearRegression private (val lambda: Double, protected val w: Option[Real
   override protected def newInstance(w: RealVector): Predictor[Double] =
     new LinearRegression(this.lambda, Some(w))
 
-  override protected[linear] def meanFunction(latent: RealVector): RealVector =
+  override protected[linear] def meanFunction(latent: RealVector): Target[Double] =
     latent
 
-  override protected[linear] def loss(w: RealVector, x: RealMatrix, y: RealVector): Double = {
+  override protected[linear] def loss(w: RealVector, x: Features, y: Target[Double]): Double = {
     val d = y - this.predict(w, x)
     .5 * ((d.t * d) / x.rows.toDouble + this.lambda * (w(1 to -1).t * w(1 to -1)))
   }
 
-  override protected[linear] def lossGrad(w: RealVector, x: RealMatrix, y: RealVector): RealVector = {
+  override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target[Double]): RealVector = {
     val grad = ((y - this.predict(w, x)).t * x).t / (-x.rows.toDouble)
     grad(1 to -1) += this.lambda * w(1 to -1)
     grad
@@ -35,6 +33,11 @@ class LinearRegression private (val lambda: Double, protected val w: Option[Real
 }
 
 object LinearRegression {
-  def apply() = new LinearRegression(0, None)
-  def apply(lambda: Double) = new LinearRegression(lambda, None)
+
+  def apply(): LinearRegression = new LinearRegression(lambda = 0, None)
+
+  def apply(lambda: Double): LinearRegression = {
+    require(lambda >= 0, "L2 regularization strength must be positive")
+    new LinearRegression(lambda, None)
+  }
 }

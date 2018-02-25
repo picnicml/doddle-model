@@ -3,7 +3,7 @@ package com.doddle.linear
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.optimize.ApproximateGradientFunction
 import com.doddle.TestUtils
-import com.doddle.TypeAliases.{RealMatrix, RealVector}
+import com.doddle.data.DataTypes.{Features, RealVector, Target}
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -28,10 +28,14 @@ class LinearRegressionTest extends FlatSpec with Matchers with TestUtils {
       testGrad(w, x, y)
     }
 
-    def testGrad(w: RealVector, x: RealMatrix, y: RealVector) = {
+    def testGrad(w: RealVector, x: Features, y: Target[Double]) = {
       val model = LinearRegression(lambda = 0.5)
       val gradApprox = new ApproximateGradientFunction((w: RealVector) => model.loss(w, x, y))
       breezeEqual(gradApprox.gradientAt(w), model.lossGrad(w, x, y)) shouldEqual true
     }
+  }
+
+  it should "prevent the usage of negative L2 regularization strength" in {
+    an [IllegalArgumentException] shouldBe thrownBy(LinearRegression(lambda = -0.5))
   }
 }
