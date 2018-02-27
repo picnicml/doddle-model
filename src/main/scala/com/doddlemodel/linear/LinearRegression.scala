@@ -1,7 +1,7 @@
-package com.doddle.linear
+package com.doddlemodel.linear
 
-import com.doddle.base.{Predictor, Regressor}
-import com.doddle.data.DataTypes.{Features, RealVector, Target}
+import com.doddlemodel.base.{Predictor, Regressor}
+import com.doddlemodel.data.DataTypes.{Features, RealVector, Target}
 
 /** An immutable multiple linear regression model with ridge regularization.
   *

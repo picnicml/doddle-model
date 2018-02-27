@@ -41,4 +41,4 @@ project/plugins/project/
 
 # Custom
 .DS_Store
-!src/main/scala/com/doddle/data/
+!src/main/scala/com/doddlemodel/data/

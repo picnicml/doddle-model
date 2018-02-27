@@ -1,6 +1,6 @@
-package com.doddle.base
+package com.doddlemodel.base
 
-import com.doddle.data.DataTypes.{Features, Target}
+import com.doddlemodel.data.DataTypes.{Features, Target}
 
 abstract class Predictor[A] extends Estimator {
 

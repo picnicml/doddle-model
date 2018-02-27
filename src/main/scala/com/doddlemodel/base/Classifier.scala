@@ -1,6 +1,6 @@
-package com.doddle.base
+package com.doddlemodel.base
 
-import com.doddle.data.DataTypes.{Features, Simplex}
+import com.doddlemodel.data.DataTypes.{Features, Simplex}
 
 abstract class Classifier extends Predictor[Int] {
 

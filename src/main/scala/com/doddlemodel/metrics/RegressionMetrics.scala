@@ -1,7 +1,7 @@
-package com.doddle.metrics
+package com.doddlemodel.metrics
 
 import breeze.numerics.sqrt
-import com.doddle.data.DataTypes.Target
+import com.doddlemodel.data.DataTypes.Target
 
 object RegressionMetrics {
 

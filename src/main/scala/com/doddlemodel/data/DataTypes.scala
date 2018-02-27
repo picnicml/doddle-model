@@ -1,4 +1,4 @@
-package com.doddle.data
+package com.doddlemodel.data
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 

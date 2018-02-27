@@ -1,9 +1,9 @@
-package com.doddle.linear
+package com.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.optimize.ApproximateGradientFunction
-import com.doddle.TestUtils
-import com.doddle.data.DataTypes.{Features, RealVector, Target}
+import com.doddlemodel.TestUtils
+import com.doddlemodel.data.DataTypes.{Features, RealVector, Target}
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 

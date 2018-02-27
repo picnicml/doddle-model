@@ -1,8 +1,8 @@
-package com.doddle.linear
+package com.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-import com.doddle.base.{Predictor, Regressor}
-import com.doddle.data.DataTypes.{Features, RealVector, Target}
+import com.doddlemodel.base.{Predictor, Regressor}
+import com.doddlemodel.data.DataTypes.{Features, RealVector, Target}
 import org.scalatest.{FlatSpec, Matchers}
 
 class GeneralizedLinearModelTest extends FlatSpec with Matchers {

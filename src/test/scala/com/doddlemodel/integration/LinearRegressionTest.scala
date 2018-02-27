@@ -1,8 +1,8 @@
-package com.doddle.integration
+package com.doddlemodel.integration
 
-import com.doddle.data.DataLoaders.loadBostonDataset
-import com.doddle.linear.LinearRegression
-import com.doddle.metrics.RegressionMetrics.rmse
+import com.doddlemodel.data.DataLoaders.loadBostonDataset
+import com.doddlemodel.linear.LinearRegression
+import com.doddlemodel.metrics.RegressionMetrics.rmse
 import org.scalatest.{FlatSpec, Matchers}
 
 class LinearRegressionTest extends FlatSpec with Matchers {

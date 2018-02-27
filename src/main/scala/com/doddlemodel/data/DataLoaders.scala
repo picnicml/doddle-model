@@ -1,9 +1,9 @@
-package com.doddle.data
+package com.doddlemodel.data
 
 import java.io.File
 
 import breeze.linalg.csvread
-import com.doddle.data.DataTypes.{Features, Target}
+import com.doddlemodel.data.DataTypes.{Features, Target}
 
 object DataLoaders {
 
