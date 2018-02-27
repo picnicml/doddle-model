@@ -28,7 +28,7 @@
   <td>Code Quality</td>
   <td>
     <a href="https://app.codacy.com/app/picnicml/doddle-model">
-    <img src="https://img.shields.io/codacy/grade/4b13da3c6435458dac117ac4cd2deca8.svg?style=flat-square&label=codacy" alt="code quality"/>
+    <img src="https://img.shields.io/codacy/grade/2c21167da0154c44afd8381fe82f93d7.svg?style=flat-square&label=codacy" alt="code quality"/>
     </a>
   </td>
 </tr>
