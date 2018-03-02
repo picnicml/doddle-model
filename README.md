@@ -44,8 +44,11 @@
 
 `doddle-model` is an in-memory machine learning library built on top of [Breeze](https://github.com/scalanlp/breeze). It provides immutable objects that are a _doddle_ to use in parallel code.
 
-### Example usage
-To train a linear regression model run:
+### Installation
+todo
+
+### Example
+To train a model run:
 ```scala
 import com.doddlemodel.data.DataLoaders.loadBostonDataset
 import com.doddlemodel.linear.LinearRegression
@@ -65,6 +68,17 @@ Or instantiate and train a model in a single line, e.g.:
 ```scala
 val trainedModel = LinearRegression().fit(x, y)
 ```
+
+To obtain a cross-validation score run:
+```scala
+import com.doddlemodel.modelselection.CrossValidation
+
+val cv = CrossValidation(metric = rmse, folds = 10)
+cv.score(model, x, y)
+// res2: Double = 5.175796072219949
+```
+
+For more examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples).
 
 ### Resources
 - [Pattern Recognition and Machine Learning, Christopher Bishop](http://www.springer.com/gp/book/9780387310732)

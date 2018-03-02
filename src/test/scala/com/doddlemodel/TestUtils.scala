@@ -1,7 +1,7 @@
 package com.doddlemodel
 
 import breeze.linalg.zipValues
-import com.doddlemodel.data.DataTypes.RealVector
+import com.doddlemodel.data.Types.RealVector
 import org.scalactic.Equality
 
 trait TestUtils {

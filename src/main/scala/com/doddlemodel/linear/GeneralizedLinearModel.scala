@@ -3,7 +3,7 @@ package com.doddlemodel.linear
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.optimize._
 import com.doddlemodel.base.Predictor
-import com.doddlemodel.data.DataTypes.{Features, RealVector, Target}
+import com.doddlemodel.data.Types.{Features, RealVector, Target}
 
 trait GeneralizedLinearModel[A] {
   this: Predictor[A] =>

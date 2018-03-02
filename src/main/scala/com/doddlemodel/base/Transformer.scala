@@ -1,6 +1,6 @@
 package com.doddlemodel.base
 
-import com.doddlemodel.data.DataTypes.Features
+import com.doddlemodel.data.Types.Features
 
 abstract class Transformer extends Estimator {
 

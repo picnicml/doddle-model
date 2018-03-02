@@ -3,7 +3,7 @@ package com.doddlemodel.data
 import java.io.File
 
 import breeze.linalg.csvread
-import com.doddlemodel.data.DataTypes.{Features, Target}
+import com.doddlemodel.data.Types.{Features, Target}
 
 object DataLoaders {
 

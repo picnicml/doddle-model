@@ -2,7 +2,7 @@ package com.doddlemodel.data
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 
-object DataTypes {
+object Types {
 
   type Features = DenseMatrix[Double]
   type Target[A] = DenseVector[A]

@@ -2,7 +2,7 @@ package com.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.doddlemodel.base.{Predictor, Regressor}
-import com.doddlemodel.data.DataTypes.{Features, RealVector, Target}
+import com.doddlemodel.data.Types.{Features, RealVector, Target}
 import org.scalatest.{FlatSpec, Matchers}
 
 class GeneralizedLinearModelTest extends FlatSpec with Matchers {
