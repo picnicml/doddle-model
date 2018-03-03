@@ -33,6 +33,14 @@
   </td>
 </tr>
 <tr>
+  <td>Chat</td>
+  <td>
+    <a href="https://gitter.im/picnicml/doddle-model">
+    <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square&label=picnicml" alt="chat"/>
+    </a>
+  </td>
+</tr>
+<tr>
   <td>License</td>
   <td>
     <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE">
@@ -42,44 +50,21 @@
 </tr>
 </table>
 
-`doddle-model` is an in-memory machine learning library built on top of [Breeze](https://github.com/scalanlp/breeze). It provides immutable objects that are a _doddle_ to use in parallel code.
+`doddle-model` is an in-memory machine learning library that can be summed up with three main characteristics:
+* it is built on top of [Breeze](https://github.com/scalanlp/breeze)
+* it provides [immutable objects](https://en.wikipedia.org/wiki/Immutable_object) that are a _doddle_ to use in parallel code
+* it exposes its functionality through a [scikit-learn](https://github.com/scikit-learn/scikit-learn)-like API [2]
 
 ### Installation
-todo
-
-### Example
-To train a model run:
+todo: actually publish
 ```scala
-import com.doddlemodel.data.DataLoaders.loadBostonDataset
-import com.doddlemodel.linear.LinearRegression
-import com.doddlemodel.metrics.Regression.rmse
-
-val (x, y) = loadBostonDataset
-val model = LinearRegression()
-
-val trainedModel = model.fit(x, y)
-val yPred = trainedModel.predict(x)
-
-rmse(y, yPred)
-// res1: Double = 4.679242291386644
+libraryDependencies += "com.picnicml" %% "doddlemodel" % "0.0.1"
 ```
 
-Or instantiate and train a model in a single line, e.g.:
-```scala
-val trainedModel = LinearRegression().fit(x, y)
-```
-
-To obtain a cross-validation score run:
-```scala
-import com.doddlemodel.modelselection.CrossValidation
-
-val cv = CrossValidation(metric = rmse, folds = 10)
-cv.score(model, x, y)
-// res2: Double = 5.175796072219949
-```
-
-For more examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples).
+### Getting Started
+For a complete list of examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples).
 
 ### Resources
-- [Pattern Recognition and Machine Learning, Christopher Bishop](http://www.springer.com/gp/book/9780387310732)
-- Datasets from [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml)
+* [1] [Pattern Recognition and Machine Learning, Christopher Bishop](http://www.springer.com/gp/book/9780387310732)
+* [2] [API design for machine learning software: experiences from the scikit-learn project, L. Buitinck et al.](https://arxiv.org/abs/1309.0238)
+* [3] Datasets from [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml)
