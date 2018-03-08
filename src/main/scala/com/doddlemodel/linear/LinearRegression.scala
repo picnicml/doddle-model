@@ -1,6 +1,6 @@
 package com.doddlemodel.linear
 
-import com.doddlemodel.base.{Predictor, Regressor}
+import com.doddlemodel.base.Regressor
 import com.doddlemodel.data.Types.{Features, RealVector, Target}
 
 /** An immutable multiple linear regression model with ridge regularization.
@@ -12,13 +12,12 @@ import com.doddlemodel.data.Types.{Features, RealVector, Target}
   * val model = LinearRegression(lambda = 1.5)
   */
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends Regressor with GeneralizedLinearModel[Double] {
+  extends Regressor[Double] with LinearModel[Double] with LinearRegressor[Double] {
 
-  override protected def newInstance(w: RealVector): Predictor[Double] =
+  override protected def copy(w: RealVector): Regressor[Double] =
     new LinearRegression(this.lambda, Some(w))
 
-  override protected[linear] def meanFunction(latent: RealVector): Target[Double] =
-    latent
+  override protected def predict(w: RealVector, x: Features): Target[Double] = x * w
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target[Double]): Double = {
     val d = y - this.predict(w, x)
@@ -34,7 +33,7 @@ class LinearRegression private (val lambda: Double, protected val w: Option[Real
 
 object LinearRegression {
 
-  def apply(): LinearRegression = new LinearRegression(lambda = 0, None)
+  def apply(): LinearRegression = new LinearRegression(0, None)
 
   def apply(lambda: Double): LinearRegression = {
     require(lambda >= 0, "L2 regularization strength must be positive")
