@@ -67,4 +67,4 @@ For a complete list of examples see [doddle-model-examples](https://github.com/p
 ### Resources
 * [1] [Pattern Recognition and Machine Learning, Christopher Bishop](http://www.springer.com/gp/book/9780387310732)
 * [2] [API design for machine learning software: experiences from the scikit-learn project, L. Buitinck et al.](https://arxiv.org/abs/1309.0238)
-* [3] Datasets from [UCI Machine Learning Repository](http://archive.ics.uci.edu/ml)
+* [3] [UCI Machine Learning Repository. Irvine, CA: University of California, School of Information and Computer Science, Dua, D. and Karra Taniskidou, E.](http://archive.ics.uci.edu/ml)
