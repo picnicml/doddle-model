@@ -7,9 +7,8 @@ import com.doddlemodel.metrics.Types.Metric
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
-import scala.reflect.ClassTag
 
-case class TrainTestSplit[A](xTr: Features, yTr: Target[A], xTe: Features, yTe: Target[A])
+case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
 
 /** A parallel, n-fold cross validation technique.
   *
@@ -20,16 +19,16 @@ case class TrainTestSplit[A](xTr: Features, yTr: Target[A], xTe: Features, yTe: 
   * val cv = CrossValidation(metric = rmse, folds = 10)
   * cv.score(model, x, y)
   */
-class CrossValidation[A: ClassTag] private (val metric: Metric[A], val folds: Int) {
+class CrossValidation private (val metric: Metric, val folds: Int) {
   // todo: add ability to shuffle data
 
-  def score(model: Predictor[A], x: Features, y: Target[A]): Double = {
+  def score(model: Predictor, x: Features, y: Target): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
     val scoreAvg = Future.sequence(foldsScores).map(scores => scores.sum / scores.length)
     Await.result(scoreAvg, Duration.Inf)
   }
 
-  private[modelselection] def splitData(x: Features, y: Target[A]): List[TrainTestSplit[A]] = {
+  private[modelselection] def splitData(x: Features, y: Target): List[TrainTestSplit] = {
     require(x.rows >= this.folds, "Number of examples must be at least the same as number of folds")
     val splitIndices = this.calculateSplitIndices(x.rows)
 
@@ -59,14 +58,14 @@ class CrossValidation[A: ClassTag] private (val metric: Metric[A], val folds: In
     }
   }
 
-  private def foldScore(model: Predictor[A], split: TrainTestSplit[A]): Future[Double] = Future {
+  private def foldScore(model: Predictor, split: TrainTestSplit): Future[Double] = Future {
     this.metric(split.yTe, model.fit(split.xTr, split.yTr).predict(split.xTe))
   }
 }
 
 object CrossValidation {
 
-  def apply[A: ClassTag](metric: Metric[A], folds: Int): CrossValidation[A] = {
+  def apply(metric: Metric, folds: Int): CrossValidation = {
     require(folds > 0, "Number of folds must be positive")
     new CrossValidation(metric, folds)
   }

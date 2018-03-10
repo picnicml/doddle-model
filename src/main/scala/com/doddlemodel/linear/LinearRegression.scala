@@ -12,19 +12,19 @@ import com.doddlemodel.data.Types.{Features, RealVector, Target}
   * val model = LinearRegression(lambda = 1.5)
   */
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends Regressor[Double] with LinearModel[Double] with LinearRegressor[Double] {
+  extends Regressor with LinearModel with LinearRegressor {
 
-  override protected def copy(w: RealVector): Regressor[Double] =
+  override protected def copy(w: RealVector): Regressor =
     new LinearRegression(this.lambda, Some(w))
 
-  override protected def predict(w: RealVector, x: Features): Target[Double] = x * w
+  override protected def predict(w: RealVector, x: Features): Target = x * w
 
-  override protected[linear] def loss(w: RealVector, x: Features, y: Target[Double]): Double = {
+  override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     val d = y - this.predict(w, x)
     .5 * ((d.t * d) / x.rows.toDouble + this.lambda * (w(1 to -1).t * w(1 to -1)))
   }
 
-  override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target[Double]): RealVector = {
+  override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
     val grad = ((y - this.predict(w, x)).t * x).t / (-x.rows.toDouble)
     grad(1 to -1) += this.lambda * w(1 to -1)
     grad

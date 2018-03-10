@@ -1,7 +1,8 @@
 package com.doddlemodel.data
 
-import org.scalatest.{FlatSpec, Matchers}
+import breeze.linalg.sum
 import com.doddlemodel.data.DataLoaders._
+import org.scalatest.{FlatSpec, Matchers}
 
 class DataLoadersTest extends FlatSpec with Matchers {
 
@@ -17,5 +18,6 @@ class DataLoadersTest extends FlatSpec with Matchers {
     x.rows shouldBe 569
     x.cols shouldBe 30
     y.length shouldBe x.rows
+    sum(y) shouldBe 357.0
   }
 }

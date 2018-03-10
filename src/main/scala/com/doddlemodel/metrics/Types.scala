@@ -4,5 +4,5 @@ import com.doddlemodel.data.Types.Target
 
 object Types {
 
-  type Metric[A] = (Target[A], Target[A]) => Double
+  type Metric = (Target, Target) => Double
 }
