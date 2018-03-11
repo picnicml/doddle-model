@@ -31,7 +31,7 @@ trait LinearModel {
       override def calculate(w: RealVector): (Double, RealVector) =
         (loss(w, xWithColOfOnes, y), lossGrad(w, xWithColOfOnes, y))
     }
-    val lbfgs = new LBFGS[DenseVector[Double]]()
+    val lbfgs = new LBFGS[DenseVector[Double]](tolerance = 1e-4)
     lbfgs.minimize(diffFunction, DenseVector.zeros[Double](xWithColOfOnes.cols))
   }
 

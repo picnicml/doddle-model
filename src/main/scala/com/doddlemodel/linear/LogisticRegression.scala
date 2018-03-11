@@ -5,6 +5,14 @@ import breeze.numerics.{log, sigmoid}
 import com.doddlemodel.base.Classifier
 import com.doddlemodel.data.Types.{Features, RealVector, Simplex, Target}
 
+/** An immutable logistic regression model with ridge regularization.
+  *
+  * @param lambda L2 regularization strength, must be positive, 0 means no regularization
+  *
+  * Examples:
+  * val model = LogisticRegression()
+  * val model = LogisticRegression(lambda = 1.5)
+  */
 class LogisticRegression private (val lambda: Double, protected val w: Option[RealVector])
   extends Classifier with LinearModel with LinearClassifier {
 
