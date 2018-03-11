@@ -3,7 +3,7 @@ package com.picnicml.doddlemodel.linear
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.optimize._
 import com.picnicml.doddlemodel.base.Predictor
-import com.picnicml.doddlemodel.data.Types.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
 trait LinearModel {
   this: Predictor =>

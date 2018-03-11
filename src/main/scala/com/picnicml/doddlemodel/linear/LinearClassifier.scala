@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.linear
 
 import com.picnicml.doddlemodel.base.Classifier
-import com.picnicml.doddlemodel.data.Types.{Features, RealVector, Simplex, Target}
+import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 trait LinearClassifier {
   this: LinearModel with Classifier =>

@@ -1,7 +1,6 @@
 package com.picnicml.doddlemodel.metrics
 
 import breeze.linalg.DenseVector
-import com.picnicml.doddlemodel.metrics.RegressionMetrics.rmse
 import org.scalatest.{FlatSpec, Matchers}
 
 class RegressionMetricsTest extends FlatSpec with Matchers {

@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.base
 
-import com.picnicml.doddlemodel.data.Types.{Features, Simplex, Target}
+import com.picnicml.doddlemodel.data.{Features, Simplex, Target}
 
 abstract class Classifier extends Predictor {
 

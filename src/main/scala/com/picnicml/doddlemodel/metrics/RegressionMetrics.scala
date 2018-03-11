@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.metrics
 
 import breeze.numerics.sqrt
-import com.picnicml.doddlemodel.data.Types.Target
+import com.picnicml.doddlemodel.data.Target
 
 object RegressionMetrics {
 

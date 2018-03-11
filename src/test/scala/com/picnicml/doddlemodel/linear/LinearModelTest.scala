@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.picnicml.doddlemodel.base.Regressor
-import com.picnicml.doddlemodel.data.Types.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import org.scalatest.{FlatSpec, Matchers}
 
 class LinearModelTest extends FlatSpec with Matchers {

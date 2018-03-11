@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.metrics
 
 import breeze.linalg.sum
-import com.picnicml.doddlemodel.data.Types.Target
+import com.picnicml.doddlemodel.data.Target
 
 object ClassificationMetrics {
 

@@ -1,8 +1,8 @@
 package com.picnicml.doddlemodel.modelselection
 
 import com.picnicml.doddlemodel.base.Predictor
-import com.picnicml.doddlemodel.data.Types.{Features, Target}
-import com.picnicml.doddlemodel.metrics.Types.Metric
+import com.picnicml.doddlemodel.data.{Features, Target}
+import com.picnicml.doddlemodel.metrics.Metric
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration

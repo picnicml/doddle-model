@@ -63,7 +63,7 @@ cd doddle-model
 sbt publish-local
 ```
 
-Add this to your SBT project definition:
+Add dependency to your SBT project definition:
 ```scala
 libraryDependencies += "com.picnicml" %% "doddle-model" % "0.0.0"
 ```

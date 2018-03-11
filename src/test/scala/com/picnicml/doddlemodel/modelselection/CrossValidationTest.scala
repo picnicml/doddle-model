@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.modelselection
 
 import breeze.linalg.{DenseMatrix, DenseVector, convert}
-import com.picnicml.doddlemodel.data.Types.Target
+import com.picnicml.doddlemodel.data.Target
 import org.scalatest.{FlatSpec, Matchers}
 
 class CrossValidationTest extends FlatSpec with Matchers {

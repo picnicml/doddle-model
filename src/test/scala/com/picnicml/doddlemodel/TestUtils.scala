@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel
 
 import breeze.linalg.zipValues
 import breeze.optimize.ApproximateGradientFunction
-import com.picnicml.doddlemodel.data.Types.RealVector
+import com.picnicml.doddlemodel.data.RealVector
 import org.scalactic.Equality
 
 trait TestUtils {

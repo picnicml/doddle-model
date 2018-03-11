@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.base
 
-import com.picnicml.doddlemodel.data.Types.{Features, Target}
+import com.picnicml.doddlemodel.data.{Features, Target}
 
 abstract class Regressor extends Predictor {
 

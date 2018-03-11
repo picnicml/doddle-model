@@ -3,7 +3,7 @@ package com.picnicml.doddlemodel.linear
 import breeze.linalg.sum
 import breeze.numerics.{log, sigmoid}
 import com.picnicml.doddlemodel.base.Classifier
-import com.picnicml.doddlemodel.data.Types.{Features, RealVector, Simplex, Target}
+import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 /** An immutable logistic regression model with ridge regularization.
   *

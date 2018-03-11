@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.base
 
-import com.picnicml.doddlemodel.data.Types.Features
+import com.picnicml.doddlemodel.data.Features
 
 abstract class Transformer extends Estimator {
 

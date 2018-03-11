@@ -1,7 +1,6 @@
 package com.picnicml.doddlemodel.data
 
 import breeze.linalg.sum
-import com.picnicml.doddlemodel.data.DataLoaders._
 import org.scalatest.{FlatSpec, Matchers}
 
 class DataLoadersTest extends FlatSpec with Matchers {

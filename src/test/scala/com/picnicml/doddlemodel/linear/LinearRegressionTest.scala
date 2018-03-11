@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.picnicml.doddlemodel.TestUtils
-import com.picnicml.doddlemodel.data.Types.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 

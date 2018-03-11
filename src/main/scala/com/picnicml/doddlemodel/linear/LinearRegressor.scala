@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.linear
 
 import com.picnicml.doddlemodel.base.Regressor
-import com.picnicml.doddlemodel.data.Types.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
 trait LinearRegressor {
   this: LinearModel with Regressor =>
