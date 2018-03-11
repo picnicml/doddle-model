@@ -41,5 +41,5 @@ project/plugins/project/
 
 # Custom
 .DS_Store
-!src/main/scala/com/doddlemodel/data/
-!src/test/scala/com/doddlemodel/data/
+!src/main/scala/com/picnicml/doddlemodel/data/
+!src/test/scala/com/picnicml/doddlemodel/data/

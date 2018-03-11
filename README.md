@@ -56,9 +56,16 @@
 * it exposes its functionality through a [scikit-learn](https://github.com/scikit-learn/scikit-learn)-like API [2]
 
 ### Installation
-todo: actually publish
+Publish the project to a local Ivy repository:
+```bash
+git clone https://github.com/picnicml/doddle-model.git
+cd doddle-model
+sbt publish-local
+```
+
+Add this to your SBT project definition:
 ```scala
-libraryDependencies += "com.picnicml" %% "doddlemodel" % "0.0.1"
+libraryDependencies += "com.picnicml" %% "doddle-model" % "0.0.0"
 ```
 
 ### Getting Started
