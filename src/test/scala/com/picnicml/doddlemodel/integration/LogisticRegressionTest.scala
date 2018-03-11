@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.integration
 
-import com.picnicml.doddlemodel.data.DataLoaders.loadBreastCancerDataset
+import com.picnicml.doddlemodel.data.loadBreastCancerDataset
 import com.picnicml.doddlemodel.linear.LogisticRegression
 import com.picnicml.doddlemodel.metrics.accuracy
 import com.picnicml.doddlemodel.modelselection.CrossValidation

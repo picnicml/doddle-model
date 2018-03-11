@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.integration
 
-import com.picnicml.doddlemodel.data.DataLoaders.loadBostonDataset
+import com.picnicml.doddlemodel.data.loadBostonDataset
 import com.picnicml.doddlemodel.linear.LinearRegression
 import com.picnicml.doddlemodel.metrics.rmse
 import com.picnicml.doddlemodel.modelselection.CrossValidation

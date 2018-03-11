@@ -10,6 +10,6 @@ package object data {
   type RealVector = DenseVector[Double]
   type Dataset = (Features, Target)
 
-  def loadBostonDataset: Dataset = DataLoaders.loadBostonDataset
-  def loadBreastCancerDataset: Dataset = DataLoaders.loadBreastCancerDataset
+  def loadBostonDataset: Dataset = DatasetsLoaders.loadBostonDataset
+  def loadBreastCancerDataset: Dataset = DatasetsLoaders.loadBreastCancerDataset
 }
