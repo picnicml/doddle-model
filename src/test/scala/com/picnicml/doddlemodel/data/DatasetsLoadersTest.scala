@@ -19,4 +19,11 @@ class DatasetsLoadersTest extends FlatSpec with Matchers {
     y.length shouldBe x.rows
     sum(y) shouldBe 357.0
   }
+
+  it should "load the high school test dataset" in {
+    val (x, y) = loadHighSchoolTestDataset
+    x.rows shouldBe 500
+    x.cols shouldBe 6
+    y.length shouldBe x.rows
+  }
 }

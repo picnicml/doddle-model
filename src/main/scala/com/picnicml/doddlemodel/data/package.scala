@@ -12,4 +12,5 @@ package object data {
 
   def loadBostonDataset: Dataset = DatasetsLoaders.loadBostonDataset
   def loadBreastCancerDataset: Dataset = DatasetsLoaders.loadBreastCancerDataset
+  def loadHighSchoolTestDataset: Dataset = DatasetsLoaders.loadHighSchoolTestDataset
 }

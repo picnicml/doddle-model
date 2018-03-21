@@ -19,6 +19,12 @@ object DatasetsLoaders {
     (data(::, 0 to -2), data(::, -1))
   }
 
+  /** An artificial dataset with a Poisson response variable. */
+  def loadHighSchoolTestDataset: Dataset = {
+    val data = loadDataset("high_school_test")
+    (data(::, 0 to -2), data(::, -1))
+  }
+
   private def loadDataset(datasetName: String): DenseMatrix[Double] = {
     val input = new InputStreamReader(getClass.getResourceAsStream(s"/$datasetsDir/$datasetName.csv"))
     var matrix = CSVReader.read(input, separator = ',', quote = '"', escape = '\\', skipLines = 1)
