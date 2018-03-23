@@ -23,6 +23,10 @@ class PoissonRegression private (val lambda: Double, protected val w: Option[Rea
   override protected def predict(w: RealVector, x: Features): Target =
     floor(this.predictMean(w, x))
 
+  /**
+    * A function that returns the mean of the Poisson distribution, similar to
+    * predictProba(...) in com.picnicml.doddlemodel.linear.LogisticRegression.
+    */
   def predictMean(w: RealVector, x: Features): Target = exp(x * w)
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
