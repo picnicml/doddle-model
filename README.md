@@ -12,7 +12,7 @@
   <td>Build Status</td>
   <td>
     <a href="https://circleci.com/gh/picnicml/doddle-model">
-    <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model.svg?style=flat-square" alt="build status"/>
+    <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square" alt="build status"/>
     </a>
   </td>
 </tr>
