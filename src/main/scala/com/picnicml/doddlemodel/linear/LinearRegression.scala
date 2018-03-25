@@ -12,11 +12,12 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   * val model = LinearRegression()
   * val model = LinearRegression(lambda = 1.5)
   */
-class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends Regressor with LinearModel with LinearRegressor {
+class LinearRegression private (val lambda: Double, protected val w: Option[RealVector]) extends LinearRegressor {
 
   override protected def copy(w: RealVector): Regressor =
     new LinearRegression(this.lambda, Some(w))
+
+  override protected def checkTargetVarRequirement(y: Target): Unit = Unit
 
   override protected def predict(w: RealVector, x: Features): Target = x * w
 

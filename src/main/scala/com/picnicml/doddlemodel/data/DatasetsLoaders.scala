@@ -19,7 +19,7 @@ object DatasetsLoaders {
     (data(::, 0 to -2), data(::, -1))
   }
 
-  /** An artificial dataset with a Poisson response variable. */
+  /** An artificial dataset with a Poisson target variable. */
   def loadHighSchoolTestDataset: Dataset = {
     val data = loadDataset("high_school_test")
     (data(::, 0 to -2), data(::, -1))

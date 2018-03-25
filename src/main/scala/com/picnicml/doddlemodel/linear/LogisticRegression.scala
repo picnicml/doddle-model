@@ -14,11 +14,16 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
   * val model = LogisticRegression()
   * val model = LogisticRegression(lambda = 1.5)
   */
-class LogisticRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends Classifier with LinearModel with LinearClassifier {
+class LogisticRegression private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
+  extends LinearClassifier {
+
+  override protected def copy(numClasses: Int): LinearClassifier = {
+    require(numClasses == 2, "Logistic regression must be trained on a dataset with exactly 2 categories")
+    new LogisticRegression(this.lambda, Some(numClasses), this.w)
+  }
 
   override protected def copy(w: RealVector): Classifier =
-    new LogisticRegression(this.lambda, Some(w))
+    new LogisticRegression(this.lambda, this.numClasses, Some(w))
 
   override protected def predict(w: RealVector, x: Features): Target =
     (this.predictProba(w, x)(::, 0) >:> 0.5).map(x => if (x) 1.0 else 0.0)
@@ -40,10 +45,10 @@ class LogisticRegression private (val lambda: Double, protected val w: Option[Re
 
 object LogisticRegression {
 
-  def apply(): LogisticRegression = new LogisticRegression(0, None)
+  def apply(): LogisticRegression = new LogisticRegression(0, None, None)
 
   def apply(lambda: Double): LogisticRegression = {
     require(lambda >= 0, "L2 regularization strength must be positive")
-    new LogisticRegression(lambda, None)
+    new LogisticRegression(lambda, None, None)
   }
 }

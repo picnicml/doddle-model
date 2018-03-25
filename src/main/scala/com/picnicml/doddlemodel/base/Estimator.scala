@@ -1,3 +1,6 @@
 package com.picnicml.doddlemodel.base
 
-abstract class Estimator
+abstract class Estimator {
+
+  def isFitted: Boolean
+}

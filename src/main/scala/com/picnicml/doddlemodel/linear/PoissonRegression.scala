@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.linear
 
-import breeze.linalg.sum
-import breeze.numerics.{exp, floor, log}
+import breeze.linalg.{all, sum}
+import breeze.numerics.{exp, floor, isFinite, log}
 import com.picnicml.doddlemodel.Regularization.{ridgeLoss, ridgeLossGrad}
 import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
@@ -14,11 +14,13 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   * val model = PoissonRegression()
   * val model = PoissonRegression(lambda = 1.5)
   */
-class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends Regressor with LinearModel with LinearRegressor {
+class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector]) extends LinearRegressor {
 
   override protected def copy(w: RealVector): Regressor =
     new PoissonRegression(this.lambda, Some(w))
+
+  override protected def checkTargetVarRequirement(y: Target): Unit =
+    require(y == floor(y) && all(isFinite(y)), "Poisson regression must be trained on a dataset with count data")
 
   override protected def predict(w: RealVector, x: Features): Target =
     floor(this.predictMean(w, x))

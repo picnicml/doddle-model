@@ -21,21 +21,20 @@ trait LinearModel {
   protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector
 
   override def predict(x: Features): Target = {
-    require(this.isTrained, "Called predict on a model that is not trained yet")
+    require(this.isFitted, "Called predict on a model that is not trained yet")
     this.predict(this.w.get, this.xWithBiasTerm(x))
   }
 
-  protected def findModelParameters(x: Features, y: Target): RealVector = {
-    val xWithColOfOnes = this.xWithBiasTerm(x)
+  protected def maximumLikelihood(x: Features, y: Target, init: RealVector): RealVector = {
     val diffFunction = new DiffFunction[RealVector] {
       override def calculate(w: RealVector): (Double, RealVector) =
-        (loss(w, xWithColOfOnes, y), lossGrad(w, xWithColOfOnes, y))
+        (loss(w, x, y), lossGrad(w, x, y))
     }
     val lbfgs = new LBFGS[DenseVector[Double]](tolerance = 1e-4)
-    lbfgs.minimize(diffFunction, DenseVector.zeros[Double](xWithColOfOnes.cols))
+    lbfgs.minimize(diffFunction, init)
   }
 
-  protected def isTrained: Boolean = this.w.isDefined
+  override def isFitted: Boolean = this.w.isDefined
 
   protected def xWithBiasTerm(x: Features): Features =
     DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)

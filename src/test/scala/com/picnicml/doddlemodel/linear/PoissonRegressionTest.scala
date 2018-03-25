@@ -1,6 +1,7 @@
 package com.picnicml.doddlemodel.linear
 
-import breeze.linalg.{DenseMatrix, DenseVector}
+import breeze.linalg.{DenseMatrix, DenseVector, convert}
+import breeze.stats.distributions.Rand
 import com.picnicml.doddlemodel.TestUtils
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import org.scalactic.{Equality, TolerantNumerics}
@@ -23,7 +24,7 @@ class PoissonRegressionTest extends FlatSpec with Matchers with TestUtils {
     for (_ <- 1 to 1000) {
       val w = DenseVector.rand[Double](5)
       val x = DenseMatrix.rand[Double](10, 5)
-      val y = DenseVector.rand[Double](10)
+      val y = convert(DenseVector.rand(10, rand = Rand.randInt(1e6.toInt)), Double)
       testGrad(w, x, y)
     }
 
@@ -35,5 +36,13 @@ class PoissonRegressionTest extends FlatSpec with Matchers with TestUtils {
 
   it should "prevent the usage of negative L2 regularization strength" in {
     an [IllegalArgumentException] shouldBe thrownBy(PoissonRegression(lambda = -0.5))
+  }
+
+  it should "throw an exception if fitting a model on a dataset that is not count data" in {
+    val x = DenseMatrix((3.0, 1.0, 2.0), (-1.0, -2.0, 2.0), (3.0, 1.0, 2.0))
+    val y = DenseVector.rand[Double](3)
+    val model = PoissonRegression()
+
+    an [IllegalArgumentException] shouldBe thrownBy(model.fit(x, y))
   }
 }
