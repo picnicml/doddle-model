@@ -26,7 +26,7 @@ trait LinearClassifier extends Classifier with LinearModel {
       "Invalid encoding of categories in the target variable")
 
     val trainedModel = this.copy(numClasses = targetClasses.length)
-    val wLength = (x.cols + 1) * (trainedModel.numClasses.get - 1)
+    val wLength = (x.cols + 1) * (targetClasses.length - 1)
     val w = trainedModel.maximumLikelihood(trainedModel.xWithBiasTerm(x), y, DenseVector.zeros[Double](wLength))
     trainedModel.copy(w)
   }

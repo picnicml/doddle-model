@@ -28,41 +28,48 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
     convert(argmax(this.predictProba(w, x)(*, ::)), Double)
 
   override protected def predictProba(w: RealVector, x: Features): Simplex = {
-    require(this.numClasses.isDefined)
+    val numClasses = this.numClasses match {
+      case Some(nc) => nc
+      case None => throw new IllegalStateException("numClasses not set on a trained model")
+    }
 
-    val zExp = exp(x * w.asDenseMatrix.reshape(x.cols, this.numClasses.get - 1, View.Require))
+    val zExp = exp(x * w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require))
     val zExpPivot = DenseMatrix.horzcat(zExp, DenseMatrix.ones[Double](x.rows, 1))
     zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))
   }
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
-    require(this.numClasses.isDefined)
-    val yPredProba = this.predictProba(w, x)
+    val numClasses = this.numClasses match {
+      case Some(nc) => nc
+      case None => throw new IllegalStateException("numClasses must be set during training")
+    }
 
-    // todo: vectorize
+    val yPredProba = this.predictProba(w, x)
     val yPredProbaOfTrueClass = 0 until x.rows map { rowIndex =>
       val targetClass = y(rowIndex).toInt
       yPredProba(rowIndex, targetClass)
     }
 
-    val wMatrix = w.asDenseMatrix.reshape(x.cols, this.numClasses.get - 1, View.Require)
+    val wMatrix = w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
     sum(log(DenseMatrix(yPredProbaOfTrueClass))) / (-x.rows.toDouble) +
       .5 * this.lambda * sum(pow(wMatrix(1 to -1, ::), 2))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
-    require(this.numClasses.isDefined)
-    val yPredProba = this.predictProba(w, x)(::, 0 to -2)
+    val numClasses = this.numClasses match {
+      case Some(nc) => nc
+      case None => throw new IllegalStateException("numClasses must be set during training")
+    }
 
-    // todo: vectorize
+    val yPredProba = this.predictProba(w, x)(::, 0 to -2)
     val indicator = DenseMatrix.zeros[Double](yPredProba.rows, yPredProba.cols)
     0 until indicator.rows foreach { rowIndex =>
       val targetClass = y(rowIndex).toInt
-      if (targetClass < this.numClasses.get - 1) indicator(rowIndex, targetClass) = 1.0
+      if (targetClass < numClasses - 1) indicator(rowIndex, targetClass) = 1.0
     }
 
     val grad = (x.t * (indicator - yPredProba)) / (-x.rows.toDouble)
-    val wMatrix = w.asDenseMatrix.reshape(x.cols, this.numClasses.get - 1, View.Require)
+    val wMatrix = w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
     grad(1 to -1, ::) += this.lambda * wMatrix(1 to -1, ::)
     grad.toDenseVector
   }
