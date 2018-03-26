@@ -19,6 +19,11 @@ object DatasetsLoaders {
     (data(::, 0 to -2), data(::, -1))
   }
 
+  def loadIrisDataset: Dataset = {
+    val data = loadDataset("iris")
+    (data(::, 0 to -2), data(::, -1))
+  }
+
   /** An artificial dataset with a Poisson target variable. */
   def loadHighSchoolTestDataset: Dataset = {
     val data = loadDataset("high_school_test")
