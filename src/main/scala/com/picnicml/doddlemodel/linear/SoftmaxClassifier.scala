@@ -28,12 +28,15 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
     convert(argmax(this.predictProba(w, x)(*, ::)), Double)
 
   override protected def predictProba(w: RealVector, x: Features): Simplex = {
+    require(this.numClasses.isDefined)
+
     val zExp = exp(x * w.asDenseMatrix.reshape(x.cols, this.numClasses.get - 1, View.Require))
     val zExpPivot = DenseMatrix.horzcat(zExp, DenseMatrix.ones[Double](x.rows, 1))
     zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))
   }
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
+    require(this.numClasses.isDefined)
     val yPredProba = this.predictProba(w, x)
 
     // todo: vectorize
@@ -48,6 +51,7 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
+    require(this.numClasses.isDefined)
     val yPredProba = this.predictProba(w, x)(::, 0 to -2)
 
     // todo: vectorize

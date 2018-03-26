@@ -16,7 +16,7 @@ class SoftmaxClassifierTest extends FlatSpec with Matchers with TestUtils {
     val y = DenseVector(1.0, 0.0, 2.0)
 
     val model = SoftmaxClassifier(lambda = 1).copy(numClasses = 3)
-    model.loss(w, x, y) shouldEqual 7.1566391945397703
+    model.loss(w, x, y) shouldEqual 19.843778223530194
   }
 
   it should "calculate the gradient of the loss function wrt. to model parameters" in {
