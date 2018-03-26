@@ -17,7 +17,7 @@ trait LinearClassifier extends Classifier with LinearModel {
 
   override def fit(x: Features, y: Target): Classifier = {
     require(!this.isFitted, "Called fit on a model that is already trained")
-    require(this.numClasses.isEmpty, "An illegal state occured, numClasses property is set on an unfitted classifier")
+    require(this.numClasses.isEmpty)
 
     val targetClasses = unique(y)
     require(targetClasses.length >= 2,
@@ -33,6 +33,8 @@ trait LinearClassifier extends Classifier with LinearModel {
 
   override def predictProba(x: Features): Simplex = {
     require(this.isFitted, "Called predictProba on a model that is not trained yet")
+    require(this.numClasses.isDefined)
+
     this.predictProba(this.w.get, this.xWithBiasTerm(x))
   }
 }

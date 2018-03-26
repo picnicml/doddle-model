@@ -1,6 +1,5 @@
 package com.picnicml.doddlemodel.linear
 
-import com.picnicml.doddlemodel.Regularization.{ridgeLoss, ridgeLossGrad}
 import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
@@ -12,7 +11,8 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   * val model = LinearRegression()
   * val model = LinearRegression(lambda = 1.5)
   */
-class LinearRegression private (val lambda: Double, protected val w: Option[RealVector]) extends LinearRegressor {
+class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
+  extends LinearRegressor {
 
   override protected def copy(w: RealVector): Regressor =
     new LinearRegression(this.lambda, Some(w))
@@ -23,12 +23,12 @@ class LinearRegression private (val lambda: Double, protected val w: Option[Real
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     val d = y - this.predict(w, x)
-    .5 * ((d.t * d) / x.rows.toDouble) + ridgeLoss(w(1 to -1), this.lambda)
+    .5 * (((d.t * d) / x.rows.toDouble) + this.lambda * (w(1 to -1).t * w(1 to -1)))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
     val grad = ((y - this.predict(w, x)).t * x).t / (-x.rows.toDouble)
-    grad(1 to -1) += ridgeLossGrad(w(1 to -1), this.lambda)
+    grad(1 to -1) += this.lambda * w(1 to -1)
     grad
   }
 }

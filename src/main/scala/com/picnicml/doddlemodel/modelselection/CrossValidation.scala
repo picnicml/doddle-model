@@ -1,5 +1,6 @@
 package com.picnicml.doddlemodel.modelselection
 
+import breeze.linalg.shuffle
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
 import com.picnicml.doddlemodel.metrics.Metric
@@ -14,13 +15,13 @@ case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target
   *
   * @param metric a function from com.picnicml.doddlemodel.metrics used to calculate each fold's score
   * @param folds number of folds
+  * @param shuffleRows indicates whether examples should be shuffled prior to calculating the score
   *
   * Examples:
   * val cv = CrossValidation(metric = rmse, folds = 10)
   * cv.score(model, x, y)
   */
-class CrossValidation private (val metric: Metric, val folds: Int) {
-  // todo: add ability to shuffle data
+class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRows: Boolean) {
 
   def score(model: Predictor, x: Features, y: Target): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
@@ -30,15 +31,25 @@ class CrossValidation private (val metric: Metric, val folds: Int) {
 
   private[modelselection] def splitData(x: Features, y: Target): List[TrainTestSplit] = {
     require(x.rows >= this.folds, "Number of examples must be at least the same as number of folds")
-    val splitIndices = this.calculateSplitIndices(x.rows)
+
+    // todo: make more memory-efficient
+    val (xCopy, yCopy) = if (shuffleRows) {
+      val shuffleIndices = shuffle(0 until y.length)
+      (x(shuffleIndices, ::).toDenseMatrix, y(shuffleIndices).toDenseVector)
+    }
+    else {
+      (x, y)
+    }
+
+    val splitIndices = this.calculateSplitIndices(xCopy.rows)
 
     splitIndices zip splitIndices.tail map {
       case (indexStart, indexEnd) =>
         val trIndices = (0 until indexStart) ++ (indexEnd until x.rows)
         val teIndices = indexStart until indexEnd
         TrainTestSplit(
-          x(trIndices, ::).toDenseMatrix, y(trIndices).toDenseVector,
-          x(teIndices, ::).toDenseMatrix, y(teIndices).toDenseVector)
+          xCopy(trIndices, ::).toDenseMatrix, yCopy(trIndices).toDenseVector,
+          xCopy(teIndices, ::).toDenseMatrix, yCopy(teIndices).toDenseVector)
     }
   }
 
@@ -65,8 +76,8 @@ class CrossValidation private (val metric: Metric, val folds: Int) {
 
 object CrossValidation {
 
-  def apply(metric: Metric, folds: Int): CrossValidation = {
+  def apply(metric: Metric, folds: Int, shuffleRows: Boolean = true): CrossValidation = {
     require(folds > 0, "Number of folds must be positive")
-    new CrossValidation(metric, folds)
+    new CrossValidation(metric, folds, shuffleRows)
   }
 }

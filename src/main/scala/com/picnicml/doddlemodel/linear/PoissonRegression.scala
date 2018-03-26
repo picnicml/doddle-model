@@ -2,7 +2,6 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{all, sum}
 import breeze.numerics.{exp, floor, isFinite, log}
-import com.picnicml.doddlemodel.Regularization.{ridgeLoss, ridgeLossGrad}
 import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
@@ -14,7 +13,8 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   * val model = PoissonRegression()
   * val model = PoissonRegression(lambda = 1.5)
   */
-class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector]) extends LinearRegressor {
+class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector])
+  extends LinearRegressor {
 
   override protected def copy(w: RealVector): Regressor =
     new PoissonRegression(this.lambda, Some(w))
@@ -33,12 +33,13 @@ class PoissonRegression private (val lambda: Double, protected val w: Option[Rea
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     val yMeanPred = this.predictMean(w, x)
-    sum(y * log(yMeanPred) - yMeanPred) / (-x.rows.toDouble) + ridgeLoss(w(1 to -1), this.lambda)
+    sum(y * log(yMeanPred) - yMeanPred) / (-x.rows.toDouble) +
+      .5 * this.lambda * (w(1 to -1).t * w(1 to -1))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
     val grad = ((this.predictMean(w, x) - y).t * x).t / x.rows.toDouble
-    grad(1 to -1) += ridgeLossGrad(w(1 to -1), lambda)
+    grad(1 to -1) += this.lambda * w(1 to -1)
     grad
   }
 }
