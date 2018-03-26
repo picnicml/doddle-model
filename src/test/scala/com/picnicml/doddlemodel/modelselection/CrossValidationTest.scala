@@ -6,7 +6,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class CrossValidationTest extends FlatSpec with Matchers {
 
-  val cv = CrossValidation(metric = (_: Target, _: Target) => 0, folds = 3)
+  val cv = CrossValidation(metric = (_: Target, _: Target) => 0, folds = 3, shuffleRows = false)
 
   private def dummyData(nRows: Int) =
     (DenseMatrix.zeros[Double](nRows, 1), convert(DenseVector((1 to nRows).toArray), Double))
