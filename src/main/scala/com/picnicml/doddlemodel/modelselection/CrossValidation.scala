@@ -32,24 +32,24 @@ class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRo
   private[modelselection] def splitData(x: Features, y: Target): List[TrainTestSplit] = {
     require(x.rows >= this.folds, "Number of examples must be at least the same as number of folds")
 
-    // todo: make more memory-efficient
-    val (xCopy, yCopy) = if (shuffleRows) {
-      val shuffleIndices = shuffle(0 until y.length)
-      (x(shuffleIndices, ::).toDenseMatrix, y(shuffleIndices).toDenseVector)
-    }
-    else {
-      (x, y)
-    }
+    val shuffleIndices = if (shuffleRows) shuffle(0 until y.length) else 0 until y.length
+    val xShuffled = x(shuffleIndices, ::)
+    val yShuffled = y(shuffleIndices)
 
-    val splitIndices = this.calculateSplitIndices(xCopy.rows)
+    val splitIndices = this.calculateSplitIndices(x.rows)
 
     splitIndices zip splitIndices.tail map {
       case (indexStart, indexEnd) =>
         val trIndices = (0 until indexStart) ++ (indexEnd until x.rows)
         val teIndices = indexStart until indexEnd
+
         TrainTestSplit(
-          xCopy(trIndices, ::).toDenseMatrix, yCopy(trIndices).toDenseVector,
-          xCopy(teIndices, ::).toDenseMatrix, yCopy(teIndices).toDenseVector)
+          // train examples
+          xShuffled(trIndices, ::).toDenseMatrix,
+          yShuffled(trIndices).toDenseVector,
+          // test examples
+          xShuffled(teIndices, ::).toDenseMatrix,
+          yShuffled(teIndices).toDenseVector)
     }
   }
 
