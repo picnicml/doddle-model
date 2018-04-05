@@ -11,8 +11,9 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   * val model = LinearRegression()
   * val model = LinearRegression(lambda = 1.5)
   */
+@SerialVersionUID(1L)
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends LinearRegressor {
+  extends LinearRegressor with Serializable {
 
   override protected def copy(w: RealVector): Regressor =
     new LinearRegression(this.lambda, Some(w))

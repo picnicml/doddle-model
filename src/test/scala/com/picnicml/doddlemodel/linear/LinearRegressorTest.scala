@@ -7,7 +7,8 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class LinearRegressorTest extends FlatSpec with Matchers {
 
-  private class DummyLinearRegressor(val w: Option[RealVector]) extends LinearRegressor {
+  private class DummyLinearRegressor(val w: Option[RealVector])
+    extends LinearRegressor with Serializable {
 
     override protected def copy(w: RealVector): Regressor = new DummyLinearRegressor(Some(w))
 

@@ -1,10 +1,13 @@
 package com.picnicml.doddlemodel.linear
 
+import java.io.Serializable
+
 import breeze.linalg.{DenseVector, unique}
 import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 trait LinearClassifier extends Classifier with LinearModel {
+  this: Serializable =>
 
   /** A function that creates a new linear classifier with numClasses set. */
   protected def copy(numClasses: Int): LinearClassifier

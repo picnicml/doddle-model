@@ -13,8 +13,9 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
   * val model = LogisticRegression()
   * val model = LogisticRegression(lambda = 1.5)
   */
+@SerialVersionUID(1L)
 class LogisticRegression private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
-  extends LinearClassifier {
+  extends LinearClassifier with Serializable {
 
   override protected def copy(numClasses: Int): LinearClassifier = {
     require(numClasses == 2, "Logistic regression must be trained on a dataset with exactly 2 categories")

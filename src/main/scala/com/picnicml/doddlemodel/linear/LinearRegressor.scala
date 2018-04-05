@@ -1,10 +1,13 @@
 package com.picnicml.doddlemodel.linear
 
+import java.io.Serializable
+
 import breeze.linalg.DenseVector
 import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
 trait LinearRegressor extends Regressor with LinearModel {
+  this: Serializable =>
 
   /** A function that creates a new regressor with model parameters w. */
   protected def copy(w: RealVector): Regressor

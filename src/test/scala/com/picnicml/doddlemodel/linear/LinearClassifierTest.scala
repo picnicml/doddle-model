@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 class LinearClassifierTest extends FlatSpec with Matchers {
 
   private class DummyLinearClassifier(val numClasses: Option[Int], val w: Option[RealVector])
-    extends LinearClassifier {
+    extends LinearClassifier with Serializable {
 
     override protected def copy(numClasses: Int): LinearClassifier =
       new DummyLinearClassifier(Some(numClasses), this.w)

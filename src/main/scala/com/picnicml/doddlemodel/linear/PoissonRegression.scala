@@ -13,8 +13,9 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   * val model = PoissonRegression()
   * val model = PoissonRegression(lambda = 1.5)
   */
+@SerialVersionUID(1L)
 class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends LinearRegressor {
+  extends LinearRegressor with Serializable {
 
   override protected def copy(w: RealVector): Regressor =
     new PoissonRegression(this.lambda, Some(w))

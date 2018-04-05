@@ -13,8 +13,9 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
   * val model = SoftmaxClassifier()
   * val model = SoftmaxClassifier(lambda = 1.5)
   */
+@SerialVersionUID(1L)
 class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
-  extends LinearClassifier {
+  extends LinearClassifier with Serializable {
 
   override protected[linear] def copy(numClasses: Int): LinearClassifier = {
     // todo: suggest logistic regression if numClasses == 2
