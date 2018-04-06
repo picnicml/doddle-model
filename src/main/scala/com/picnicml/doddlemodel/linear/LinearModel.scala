@@ -5,8 +5,8 @@ import breeze.optimize._
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
-trait LinearModel {
-  this: Predictor =>
+trait LinearModel[A <: Predictor[A]] {
+  this: Predictor[A] =>
 
   /** Parameters (weights) of a linear model, i.e. the state of the model. */
   protected val w: Option[RealVector]

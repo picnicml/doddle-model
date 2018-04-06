@@ -2,7 +2,6 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{all, sum}
 import breeze.numerics.{exp, floor, isFinite, log}
-import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
 /** An immutable multiple Poisson regression model with ridge regularization.
@@ -15,9 +14,9 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   */
 @SerialVersionUID(1L)
 class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends LinearRegressor with Serializable {
+  extends LinearRegressor[PoissonRegression] with Serializable {
 
-  override protected def copy(w: RealVector): Regressor =
+  override protected def copy(w: RealVector): PoissonRegression =
     new PoissonRegression(this.lambda, Some(w))
 
   override protected def checkTargetVarRequirement(y: Target): Unit =

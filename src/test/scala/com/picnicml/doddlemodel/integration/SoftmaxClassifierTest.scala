@@ -14,7 +14,7 @@ class SoftmaxClassifierTest extends FlatSpec with Matchers {
   "Softmax classifier" should "achieve a reasonable score on the iris dataset" in {
     val (x, y) = loadIrisDataset
     val model = SoftmaxClassifier()
-    val cv = CrossValidation(accuracy, folds = 10)
+    val cv = CrossValidation[SoftmaxClassifier](accuracy, folds = 10)
 
     cv.score(model, x, y) should be > 0.95
   }

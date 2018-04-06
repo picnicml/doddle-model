@@ -1,16 +1,15 @@
 package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import org.scalatest.{FlatSpec, Matchers}
 
 class LinearRegressorTest extends FlatSpec with Matchers {
 
   private class DummyLinearRegressor(val w: Option[RealVector])
-    extends LinearRegressor with Serializable {
+    extends LinearRegressor[DummyLinearRegressor] with Serializable {
 
-    override protected def copy(w: RealVector): Regressor = new DummyLinearRegressor(Some(w))
+    override protected def copy(w: RealVector): DummyLinearRegressor = new DummyLinearRegressor(Some(w))
 
     override protected def checkTargetVarRequirement(y: Target): Unit = Unit
 

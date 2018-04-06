@@ -6,16 +6,16 @@ import breeze.linalg.DenseVector
 import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
-trait LinearRegressor extends Regressor with LinearModel {
+trait LinearRegressor[A <: LinearRegressor[A]] extends Regressor[A] with LinearModel[A] {
   this: Serializable =>
 
   /** A function that creates a new regressor with model parameters w. */
-  protected def copy(w: RealVector): Regressor
+  protected def copy(w: RealVector): A
 
   /** A function that checks whether the target variable contains valid data. */
   protected def checkTargetVarRequirement(y: Target): Unit
 
-  override def fit(x: Features, y: Target): Regressor = {
+  override def fit(x: Features, y: Target): A = {
     require(!this.isFitted, "Called fit on a model that is already trained")
     this.checkTargetVarRequirement(y)
 

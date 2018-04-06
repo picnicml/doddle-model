@@ -21,9 +21,9 @@ case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target
   * val cv = CrossValidation(metric = rmse, folds = 10)
   * cv.score(model, x, y)
   */
-class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRows: Boolean) {
+class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds: Int, val shuffleRows: Boolean) {
 
-  def score(model: Predictor, x: Features, y: Target): Double = {
+  def score(model: Predictor[A], x: Features, y: Target): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
     val scoreAvg = Future.sequence(foldsScores).map(scores => scores.sum / scores.length)
     Await.result(scoreAvg, Duration.Inf)
@@ -69,15 +69,15 @@ class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRo
     }
   }
 
-  private def foldScore(model: Predictor, split: TrainTestSplit): Future[Double] = Future {
+  private def foldScore(model: Predictor[A], split: TrainTestSplit): Future[Double] = Future {
     this.metric(split.yTe, model.fit(split.xTr, split.yTr).predict(split.xTe))
   }
 }
 
 object CrossValidation {
 
-  def apply(metric: Metric, folds: Int, shuffleRows: Boolean = true): CrossValidation = {
+  def apply[A <: Predictor[A]](metric: Metric, folds: Int, shuffleRows: Boolean = true): CrossValidation[A] = {
     require(folds > 0, "Number of folds must be positive")
-    new CrossValidation(metric, folds, shuffleRows)
+    new CrossValidation[A](metric, folds, shuffleRows)
   }
 }

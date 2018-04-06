@@ -2,7 +2,6 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.sum
 import breeze.numerics.{log, sigmoid}
-import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 /** An immutable multiple logistic regression model with ridge regularization.
@@ -15,14 +14,14 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
   */
 @SerialVersionUID(1L)
 class LogisticRegression private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
-  extends LinearClassifier with Serializable {
+  extends LinearClassifier[LogisticRegression] with Serializable {
 
-  override protected def copy(numClasses: Int): LinearClassifier = {
+  override protected def copy(numClasses: Int): LogisticRegression = {
     require(numClasses == 2, "Logistic regression must be trained on a dataset with exactly 2 categories")
     new LogisticRegression(this.lambda, Some(numClasses), this.w)
   }
 
-  override protected def copy(w: RealVector): Classifier =
+  override protected def copy(w: RealVector): LogisticRegression =
     new LogisticRegression(this.lambda, this.numClasses, Some(w))
 
   override protected def predict(w: RealVector, x: Features): Target =

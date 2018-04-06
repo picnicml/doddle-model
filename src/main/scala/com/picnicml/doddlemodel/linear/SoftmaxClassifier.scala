@@ -2,7 +2,6 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{*, DenseMatrix, View, argmax, convert, sum}
 import breeze.numerics.{exp, log, pow}
-import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 /** An immutable multiple multinomial regression model with ridge regularization.
@@ -15,14 +14,14 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
   */
 @SerialVersionUID(1L)
 class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
-  extends LinearClassifier with Serializable {
+  extends LinearClassifier[SoftmaxClassifier] with Serializable {
 
-  override protected[linear] def copy(numClasses: Int): LinearClassifier = {
+  override protected[linear] def copy(numClasses: Int): SoftmaxClassifier = {
     // todo: suggest logistic regression if numClasses == 2
     new SoftmaxClassifier(this.lambda, Some(numClasses), this.w)
   }
 
-  override protected def copy(w: RealVector): Classifier =
+  override protected def copy(w: RealVector): SoftmaxClassifier =
     new SoftmaxClassifier(this.lambda, this.numClasses, Some(w))
 
   override protected def predict(w: RealVector, x: Features): Target =

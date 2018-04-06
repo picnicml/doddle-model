@@ -14,7 +14,7 @@ class LinearRegressionTest extends FlatSpec with Matchers {
   "Linear regression" should "achieve a reasonable score on the Boston housing dataset" in {
     val (x, y) = loadBostonDataset
     val model = LinearRegression()
-    val cv = CrossValidation(rmse, folds = 10)
+    val cv = CrossValidation[LinearRegression](rmse, folds = 10)
 
     cv.score(model, x, y) should be < 6.0
   }

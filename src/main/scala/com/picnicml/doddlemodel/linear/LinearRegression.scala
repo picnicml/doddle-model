@@ -1,6 +1,5 @@
 package com.picnicml.doddlemodel.linear
 
-import com.picnicml.doddlemodel.base.Regressor
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 
 /** An immutable multiple linear regression model with ridge regularization.
@@ -13,9 +12,9 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   */
 @SerialVersionUID(1L)
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends LinearRegressor with Serializable {
+  extends LinearRegressor[LinearRegression] with Serializable {
 
-  override protected def copy(w: RealVector): Regressor =
+  override protected def copy(w: RealVector): LinearRegression =
     new LinearRegression(this.lambda, Some(w))
 
   override protected def checkTargetVarRequirement(y: Target): Unit = Unit

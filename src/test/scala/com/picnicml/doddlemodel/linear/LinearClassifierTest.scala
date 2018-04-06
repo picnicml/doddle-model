@@ -2,19 +2,18 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.numerics.sigmoid
-import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import org.scalatest.{FlatSpec, Matchers}
 
 class LinearClassifierTest extends FlatSpec with Matchers {
 
   private class DummyLinearClassifier(val numClasses: Option[Int], val w: Option[RealVector])
-    extends LinearClassifier with Serializable {
+    extends LinearClassifier[DummyLinearClassifier] with Serializable {
 
-    override protected def copy(numClasses: Int): LinearClassifier =
+    override protected def copy(numClasses: Int): DummyLinearClassifier =
       new DummyLinearClassifier(Some(numClasses), this.w)
 
-    override protected def copy(w: RealVector): Classifier =
+    override protected def copy(w: RealVector): DummyLinearClassifier =
       new DummyLinearClassifier(this.numClasses, Some(w))
 
     override protected def predict(w: RealVector, x: Features): Target = x * w

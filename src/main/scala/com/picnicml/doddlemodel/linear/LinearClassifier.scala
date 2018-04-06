@@ -6,19 +6,19 @@ import breeze.linalg.{DenseVector, unique}
 import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
-trait LinearClassifier extends Classifier with LinearModel {
+trait LinearClassifier[A <: LinearClassifier[A]] extends Classifier[A] with LinearModel[A] {
   this: Serializable =>
 
   /** A function that creates a new linear classifier with numClasses set. */
-  protected def copy(numClasses: Int): LinearClassifier
+  protected def copy(numClasses: Int): A
 
   /** A function that creates a new classifier with model parameters w. */
-  protected def copy(w: RealVector): Classifier
+  protected def copy(w: RealVector): A
 
   /** A stateless function that predicts probability for each class. */
   protected def predictProba(w: RealVector, x: Features): Simplex
 
-  override def fit(x: Features, y: Target): Classifier = {
+  override def fit(x: Features, y: Target): A = {
     require(!this.isFitted, "Called fit on a model that is already trained")
     require(this.numClasses.isEmpty)
 
