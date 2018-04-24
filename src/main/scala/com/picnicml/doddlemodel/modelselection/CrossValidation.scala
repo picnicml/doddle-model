@@ -9,8 +9,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
-case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
-
 /** A parallel, n-fold cross validation technique.
   *
   * @param metric a function from com.picnicml.doddlemodel.metrics used to calculate each fold's score
@@ -22,6 +20,8 @@ case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target
   * cv.score(model, x, y)
   */
 class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds: Int, val shuffleRows: Boolean) {
+
+  case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
 
   def score(model: Predictor[A], x: Features, y: Target): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))

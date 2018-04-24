@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class PoissonRegressionTest extends FlatSpec with Matchers {
 
-  implicit val randBasis: RandBasis = RandBasis.withSeed(0)
+  implicit val randBasis: RandBasis = RandBasis.mt0
 
   "Poisson regression" should "achieve a reasonable score on the high school test dataset" in {
     val (x, y) = loadHighSchoolTestDataset

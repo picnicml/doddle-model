@@ -1,12 +1,12 @@
 package com.picnicml.doddlemodel.modelselection
 
 import breeze.linalg.{DenseMatrix, DenseVector, convert}
-import com.picnicml.doddlemodel.data.Target
+import com.picnicml.doddlemodel.metrics.accuracy
 import org.scalatest.{FlatSpec, Matchers}
 
 class CrossValidationTest extends FlatSpec with Matchers {
 
-  val cv = CrossValidation(metric = (_: Target, _: Target) => 0, folds = 3, shuffleRows = false)
+  val cv = CrossValidation(metric = accuracy, folds = 3, shuffleRows = false)
 
   private def dummyData(nRows: Int) =
     (DenseMatrix.zeros[Double](nRows, 1), convert(DenseVector((1 to nRows).toArray), Double))

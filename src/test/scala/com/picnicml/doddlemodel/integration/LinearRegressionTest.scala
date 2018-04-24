@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class LinearRegressionTest extends FlatSpec with Matchers {
 
-  implicit val randBasis: RandBasis = RandBasis.withSeed(0)
+  implicit val randBasis: RandBasis = RandBasis.mt0
 
   "Linear regression" should "achieve a reasonable score on the Boston housing dataset" in {
     val (x, y) = loadBostonDataset

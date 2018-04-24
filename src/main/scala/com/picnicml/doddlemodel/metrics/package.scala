@@ -1,14 +1,13 @@
 package com.picnicml.doddlemodel
 
-import com.picnicml.doddlemodel.data.Target
+import com.picnicml.doddlemodel.metrics.ClassificationMetrics.Accuracy
+import com.picnicml.doddlemodel.metrics.RegressionMetrics.Rmse
 
 package object metrics {
 
-  type Metric = (Target, Target) => Double
+  // regression metrics
+  lazy val rmse: Metric = Rmse
 
-  /** Regression metrics. */
-  def rmse(y: Target, yPred: Target): Double = RegressionMetrics.rmse(y: Target, yPred: Target)
-
-  /** Classification metrics. */
-  def accuracy(y: Target, yPred: Target): Double = ClassificationMetrics.accuracy(y, yPred)
+  // classification metrics
+  lazy val accuracy: Metric = Accuracy
 }

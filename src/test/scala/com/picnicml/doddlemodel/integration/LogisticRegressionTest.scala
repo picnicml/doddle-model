@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class LogisticRegressionTest extends FlatSpec with Matchers {
 
-  implicit val randBasis: RandBasis = RandBasis.withSeed(0)
+  implicit val randBasis: RandBasis = RandBasis.mt0
 
   "Logistic regression" should "achieve a reasonable score on the breast cancer dataset" in {
     val (x, y) = loadBreastCancerDataset

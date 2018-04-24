@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class SoftmaxClassifierTest extends FlatSpec with Matchers {
 
-  implicit val randBasis: RandBasis = RandBasis.withSeed(0)
+  implicit val randBasis: RandBasis = RandBasis.mt0
 
   "Softmax classifier" should "achieve a reasonable score on the iris dataset" in {
     val (x, y) = loadIrisDataset
