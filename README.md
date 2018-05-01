@@ -69,7 +69,7 @@ libraryDependencies += "com.picnicml" %% "doddle-model" % "0.0.0"
 ```
 
 ### Getting Started
-For a complete list of examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples).
+For a complete list of code examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples). For an example of how to serve a trained `doddle-model` in a pipeline implemented with Apache Beam see [doddle-beam-example](https://github.com/picnicml/doddle-beam-example).
 
 ### Resources
 * [1] [Pattern Recognition and Machine Learning, Christopher Bishop](http://www.springer.com/gp/book/9780387310732)
