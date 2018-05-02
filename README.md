@@ -55,6 +55,8 @@
 * it provides [immutable objects](https://en.wikipedia.org/wiki/Immutable_object) that are a _doddle_ to use in parallel code
 * it exposes its functionality through a [scikit-learn](https://github.com/scikit-learn/scikit-learn)-like API [2]
 
+**Caveat emptor!** `doddle-model` is in an early-stage development phase. Any kind of contributions are much appreciated.
+
 ### Installation
 Publish the project to a local Ivy repository:
 ```bash
