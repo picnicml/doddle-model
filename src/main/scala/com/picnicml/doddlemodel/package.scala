@@ -6,7 +6,7 @@ import com.picnicml.doddlemodel.base.Estimator
 
 package object doddlemodel {
 
-  def loadEstimator[T <: Estimator](filePath: String): T = {
+  def loadEstimator[T <: Estimator[T]](filePath: String): T = {
     val inputStream = new ObjectInputStream(new FileInputStream(filePath))
     val instance = inputStream.readObject.asInstanceOf[T]
     inputStream.close()

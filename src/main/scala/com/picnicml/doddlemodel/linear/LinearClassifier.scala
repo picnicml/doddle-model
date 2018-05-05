@@ -2,42 +2,28 @@ package com.picnicml.doddlemodel.linear
 
 import java.io.Serializable
 
-import breeze.linalg.{DenseVector, unique}
+import breeze.linalg.DenseVector
 import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 trait LinearClassifier[A <: LinearClassifier[A]] extends Classifier[A] with LinearModel[A] {
   this: Serializable =>
 
-  /** A function that creates a new linear classifier with numClasses set. */
-  protected def copy(numClasses: Int): A
-
-  /** A function that creates a new classifier with model parameters w. */
-  protected def copy(w: RealVector): A
-
-  /** A stateless function that predicts probability for each class. */
+  /** A stateless function that predicts probability of each class. */
   protected def predictProba(w: RealVector, x: Features): Simplex
 
-  override def fit(x: Features, y: Target): A = {
-    require(!this.isFitted, "Called fit on a model that is already trained")
-    require(this.numClasses.isEmpty)
+  override protected def fitSafe(x: Features, y: Target): A = {
+    val numClasses = this.numClasses match {
+      case Some(nc) => nc
+      case None => throw new IllegalStateException("numClasses must be set prior to calling fitSafe()")
+    }
 
-    val targetClasses = unique(y)
-    require(targetClasses.length >= 2,
-      "Target variable must be comprised of at least two categories")
-    require(targetClasses.data.sorted sameElements Array.range(0, targetClasses.length),
-      "Invalid encoding of categories in the target variable")
-
-    val trainedModel = this.copy(numClasses = targetClasses.length)
-    val wLength = (x.cols + 1) * (targetClasses.length - 1)
-    val w = trainedModel.maximumLikelihood(trainedModel.xWithBiasTerm(x), y, DenseVector.zeros[Double](wLength))
-    trainedModel.copy(w)
+    val wLength = (x.cols + 1) * (numClasses - 1)
+    this.copy(w = this.maximumLikelihood(this.xWithBiasTerm(x), y, DenseVector.zeros[Double](wLength)))
   }
 
-  override def predictProba(x: Features): Simplex = {
-    require(this.isFitted, "Called predictProba on a model that is not trained yet")
+  override protected def predictProbaSafe(x: Features): Simplex = {
     require(this.numClasses.isDefined)
-
     this.predictProba(this.w.get, this.xWithBiasTerm(x))
   }
 }

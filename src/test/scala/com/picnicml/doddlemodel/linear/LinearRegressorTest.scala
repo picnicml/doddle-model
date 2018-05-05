@@ -11,7 +11,7 @@ class LinearRegressorTest extends FlatSpec with Matchers {
 
     override protected def copy(w: RealVector): DummyLinearRegressor = new DummyLinearRegressor(Some(w))
 
-    override protected def checkTargetVarRequirement(y: Target): Unit = Unit
+    override protected def targetVariableAppropriate(y: Target): Boolean = true
 
     override protected def predict(w: RealVector, x: Features): Target = x * w
 

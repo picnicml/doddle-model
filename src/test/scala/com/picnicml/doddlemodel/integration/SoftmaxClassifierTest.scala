@@ -16,6 +16,6 @@ class SoftmaxClassifierTest extends FlatSpec with Matchers {
     val model = SoftmaxClassifier()
     val cv = CrossValidation[SoftmaxClassifier](accuracy, folds = 10)
 
-    cv.score(model, x, y) should be > 0.95
+    cv.score(model, x, y) should be > 0.94
   }
 }

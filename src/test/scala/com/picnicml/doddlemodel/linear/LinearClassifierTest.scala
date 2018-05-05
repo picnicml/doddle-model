@@ -18,8 +18,7 @@ class LinearClassifierTest extends FlatSpec with Matchers {
 
     override protected def predict(w: RealVector, x: Features): Target = x * w
 
-    override protected def predictProba(w: RealVector, x: Features): Simplex =
-      sigmoid(x * w).asDenseMatrix.t
+    override protected def predictProba(w: RealVector, x: Features): Simplex = sigmoid(x * w).asDenseMatrix.t
 
     override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = 0
 

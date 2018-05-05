@@ -14,10 +14,9 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
   extends LinearRegressor[LinearRegression] with Serializable {
 
-  override protected def copy(w: RealVector): LinearRegression =
-    new LinearRegression(this.lambda, Some(w))
+  override protected def copy(w: RealVector): LinearRegression = new LinearRegression(this.lambda, Some(w))
 
-  override protected def checkTargetVarRequirement(y: Target): Unit = Unit
+  override protected def targetVariableAppropriate(y: Target): Boolean = true
 
   override protected def predict(w: RealVector, x: Features): Target = x * w
 

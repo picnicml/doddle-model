@@ -11,6 +11,9 @@ trait LinearModel[A <: Predictor[A]] {
   /** Parameters (weights) of a linear model, i.e. the state of the model. */
   protected val w: Option[RealVector]
 
+  /** A function that creates a new linear model with parameters w. */
+  protected def copy(w: RealVector): A
+
   /** A stateless function that predicts a target variable. */
   protected def predict(w: RealVector, x: Features): Target
 
@@ -20,10 +23,9 @@ trait LinearModel[A <: Predictor[A]] {
   /** A stateless function that calculates the gradient of the loss function wrt. model parameters. */
   protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector
 
-  override def predict(x: Features): Target = {
-    require(this.isFitted, "Called predict on a model that is not trained yet")
-    this.predict(this.w.get, this.xWithBiasTerm(x))
-  }
+  override def isFitted: Boolean = this.w.isDefined
+
+  override def predictSafe(x: Features): Target = this.predict(this.w.get, this.xWithBiasTerm(x))
 
   protected def maximumLikelihood(x: Features, y: Target, init: RealVector): RealVector = {
     val diffFunction = new DiffFunction[RealVector] {
@@ -34,8 +36,5 @@ trait LinearModel[A <: Predictor[A]] {
     lbfgs.minimize(diffFunction, init)
   }
 
-  override def isFitted: Boolean = this.w.isDefined
-
-  protected def xWithBiasTerm(x: Features): Features =
-    DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)
+  protected def xWithBiasTerm(x: Features): Features = DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)
 }

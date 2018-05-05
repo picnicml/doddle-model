@@ -16,20 +16,22 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector])
   extends LinearRegressor[PoissonRegression] with Serializable {
 
-  override protected def copy(w: RealVector): PoissonRegression =
-    new PoissonRegression(this.lambda, Some(w))
+  override protected def copy(w: RealVector): PoissonRegression = new PoissonRegression(this.lambda, Some(w))
 
-  override protected def checkTargetVarRequirement(y: Target): Unit =
-    require(y == floor(y) && all(isFinite(y)), "Poisson regression must be trained on a dataset with count data")
+  override protected def targetVariableAppropriate(y: Target): Boolean = y == floor(y) && all(isFinite(y))
 
-  override protected def predict(w: RealVector, x: Features): Target =
-    floor(this.predictMean(w, x))
+  override protected def predict(w: RealVector, x: Features): Target = floor(this.predictMean(w, x))
 
   /**
     * A function that returns the mean of the Poisson distribution, similar to
     * predictProba(...) in com.picnicml.doddlemodel.linear.LogisticRegression.
     */
-  def predictMean(w: RealVector, x: Features): Target = exp(x * w)
+  def predictMean(x: Features): Target = {
+    require(this.isFitted, "Called predictMean on a model that is not trained yet")
+    this.predictMean(this.w.get, x)
+  }
+
+  private def predictMean(w: RealVector, x: Features): Target = exp(x * w)
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     val yMeanPred = this.predictMean(w, x)

@@ -4,9 +4,14 @@ import java.io.Serializable
 
 import com.picnicml.doddlemodel.data.{Features, Target}
 
-abstract class Predictor[A <: Predictor[A]] extends Estimator {
+abstract class Predictor[A <: Predictor[A]] extends Estimator[A] {
   this: Serializable =>
 
-  def fit(x: Features, y: Target): A
-  def predict(x: Features): Target
+  def predict(x: Features): Target = {
+    require(this.isFitted, "Called predict on a model that is not trained yet")
+    this.predictSafe(x)
+  }
+
+  /** A function that is guaranteed to be called on a fitted model. */
+  protected def predictSafe(x: Features): Target
 }
