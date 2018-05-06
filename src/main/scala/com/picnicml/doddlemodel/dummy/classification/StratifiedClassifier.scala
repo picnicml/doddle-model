@@ -5,6 +5,11 @@ import breeze.stats.distributions.Multinomial
 import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
+/** An immutable dummy classifier that samples predictions from a stratified categorical distribution.
+  *
+  * Examples:
+  * val model = StratifiedClassifier()
+  */
 @SerialVersionUID(1L)
 class StratifiedClassifier private (val numClasses: Option[Int], targetDistr: Option[Multinomial[RealVector, Int]])
   extends Classifier[StratifiedClassifier] with Serializable {
