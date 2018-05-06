@@ -33,6 +33,7 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
       case None => throw new IllegalStateException("numClasses not set on a trained model")
     }
 
+    // todo: numerical stability
     val zExp = exp(x * w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require))
     val zExpPivot = DenseMatrix.horzcat(zExp, DenseMatrix.ones[Double](x.rows, 1))
     zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))

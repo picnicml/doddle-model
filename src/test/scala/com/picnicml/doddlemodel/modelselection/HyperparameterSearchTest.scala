@@ -1,6 +1,5 @@
 package com.picnicml.doddlemodel.modelselection
 
-import breeze.stats.distributions.RandBasis
 import com.picnicml.doddlemodel.data.Utils.shuffleDataset
 import com.picnicml.doddlemodel.data.loadBreastCancerDataset
 import com.picnicml.doddlemodel.linear.LogisticRegression
@@ -8,8 +7,6 @@ import com.picnicml.doddlemodel.metrics.accuracy
 import org.scalatest.{FlatSpec, Matchers}
 
 class HyperparameterSearchTest extends FlatSpec with Matchers {
-
-  implicit val randBasis: RandBasis = RandBasis.mt0
 
   "Hyperparameter search" should "return the best model from available candidates" in {
     val (x, y) = loadBreastCancerDataset

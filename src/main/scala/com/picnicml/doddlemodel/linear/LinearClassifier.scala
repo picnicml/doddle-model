@@ -13,17 +13,10 @@ trait LinearClassifier[A <: LinearClassifier[A]] extends Classifier[A] with Line
   protected def predictProba(w: RealVector, x: Features): Simplex
 
   override protected def fitSafe(x: Features, y: Target): A = {
-    val numClasses = this.numClasses match {
-      case Some(nc) => nc
-      case None => throw new IllegalStateException("numClasses must be set prior to calling fitSafe()")
-    }
-
-    val wLength = (x.cols + 1) * (numClasses - 1)
+    val wLength = (x.cols + 1) * (this.numClasses.get - 1)
     this.copy(w = this.maximumLikelihood(this.xWithBiasTerm(x), y, DenseVector.zeros[Double](wLength)))
   }
 
-  override protected def predictProbaSafe(x: Features): Simplex = {
-    require(this.numClasses.isDefined)
+  override protected def predictProbaSafe(x: Features): Simplex =
     this.predictProba(this.w.get, this.xWithBiasTerm(x))
-  }
 }

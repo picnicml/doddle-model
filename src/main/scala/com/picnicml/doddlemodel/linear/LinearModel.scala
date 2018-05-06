@@ -36,5 +36,6 @@ trait LinearModel[A <: Predictor[A]] {
     lbfgs.minimize(diffFunction, init)
   }
 
-  protected def xWithBiasTerm(x: Features): Features = DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)
+  protected def xWithBiasTerm(x: Features): Features =
+    DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)
 }
