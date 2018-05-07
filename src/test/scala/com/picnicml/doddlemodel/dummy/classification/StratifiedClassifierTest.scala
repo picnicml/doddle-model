@@ -10,14 +10,14 @@ class StratifiedClassifierTest extends FlatSpec with Matchers with TestUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-3)
 
-  "Stratified classifier" should "infer a correct categorical distribution on the iris dataset" in {
+  "Stratified classifier" should "infer a correct categorical distribution from the iris dataset" in {
     val (x, y) = loadIrisDataset
     val model = StratifiedClassifier()
     val trainedModel = model.fit(x, y)
     breezeEqual(trainedModel.getTargetDistributionParams, DenseVector(0.333, 0.333, 0.333)) shouldBe true
   }
 
-  it should "infer a correct categorical distribution on the breast cancer dataset" in {
+  it should "infer a correct categorical distribution from the breast cancer dataset" in {
     val (x, y) = loadBreastCancerDataset
     val model = StratifiedClassifier()
     val trainedModel = model.fit(x, y)

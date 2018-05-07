@@ -28,7 +28,7 @@ class StratifiedClassifier private (val numClasses: Option[Int], targetDistr: Op
   }
 
   override protected def predictSafe(x: Features): Target =
-    DenseVector(Array.range(0, x.rows).map(_ => this.targetDistr.get.draw.toDouble))
+    DenseVector(Array.ofDim[Double](x.rows).map(_ => this.targetDistr.get.draw.toDouble))
 
   override protected def predictProbaSafe(x: Features): Simplex = throw new NotImplementedError()
 
