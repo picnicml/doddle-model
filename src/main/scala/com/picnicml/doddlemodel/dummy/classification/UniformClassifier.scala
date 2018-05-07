@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.dummy.classification
 
-import breeze.linalg.DenseVector
+import breeze.linalg.{DenseVector, convert}
 import breeze.stats.distributions.Rand
 import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, Simplex, Target}
@@ -20,7 +20,7 @@ class UniformClassifier private (val numClasses: Option[Int]) extends Classifier
   override protected def fitSafe(x: Features, y: Target): UniformClassifier = this
 
   override protected def predictSafe(x: Features): Target =
-    DenseVector.rand(x.rows, Rand.randInt(this.numClasses.get))
+    convert(DenseVector.rand(x.rows, Rand.randInt(this.numClasses.get)), Double)
 
   override protected def predictProbaSafe(x: Features): Simplex = throw new NotImplementedError()
 }

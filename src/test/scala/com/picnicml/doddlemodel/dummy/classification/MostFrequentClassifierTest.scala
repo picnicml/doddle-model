@@ -1,5 +1,6 @@
 package com.picnicml.doddlemodel.dummy.classification
 
+import breeze.linalg.sum
 import com.picnicml.doddlemodel.data.{loadBreastCancerDataset, loadIrisDataset}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -10,6 +11,7 @@ class MostFrequentClassifierTest extends FlatSpec with Matchers {
     val model = MostFrequentClassifier()
     val trainedModel = model.fit(x, y)
     trainedModel.mostFrequentClass.get shouldBe 0.0
+    sum(trainedModel.predict(x)) shouldBe 0.0
   }
 
   it should "infer the most frequent class from the breast cancer dataset" in {
@@ -17,5 +19,6 @@ class MostFrequentClassifierTest extends FlatSpec with Matchers {
     val model = MostFrequentClassifier()
     val trainedModel = model.fit(x, y)
     trainedModel.mostFrequentClass.get shouldBe 1.0
+    sum(trainedModel.predict(x)) shouldBe x.rows.toDouble
   }
 }
