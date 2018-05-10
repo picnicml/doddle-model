@@ -24,8 +24,7 @@ object RegressionMetrics {
     lazy val higherValueIsBetter: Boolean = false
 
     override def apply(y: Target, yPred: Target): Double = {
-      val d = y - yPred
-      sum(abs(d)) / y.length.toDouble
+      sum(abs(y - yPred)) / y.length.toDouble
     }
   }
 
@@ -36,8 +35,7 @@ object RegressionMetrics {
     lazy val higherValueIsBetter: Boolean = true
 
     override def apply(y: Target, yPred: Target): Double = {
-      val d = y - yPred
-      1 - variance(d)/variance(y)
+      1.0 - variance(y - yPred)/variance(y)
     }
   }
 }
