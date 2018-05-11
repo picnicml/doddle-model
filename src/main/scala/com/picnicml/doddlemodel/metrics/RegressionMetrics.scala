@@ -18,24 +18,20 @@ object RegressionMetrics {
     }
   }
 
-  /** Mean absolute error */
+  /** Mean absolute error. */
   object Mae extends Metric {
 
     lazy val higherValueIsBetter: Boolean = false
 
-    override def apply(y: Target, yPred: Target): Double = {
-      sum(abs(y - yPred)) / y.length.toDouble
-    }
+    override def apply(y: Target, yPred: Target): Double = sum(abs(y - yPred)) / y.length.toDouble
   }
 
 
-  /** Explained variance */
+  /** Explained variance. */
   object ExplainedVariance extends Metric {
 
     lazy val higherValueIsBetter: Boolean = true
 
-    override def apply(y: Target, yPred: Target): Double = {
-      1.0 - variance(y - yPred)/variance(y)
-    }
+    override def apply(y: Target, yPred: Target): Double = 1.0 - variance(y - yPred) / variance(y)
   }
 }
