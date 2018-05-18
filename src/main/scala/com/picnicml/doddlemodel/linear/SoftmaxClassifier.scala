@@ -16,6 +16,8 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
   extends LinearClassifier[SoftmaxClassifier] with Serializable {
 
+  private var yPredProbaCache: Option[Simplex] = None
+
   override protected[linear] def copy(numClasses: Int): SoftmaxClassifier = {
     // todo: suggest logistic regression if numClasses == 2
     new SoftmaxClassifier(this.lambda, Some(numClasses), this.w)
@@ -45,10 +47,10 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
       case None => throw new IllegalStateException("numClasses must be set during training")
     }
 
-    val yPredProba = this.predictProba(w, x)
+    yPredProbaCache = Some(this.predictProba(w, x))
     val yPredProbaOfTrueClass = 0 until x.rows map { rowIndex =>
       val targetClass = y(rowIndex).toInt
-      yPredProba(rowIndex, targetClass)
+      yPredProbaCache.get.apply(rowIndex, targetClass)
     }
 
     val wMatrix = w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
@@ -62,7 +64,9 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
       case None => throw new IllegalStateException("numClasses must be set during training")
     }
 
-    val yPredProba = this.predictProba(w, x)(::, 0 to -2)
+    val yPredProba = yPredProbaCache.get.apply(::, 0 to -2)
+    yPredProbaCache = None
+
     val indicator = DenseMatrix.zeros[Double](yPredProba.rows, yPredProba.cols)
     0 until indicator.rows foreach { rowIndex =>
       val targetClass = y(rowIndex).toInt

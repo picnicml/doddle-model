@@ -16,6 +16,8 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 class LogisticRegression private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
   extends LinearClassifier[LogisticRegression] with Serializable {
 
+  private var yPredProbaCache: Option[RealVector] = None
+
   override protected def copy(numClasses: Int): LogisticRegression = {
     require(numClasses == 2, "Logistic regression must be trained on a dataset with exactly 2 categories")
     new LogisticRegression(this.lambda, Some(numClasses), this.w)
@@ -31,13 +33,14 @@ class LogisticRegression private (val lambda: Double, val numClasses: Option[Int
     sigmoid(x * w).asDenseMatrix.t
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
-    val yPred = this.predictProba(w, x)(::, 0)
-    sum(y * log(yPred) + (1.0 - y) * log(1.0 - yPred)) / (-x.rows.toDouble) +
+    yPredProbaCache = Some(this.predictProba(w, x)(::, 0))
+    sum(y * log(yPredProbaCache.get) + (1.0 - y) * log(1.0 - yPredProbaCache.get)) / (-x.rows.toDouble) +
       .5 * this.lambda * (w(1 to -1).t * w(1 to -1))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
-    val grad = ((y - this.predictProba(w, x)(::, 0)).t * x).t / (-x.rows.toDouble)
+    val grad = ((y - yPredProbaCache.get).t * x).t / (-x.rows.toDouble)
+    yPredProbaCache = None
     grad(1 to -1) += this.lambda * w(1 to -1)
     grad
   }
