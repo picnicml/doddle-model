@@ -25,14 +25,6 @@
   </td>
 </tr>
 <tr>
-  <td>Code Quality</td>
-  <td>
-    <a href="https://app.codacy.com/app/picnicml/doddle-model">
-    <img src="https://img.shields.io/codacy/grade/2c21167da0154c44afd8381fe82f93d7.svg?style=flat-square&label=codacy" alt="code quality"/>
-    </a>
-  </td>
-</tr>
-<tr>
   <td>Chat</td>
   <td>
     <a href="https://gitter.im/picnicml/doddle-model">
@@ -72,6 +64,9 @@ libraryDependencies += "com.picnicml" %% "doddle-model" % "0.0.0"
 
 ### Getting Started
 For a complete list of code examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples). For an example of how to serve a trained `doddle-model` in a pipeline implemented with Apache Beam see [doddle-beam-example](https://github.com/picnicml/doddle-beam-example).
+
+### Performance
+For benchmarks see [doddle-benchmark](https://github.com/picnicml/doddle-benchmark).
 
 ### Development
 Run the tests with `sbt test`. Concerning the code style, [PayPal Scala Style](https://github.com/paypal/scala-style-guide) and [Databricks Scala Guide](https://github.com/databricks/scala-style-guide) are roughly followed. Note that a maximum line length of 120 characters is used.
