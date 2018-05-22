@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.linear
 
-import breeze.linalg.{*, DenseMatrix, View, argmax, convert, sum}
+import breeze.linalg.{*, DenseMatrix, View, argmax, convert, max, sum}
 import breeze.numerics.{exp, log, pow}
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
@@ -33,9 +33,9 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
       case None => throw new IllegalStateException("numClasses not set on a trained model")
     }
 
-    // todo: numerical stability
-    val zExp = exp(x * w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require))
-    val zExpPivot = DenseMatrix.horzcat(zExp, DenseMatrix.ones[Double](x.rows, 1))
+    val z = x * w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
+    val maxZ = max(z)
+    val zExpPivot = DenseMatrix.horzcat(exp(z - maxZ), DenseMatrix.fill[Double](x.rows, 1)(exp(-maxZ)))
     zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))
   }
 
