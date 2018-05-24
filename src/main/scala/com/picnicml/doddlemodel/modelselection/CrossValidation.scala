@@ -3,9 +3,9 @@ package com.picnicml.doddlemodel.modelselection
 import breeze.linalg.shuffle
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
+import com.picnicml.doddlemodel.executionContext
 import com.picnicml.doddlemodel.metrics.Metric
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 

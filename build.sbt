@@ -6,5 +6,7 @@ lazy val root = (project in file("."))
     organization := "com.picnicml",
     version := "0.0.0",
     scalaVersion := "2.12.4",
-    libraryDependencies ++= testingDeps ++ breeze ++ csv
+    libraryDependencies ++= testingDeps ++ breeze ++ csv,
+    javaOptions in Test += "-DmaxNumThreads=100",
+    fork in Test := true
   )

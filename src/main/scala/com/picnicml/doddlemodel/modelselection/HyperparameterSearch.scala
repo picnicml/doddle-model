@@ -2,6 +2,10 @@ package com.picnicml.doddlemodel.modelselection
 
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
+import com.picnicml.doddlemodel.executionContext
+
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 
 /** A parallel hyperparameter search using n-fold cross validation.
@@ -20,20 +24,22 @@ class HyperparameterSearch[A <: Predictor[A]] private (val crossVal: CrossValida
   case class PredictorWithScore(predictor: A, score: Double)
 
   def bestOf(x: Features, y: Target)(generatePredictor: => A): A = {
-    val scores = (0 until this.numIterations).par.map { _ =>
-      val predictor = generatePredictor
-      PredictorWithScore(predictor, crossVal.score(predictor, x, y))
-    }
-
-    val bestPredictor =
-      if (crossVal.metric.higherValueIsBetter) {
-        scores.maxBy(_.score).predictor
-      }
-      else {
-        scores.minBy(_.score).predictor
-      }
-
+    val scores = (0 until this.numIterations).map(_ => crossValidationScore(generatePredictor, x, y))
+    val bestPredictor = Await.result(Future.sequence(scores).map(getBestPredictor), Duration.Inf)
     bestPredictor.fit(x, y)
+  }
+
+  private def crossValidationScore(predictor: A, x: Features, y: Target): Future[PredictorWithScore] = Future {
+    PredictorWithScore(predictor, crossVal.score(predictor, x, y))
+  }
+
+  private def getBestPredictor(scores: IndexedSeq[PredictorWithScore]): A = {
+    if (this.crossVal.metric.higherValueIsBetter) {
+      scores.maxBy(_.score).predictor
+    }
+    else {
+      scores.minBy(_.score).predictor
+    }
   }
 }
 
