@@ -13,6 +13,8 @@ import com.picnicml.doddlemodel.data.{Features, Target}
 @SerialVersionUID(1L)
 class MedianRegressor private (val median: Option[Double]) extends Regressor[MedianRegressor] with Serializable {
 
+  override protected def copy: MedianRegressor = this
+
   override def isFitted: Boolean = this.median.isDefined
 
   override protected def targetVariableAppropriate(y: Target): Boolean = true

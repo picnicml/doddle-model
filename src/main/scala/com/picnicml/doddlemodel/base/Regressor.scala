@@ -10,8 +10,11 @@ abstract class Regressor[A <: Regressor[A]] extends Predictor[A] {
   override def fit(x: Features, y: Target): A = {
     require(!this.isFitted, "Called fit on a model that is already trained")
     require(this.targetVariableAppropriate(y), "Target variable contains invalid data")
-    this.fitSafe(x, y)
+    this.copy.fitSafe(x, y)
   }
+
+  /** A function that creates an identical regressor. */
+  protected def copy: A
 
   /** A function that checks whether the target variable contains valid data. */
   protected def targetVariableAppropriate(y: Target): Boolean

@@ -13,6 +13,8 @@ import com.picnicml.doddlemodel.data.{Features, Target}
 @SerialVersionUID(1L)
 class MeanRegressor private (val mean: Option[Double]) extends Regressor[MeanRegressor] with Serializable {
 
+  override protected def copy: MeanRegressor = this
+
   override def isFitted: Boolean = this.mean.isDefined
 
   override protected def targetVariableAppropriate(y: Target): Boolean = true

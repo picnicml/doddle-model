@@ -9,6 +9,8 @@ class LinearRegressorTest extends FlatSpec with Matchers {
   private class DummyLinearRegressor(val w: Option[RealVector])
     extends LinearRegressor[DummyLinearRegressor] with Serializable {
 
+    override protected def copy: DummyLinearRegressor = this
+
     override protected def copy(w: RealVector): DummyLinearRegressor = new DummyLinearRegressor(Some(w))
 
     override protected def targetVariableAppropriate(y: Target): Boolean = true

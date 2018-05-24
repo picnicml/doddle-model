@@ -14,6 +14,10 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
   extends LinearRegressor[LinearRegression] with Serializable {
 
+  private var yPredCache: Option[Target] = None
+
+  override protected def copy: LinearRegression = new LinearRegression(this.lambda, this.w)
+
   override protected def copy(w: RealVector): LinearRegression = new LinearRegression(this.lambda, Some(w))
 
   override protected def targetVariableAppropriate(y: Target): Boolean = true
@@ -21,12 +25,14 @@ class LinearRegression private (val lambda: Double, protected val w: Option[Real
   override protected def predict(w: RealVector, x: Features): Target = x * w
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
-    val d = y - this.predict(w, x)
+    yPredCache = Some(this.predict(w, x))
+    val d = y - yPredCache.get
     .5 * (((d.t * d) / x.rows.toDouble) + this.lambda * (w(1 to -1).t * w(1 to -1)))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
-    val grad = ((y - this.predict(w, x)).t * x).t / (-x.rows.toDouble)
+    val grad = ((y - yPredCache.get).t * x).t / (-x.rows.toDouble)
+    yPredCache = None
     grad(1 to -1) += this.lambda * w(1 to -1)
     grad
   }
