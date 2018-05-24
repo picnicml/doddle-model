@@ -66,7 +66,17 @@ libraryDependencies += "com.picnicml" %% "doddle-model" % "0.0.0"
 For a complete list of code examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples). For an example of how to serve a trained `doddle-model` in a pipeline implemented with Apache Beam see [doddle-beam-example](https://github.com/picnicml/doddle-beam-example).
 
 ### Performance
-For benchmarks see [doddle-benchmark](https://github.com/picnicml/doddle-benchmark).
+`doddle-model` is developed with performance in mind, for benchmarks see the [doddle-benchmark](https://github.com/picnicml/doddle-benchmark) repository.
+
+##### Native Linear Algebra Libraries
+[Breeze](https://github.com/scalanlp/breeze) utilizes [netlib-java](https://github.com/fommil/netlib-java) for accessing hardware optimised linear algebra libraries. TL;DR seeing something like
+```
+INFO: successfully loaded /var/folders/9h/w52f2svd3jb750h890q1x4j80000gn/T/jniloader3358656786070405996netlib-native_system-osx-x86_64.jnilib
+```
+means that BLAS/LAPACK/ARPACK implementations are used. For more information see the [Breeze](https://github.com/scalanlp/breeze) documentation.
+
+##### Memory
+If you encounter `java.lang.OutOfMemoryError: Java heap space` increase the maximum heap size with `-Xms` and `-Xmx` VM options. E.g. use `-Xms8192m -Xmx8192m` for initial and maximun heap space of 8Gb. Note that the maximum heap limit for the 32-bit JVM is 4Gb (at least in theory) so make sure to use 64-bit JVM if more memory is needed.
 
 ### Development
 Run the tests with `sbt test`. Concerning the code style, [PayPal Scala Style](https://github.com/paypal/scala-style-guide) and [Databricks Scala Guide](https://github.com/databricks/scala-style-guide) are roughly followed. Note that a maximum line length of 120 characters is used.
