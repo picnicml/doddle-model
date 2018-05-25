@@ -79,7 +79,7 @@ means that BLAS/LAPACK/ARPACK implementations are used. For more information see
 If you encounter `java.lang.OutOfMemoryError: Java heap space` increase the maximum heap size with `-Xms` and `-Xmx` JVM properties. E.g. use `-Xms8192m -Xmx8192m` for initial and maximum heap space of 8Gb. Note that the maximum heap limit for the 32-bit JVM is 4Gb (at least in theory) so make sure to use 64-bit JVM if more memory is needed. If the error still occurs and you are using hyperparameter search or cross validation, see the next section.
 
 ##### Parallelism
-To limit the number of threads running at one time (and thus memory consumption) when doing cross validation and hyperparameter search, a `FixedThreadPool` executor is used. By default, only a single thread is allowed. Set the `-DmaxNumThreads` JVM property to relax that, e.g. to allow for 100 threads use `-DmaxNumThreads=100`.
+To limit the number of threads running at one time (and thus memory consumption) when doing cross validation and hyperparameter search, a `FixedThreadPool` executor is used. By default maximum number of threads is set to the number of system's cores. Set the `-DmaxNumThreads` JVM property to change that, e.g. to allow for 16 threads use `-DmaxNumThreads=16`.
 
 ### Development
 Run the tests with `sbt test`. Concerning the code style, [PayPal Scala Style](https://github.com/paypal/scala-style-guide) and [Databricks Scala Guide](https://github.com/databricks/scala-style-guide) are roughly followed. Note that a maximum line length of 120 characters is used.

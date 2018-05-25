@@ -2,10 +2,6 @@ package com.picnicml.doddlemodel.modelselection
 
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
-import com.picnicml.doddlemodel.executionContext
-
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
 
 
 /** A parallel hyperparameter search using n-fold cross validation.
@@ -21,24 +17,25 @@ import scala.concurrent.{Await, Future}
   */
 class HyperparameterSearch[A <: Predictor[A]] private (val crossVal: CrossValidation[A], val numIterations: Int) {
 
+  implicit val cvReusable: CrossValReusable = CrossValReusable(true)
+
   case class PredictorWithScore(predictor: A, score: Double)
 
   def bestOf(x: Features, y: Target)(generatePredictor: => A): A = {
-    val scores = (0 until this.numIterations).map(_ => crossValidationScore(generatePredictor, x, y))
-    val bestPredictor = Await.result(Future.sequence(scores).map(getBestPredictor), Duration.Inf)
-    bestPredictor.fit(x, y)
-  }
+    val scores = (0 until this.numIterations).map { _ =>
+      val predictor = generatePredictor
+      PredictorWithScore(predictor, crossVal.score(predictor, x, y))
+    }
 
-  private def crossValidationScore(predictor: A, x: Features, y: Target): Future[PredictorWithScore] = Future {
-    PredictorWithScore(predictor, crossVal.score(predictor, x, y))
-  }
+    // this is needed because of cvReusable, see
+    // com.picnicml.doddlemodel.modelselection.CrossValidation for details
+    this.crossVal.shutdownNow()
 
-  private def getBestPredictor(scores: IndexedSeq[PredictorWithScore]): A = {
     if (this.crossVal.metric.higherValueIsBetter) {
-      scores.maxBy(_.score).predictor
+      scores.maxBy(_.score).predictor.fit(x, y)
     }
     else {
-      scores.minBy(_.score).predictor
+      scores.minBy(_.score).predictor.fit(x, y)
     }
   }
 }

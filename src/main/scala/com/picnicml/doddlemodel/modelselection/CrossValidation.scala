@@ -1,13 +1,15 @@
 package com.picnicml.doddlemodel.modelselection
 
+import java.util.concurrent.Executors
+
 import breeze.linalg.shuffle
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
-import com.picnicml.doddlemodel.executionContext
+import com.picnicml.doddlemodel.maxNumThreads
 import com.picnicml.doddlemodel.metrics.Metric
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, Future}
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 /** A parallel, n-fold cross validation technique.
   *
@@ -23,10 +25,19 @@ class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds:
 
   case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
 
-  def score(model: Predictor[A], x: Features, y: Target): Double = {
+  /**
+    * @param reusable indicates whether to shutdown the thread pool after the cv score is computed
+    *  and by default it is, if the same CrossValidation instance is needed after the first call
+    *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
+    *  after the instance is not needed anymore
+    */
+  def score(model: Predictor[A], x: Features, y: Target)
+           (implicit reusable: CrossValReusable = CrossValReusable(false)): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
     val scoreAvg = Future.sequence(foldsScores).map(scores => scores.sum / scores.length)
-    Await.result(scoreAvg, Duration.Inf)
+    val finalScore = Await.result(scoreAvg, Duration.Inf)
+    if (!reusable.yes) this.ec.shutdownNow()
+    finalScore
   }
 
   private[modelselection] def splitData(x: Features, y: Target): List[TrainTestSplit] = {
@@ -72,7 +83,29 @@ class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds:
   private def foldScore(model: Predictor[A], split: TrainTestSplit): Future[Double] = Future {
     this.metric(split.yTe, model.fit(split.xTr, split.yTr).predict(split.xTe))
   }
-}
+
+  // create a custom execution context that is suitable for training models in parallel
+  private trait CVExecutionContext extends ExecutionContext { def shutdownNow(): Unit }
+
+  private implicit val ec: CVExecutionContext = new CVExecutionContext {
+
+    private val threadPool = Executors.newFixedThreadPool(maxNumThreads)
+
+    override def execute(runnable: Runnable): Unit = threadPool.submit(runnable)
+    override def reportFailure(cause: Throwable): Unit = throw cause
+
+    def shutdownNow(): Unit = {
+      val notExecuted = threadPool.shutdownNow()
+      require(notExecuted.isEmpty, "CVExecutionContext received shutdownNow before the tasks were completed")
+    }
+  }
+
+  /**
+    * Shuts down the current thread pool. Call this if the CrossValidation instance is not needed
+    * anymore and CrossValReusable(true) is in scope.
+    */
+  def shutdownNow(): Unit = this.ec.shutdownNow()
+ }
 
 object CrossValidation {
 
