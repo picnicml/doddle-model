@@ -16,8 +16,7 @@ abstract class Classifier[A <: Classifier[A]] extends Predictor[A] {
     val targetClasses = unique(y)
     require(targetClasses.length >= 2,
       "Target variable must be comprised of at least two categories")
-    // todo: don't use data
-    require(targetClasses.data.sorted sameElements Array.range(0, targetClasses.length),
+    require(targetClasses.toArray.sorted sameElements Array.range(0, targetClasses.length),
       "Invalid encoding of categories in the target variable")
 
     this.copy(numClasses = targetClasses.length).fitSafe(x, y)
