@@ -2,12 +2,12 @@ package com.picnicml.doddlemodel.modelselection
 
 import java.util.concurrent.Executors
 
-import breeze.linalg.shuffle
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
 import com.picnicml.doddlemodel.maxNumThreads
 import com.picnicml.doddlemodel.metrics.Metric
 
+import scala.util.Random
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
@@ -32,7 +32,7 @@ class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds:
     *  after the instance is not needed anymore
     */
   def score(model: Predictor[A], x: Features, y: Target)
-           (implicit reusable: CrossValReusable = CrossValReusable(false)): Double = {
+           (implicit reusable: CrossValReusable = CrossValReusable(false), rand: Random = new Random()): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
     val scoreAvg = Future.sequence(foldsScores).map(scores => scores.sum / scores.length)
     val finalScore = Await.result(scoreAvg, Duration.Inf)
@@ -40,10 +40,11 @@ class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds:
     finalScore
   }
 
-  private[modelselection] def splitData(x: Features, y: Target): List[TrainTestSplit] = {
+  private[modelselection] def splitData(x: Features, y: Target)
+                                       (implicit rand: Random): List[TrainTestSplit] = {
     require(x.rows >= this.folds, "Number of examples must be at least the same as number of folds")
 
-    val shuffleIndices = if (shuffleRows) shuffle(0 until y.length) else 0 until y.length
+    val shuffleIndices = if (shuffleRows) rand.shuffle[Int, IndexedSeq](0 until y.length) else 0 until y.length
     val xShuffled = x(shuffleIndices, ::)
     val yShuffled = y(shuffleIndices)
 

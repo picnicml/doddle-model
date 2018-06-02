@@ -4,6 +4,8 @@ import breeze.linalg.{DenseMatrix, DenseVector, convert}
 import com.picnicml.doddlemodel.metrics.accuracy
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.util.Random
+
 class CrossValidationTest extends FlatSpec with Matchers {
 
   val cv = CrossValidation(metric = accuracy, folds = 3, shuffleRows = false)
@@ -12,6 +14,7 @@ class CrossValidationTest extends FlatSpec with Matchers {
     (DenseMatrix.zeros[Double](nRows, 1), convert(DenseVector((1 to nRows).toArray), Double))
 
   "3-fold cross validation" should "split 8 examples correctly" in {
+    implicit val rand: Random = new Random(42)
     val (x, y) = dummyData(8)
     val splits = cv.splitData(x, y)
 
@@ -25,6 +28,7 @@ class CrossValidationTest extends FlatSpec with Matchers {
   }
 
   it should "split 9 examples correctly" in {
+    implicit val rand: Random = new Random(42)
     val (x, y) = dummyData(9)
     val splits = cv.splitData(x, y)
 
@@ -38,6 +42,7 @@ class CrossValidationTest extends FlatSpec with Matchers {
   }
 
   it should "split 10 examples correctly" in {
+    implicit val rand: Random = new Random(42)
     val (x, y) = dummyData(10)
     val splits = cv.splitData(x, y)
 
