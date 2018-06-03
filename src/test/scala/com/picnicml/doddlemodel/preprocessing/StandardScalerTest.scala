@@ -22,4 +22,14 @@ class StandardScalerTest extends FlatSpec with Matchers with TestUtils {
     breezeEqual(mean(xTransformed(::, *)).t, DenseVector.zeros(5)) shouldBe true
     breezeEqual(stddev(xTransformed(::, *)).t, DenseVector.ones(5)) shouldBe true
   }
+
+  it should "handle the zero variance case" in {
+    val x = DenseMatrix.ones[Double](10, 5)
+    val y = DenseVector.zeros[Double](5)
+    val scaler = StandardScaler()
+    val trainedScaler = scaler.fit(x, y)
+    val (xTransformed, _) = trainedScaler.transform(x, y)
+
+    xTransformed.forall(_.isNaN) shouldBe false
+  }
 }
