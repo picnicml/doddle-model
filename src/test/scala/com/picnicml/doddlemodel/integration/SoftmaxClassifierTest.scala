@@ -6,12 +6,15 @@ import com.picnicml.doddlemodel.metrics.accuracy
 import com.picnicml.doddlemodel.modelselection.CrossValidation
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.util.Random
+
 class SoftmaxClassifierTest extends FlatSpec with Matchers {
 
   "Softmax classifier" should "achieve a reasonable score on the iris dataset" in {
     val (x, y) = loadIrisDataset
     val model = SoftmaxClassifier()
     val cv = CrossValidation[SoftmaxClassifier](accuracy, folds = 10)
+    implicit val rand: Random = new Random(42)
 
     cv.score(model, x, y) should be > 0.94
   }

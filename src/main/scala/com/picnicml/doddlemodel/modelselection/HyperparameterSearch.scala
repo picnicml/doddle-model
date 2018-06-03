@@ -3,6 +3,8 @@ package com.picnicml.doddlemodel.modelselection
 import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
 
+import scala.util.Random
+
 
 /** A parallel hyperparameter search using n-fold cross validation.
   *
@@ -21,7 +23,7 @@ class HyperparameterSearch[A <: Predictor[A]] private (val crossVal: CrossValida
 
   case class PredictorWithScore(predictor: A, score: Double)
 
-  def bestOf(x: Features, y: Target)(generatePredictor: => A): A = {
+  def bestOf(x: Features, y: Target)(generatePredictor: => A)(implicit rand: Random = new Random()): A = {
     val scores = (0 until this.numIterations).map { _ =>
       val predictor = generatePredictor
       PredictorWithScore(predictor, crossVal.score(predictor, x, y))
