@@ -21,7 +21,7 @@ class MeanRegressor private (val mean: Option[Double]) extends Regressor[MeanReg
 
   override protected def fitSafe(x: Features, y: Target): MeanRegressor = new MeanRegressor(Some(sampleMean(y)))
 
-  override protected def predictSafe(x: Features): Target = DenseVector(Array.ofDim[Double](x.rows).map(_ => mean.get))
+  override protected def predictSafe(x: Features): Target = DenseVector(Array.fill(x.rows)(mean.get))
 }
 
 object MeanRegressor {

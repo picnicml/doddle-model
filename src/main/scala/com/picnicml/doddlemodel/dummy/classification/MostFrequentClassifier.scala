@@ -26,8 +26,7 @@ class MostFrequentClassifier private (val numClasses: Option[Int], val mostFrequ
     new MostFrequentClassifier(this.numClasses, Some(mostFrequentClass))
   }
 
-  override protected def predictSafe(x: Features): Target =
-    DenseVector(Array.ofDim[Double](x.rows).map(_ => this.mostFrequentClass.get))
+  override protected def predictSafe(x: Features): Target = DenseVector(Array.fill(x.rows)(this.mostFrequentClass.get))
 
   override protected def predictProbaSafe(x: Features): Simplex = throw new NotImplementedError()
 }

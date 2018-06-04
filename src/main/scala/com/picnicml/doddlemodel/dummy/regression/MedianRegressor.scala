@@ -21,8 +21,7 @@ class MedianRegressor private (val median: Option[Double]) extends Regressor[Med
 
   override protected def fitSafe(x: Features, y: Target): MedianRegressor = new MedianRegressor(Some(sampleMedian(y)))
 
-  override protected def predictSafe(x: Features): Target =
-    DenseVector(Array.ofDim[Double](x.rows).map(_ => median.get))
+  override protected def predictSafe(x: Features): Target = DenseVector(Array.fill(x.rows)(median.get))
 }
 
 object MedianRegressor {
