@@ -14,26 +14,26 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
   extends LinearRegressor[LinearRegression] with Serializable {
 
-  private var yPredCache: Option[Target] = None
-
   override protected def copy: LinearRegression = new LinearRegression(this.lambda, this.w)
 
   override protected def copy(w: RealVector): LinearRegression = new LinearRegression(this.lambda, Some(w))
 
-  override protected def targetVariableAppropriate(y: Target): Boolean = true
+  @inline override protected def targetVariableAppropriate(y: Target): Boolean = true
 
   override protected def predict(w: RealVector, x: Features): Target = x * w
 
+  private var yPredCache: Target = _
+  private val slice: Range.Inclusive = 1 to -1
+
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
-    yPredCache = Some(this.predict(w, x))
-    val d = y - yPredCache.get
-    .5 * (((d.t * d) / x.rows.toDouble) + this.lambda * (w(1 to -1).t * w(1 to -1)))
+    yPredCache = this.predict(w, x)
+    val d = y - yPredCache
+    .5 * (((d.t * d) / x.rows.toDouble) + this.lambda * (w(slice).t * w(slice)))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
-    val grad = ((y - yPredCache.get).t * x).t / (-x.rows.toDouble)
-    yPredCache = None
-    grad(1 to -1) += this.lambda * w(1 to -1)
+    val grad = ((y - yPredCache).t * x).t / (-x.rows.toDouble)
+    grad(slice) += this.lambda * w(slice)
     grad
   }
 }
