@@ -23,17 +23,17 @@ class LinearRegression private (val lambda: Double, protected val w: Option[Real
   override protected def predict(w: RealVector, x: Features): Target = x * w
 
   private var yPredCache: Target = _
-  private val slice: Range.Inclusive = 1 to -1
+  private val wSlice: Range.Inclusive = 1 to -1
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     yPredCache = this.predict(w, x)
     val d = y - yPredCache
-    .5 * (((d.t * d) / x.rows.toDouble) + this.lambda * (w(slice).t * w(slice)))
+    .5 * (((d.t * d) / x.rows.toDouble) + this.lambda * (w(wSlice).t * w(wSlice)))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
     val grad = ((y - yPredCache).t * x).t / (-x.rows.toDouble)
-    grad(slice) += this.lambda * w(slice)
+    grad(wSlice) += this.lambda * w(wSlice)
     grad
   }
 }

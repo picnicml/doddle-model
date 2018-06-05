@@ -16,7 +16,6 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 class PoissonRegression private (val lambda: Double, protected val w: Option[RealVector])
   extends LinearRegressor[PoissonRegression] with Serializable {
 
-
   override protected def copy: PoissonRegression = new PoissonRegression(this.lambda, this.w)
 
   override protected def copy(w: RealVector): PoissonRegression = new PoissonRegression(this.lambda, Some(w))
@@ -37,17 +36,17 @@ class PoissonRegression private (val lambda: Double, protected val w: Option[Rea
   private def predictMean(w: RealVector, x: Features): Target = exp(x * w)
 
   private var yPredMeanCache: Target = _
-  private val slice: Range.Inclusive = 1 to -1
+  private val wSlice: Range.Inclusive = 1 to -1
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     yPredMeanCache = this.predictMean(w, x)
     sum(y * log(yPredMeanCache) - yPredMeanCache) / (-x.rows.toDouble) +
-      .5 * this.lambda * (w(slice).t * w(slice))
+      .5 * this.lambda * (w(wSlice).t * w(wSlice))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
     val grad = ((yPredMeanCache - y).t * x).t / x.rows.toDouble
-    grad(slice) += this.lambda * w(slice)
+    grad(wSlice) += this.lambda * w(wSlice)
     grad
   }
 }

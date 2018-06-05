@@ -17,8 +17,6 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int], protected val w: Option[RealVector])
   extends LinearClassifier[SoftmaxClassifier] with Serializable with SerializableLogging {
 
-  private var yPredProbaCache: Option[Simplex] = None
-
   override protected[linear] def copy(numClasses: Int): SoftmaxClassifier = {
     if (numClasses == 2)
       logger.warn("Detected a binary classification problem, consider using the LogisticRegression model")
@@ -43,21 +41,24 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
     zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))
   }
 
+  private var yPredProbaCache: Simplex = _
+  private val wSlice: Range.Inclusive = 1 to -1
+
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     val numClasses = this.numClasses match {
       case Some(nc) => nc
       case None => throw new IllegalStateException("numClasses must be set during training")
     }
 
-    yPredProbaCache = Some(this.predictProba(w, x))
+    yPredProbaCache = this.predictProba(w, x)
     val yPredProbaOfTrueClass = 0 until x.rows map { rowIndex =>
       val targetClass = y(rowIndex).toInt
-      yPredProbaCache.get.apply(rowIndex, targetClass)
+      yPredProbaCache(rowIndex, targetClass)
     }
 
     val wMatrix = w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
     sum(log(DenseMatrix(yPredProbaOfTrueClass))) / (-x.rows.toDouble) +
-      .5 * this.lambda * sum(pow(wMatrix(1 to -1, ::), 2))
+      .5 * this.lambda * sum(pow(wMatrix(wSlice, ::), 2))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
@@ -66,8 +67,7 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
       case None => throw new IllegalStateException("numClasses must be set during training")
     }
 
-    val yPredProba = yPredProbaCache.get.apply(::, 0 to -2)
-    yPredProbaCache = None
+    val yPredProba = yPredProbaCache(::, 0 to -2)
 
     val indicator = DenseMatrix.zeros[Double](yPredProba.rows, yPredProba.cols)
     0 until indicator.rows foreach { rowIndex =>
@@ -77,7 +77,7 @@ class SoftmaxClassifier private (val lambda: Double, val numClasses: Option[Int]
 
     val grad = (x.t * (indicator - yPredProba)) / (-x.rows.toDouble)
     val wMatrix = w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
-    grad(1 to -1, ::) += this.lambda * wMatrix(1 to -1, ::)
+    grad(wSlice, ::) += this.lambda * wMatrix(wSlice, ::)
     grad.toDenseVector
   }
 }

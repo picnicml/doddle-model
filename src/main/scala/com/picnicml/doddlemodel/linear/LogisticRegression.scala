@@ -31,17 +31,17 @@ class LogisticRegression private (val lambda: Double, val numClasses: Option[Int
     sigmoid(x * w).asDenseMatrix.t
 
   private var yPredProbaCache: RealVector = _
-  private val slice: Range.Inclusive = 1 to -1
+  private val wSlice: Range.Inclusive = 1 to -1
 
   override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
     yPredProbaCache = this.predictProba(w, x)(::, 0)
     sum(y * log(yPredProbaCache) + (1.0 - y) * log(1.0 - yPredProbaCache)) / (-x.rows.toDouble) +
-      .5 * this.lambda * (w(slice).t * w(slice))
+      .5 * this.lambda * (w(wSlice).t * w(wSlice))
   }
 
   override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
     val grad = ((y - yPredProbaCache).t * x).t / (-x.rows.toDouble)
-    grad(slice) += this.lambda * w(slice)
+    grad(wSlice) += this.lambda * w(wSlice)
     grad
   }
 }

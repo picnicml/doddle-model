@@ -1,6 +1,5 @@
 package com.picnicml.doddlemodel.metrics
 
-//import breeze.linalg.sum
 import com.picnicml.doddlemodel.data.Target
 
 object ClassificationMetrics {
@@ -10,8 +9,7 @@ object ClassificationMetrics {
 
     lazy val higherValueIsBetter: Boolean = true
 
-    override def apply(y: Target, yPred: Target): Double = {
+    override def apply(y: Target, yPred: Target): Double =
       (y :== yPred).activeSize / y.length.toDouble
-    }
   }
 }
