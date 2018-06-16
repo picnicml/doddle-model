@@ -5,7 +5,7 @@ import java.io.{FileOutputStream, ObjectOutputStream, Serializable}
 import com.picnicml.doddlemodel.data.{Features, Target}
 
 abstract class Estimator[A <: Estimator[A]] {
-  this: Serializable =>
+  this: A with Serializable =>
 
   def isFitted: Boolean
 

@@ -6,7 +6,7 @@ import breeze.linalg.unique
 import com.picnicml.doddlemodel.data.{Features, Simplex, Target}
 
 abstract class Classifier[A <: Classifier[A]] extends Predictor[A] {
-  this: Serializable =>
+  this: A with Serializable =>
 
   val numClasses: Option[Int]
 

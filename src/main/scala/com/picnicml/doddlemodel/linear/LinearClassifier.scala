@@ -7,7 +7,7 @@ import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 trait LinearClassifier[A <: LinearClassifier[A]] extends Classifier[A] with LinearModel[A] {
-  this: Serializable =>
+  this: A with Serializable =>
 
   /** A stateless function that predicts probability of each class. */
   protected def predictProba(w: RealVector, x: Features): Simplex

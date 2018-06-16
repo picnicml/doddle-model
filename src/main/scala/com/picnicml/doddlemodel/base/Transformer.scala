@@ -5,7 +5,7 @@ import java.io.Serializable
 import com.picnicml.doddlemodel.data.{Dataset, Features, Target}
 
 abstract class Transformer[A <: Transformer[A]] extends Estimator[A] {
-  this: Serializable =>
+  this: A with Serializable =>
 
   def transform(x: Features, y: Target): Dataset = {
     require(this.isFitted, "Called transform on a transformer that is not fitted yet")
