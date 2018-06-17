@@ -17,7 +17,7 @@ import scala.util.Random
   *   LogisticRegression(lambda = gamma.draw())
   * }
   */
-class HyperparameterSearch[A <: Predictor[A]] private (val crossVal: CrossValidation[A], val numIterations: Int) {
+class HyperparameterSearch[A <: Predictor[A]] private (val crossVal: CrossValidation, val numIterations: Int) {
 
   implicit val cvReusable: CrossValReusable = CrossValReusable(true)
 
@@ -44,7 +44,7 @@ class HyperparameterSearch[A <: Predictor[A]] private (val crossVal: CrossValida
 
 object HyperparameterSearch {
 
-  def apply[A <: Predictor[A]](crossVal: CrossValidation[A], numIterations: Int): HyperparameterSearch[A] = {
+  def apply[A <: Predictor[A]](crossVal: CrossValidation, numIterations: Int): HyperparameterSearch[A] = {
     require(numIterations > 0, "Number of iterations must be positive")
     new HyperparameterSearch[A](crossVal, numIterations)
   }

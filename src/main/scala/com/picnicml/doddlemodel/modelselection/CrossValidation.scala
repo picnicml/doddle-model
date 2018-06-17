@@ -2,14 +2,13 @@ package com.picnicml.doddlemodel.modelselection
 
 import java.util.concurrent.Executors
 
-import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
-import com.picnicml.doddlemodel.maxNumThreads
 import com.picnicml.doddlemodel.metrics.Metric
+import com.picnicml.doddlemodel.{AnyPredictor, maxNumThreads}
 
-import scala.util.Random
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.util.Random
 
 /** A parallel, n-fold cross validation technique.
   *
@@ -21,7 +20,7 @@ import scala.concurrent.{Await, ExecutionContext, Future}
   * val cv = CrossValidation(metric = rmse, folds = 10)
   * cv.score(model, x, y)
   */
-class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds: Int, val shuffleRows: Boolean) {
+class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRows: Boolean) {
 
   case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
 
@@ -31,7 +30,7 @@ class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds:
     *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
     *  after the instance is not needed anymore
     */
-  def score(model: Predictor[A], x: Features, y: Target)
+  def score(model: AnyPredictor, x: Features, y: Target)
            (implicit reusable: CrossValReusable = CrossValReusable(false), rand: Random = new Random()): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
     val scoreAvg = Future.sequence(foldsScores).map(scores => scores.sum / scores.length)
@@ -81,7 +80,7 @@ class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds:
     }
   }
 
-  private def foldScore(model: Predictor[A], split: TrainTestSplit): Future[Double] = Future {
+  private def foldScore(model: AnyPredictor, split: TrainTestSplit): Future[Double] = Future {
     this.metric(split.yTe, model.fit(split.xTr, split.yTr).predict(split.xTe))
   }
 
@@ -110,8 +109,8 @@ class CrossValidation[A <: Predictor[A]] private (val metric: Metric, val folds:
 
 object CrossValidation {
 
-  def apply[A <: Predictor[A]](metric: Metric, folds: Int, shuffleRows: Boolean = true): CrossValidation[A] = {
+  def apply(metric: Metric, folds: Int, shuffleRows: Boolean = true): CrossValidation = {
     require(folds > 0, "Number of folds must be positive")
-    new CrossValidation[A](metric, folds, shuffleRows)
+    new CrossValidation(metric, folds, shuffleRows)
   }
 }

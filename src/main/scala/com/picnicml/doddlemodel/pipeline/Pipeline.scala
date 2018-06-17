@@ -19,6 +19,7 @@ class Pipeline private (val predictor: AnyPredictor, val transformers: AnyTransf
     this.transformers.forall(_.isFitted) && this.predictor.isFitted
 
   override def fit(x: Features, y: Target): Pipeline = {
+
     case class TransformResult(xTransformed: Features, fittedTransformers: List[AnyTransformer])
     object TransformResult { def apply(): TransformResult = TransformResult(x, List[AnyTransformer]()) }
 
