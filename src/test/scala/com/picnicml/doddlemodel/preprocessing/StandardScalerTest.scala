@@ -12,10 +12,9 @@ class StandardScalerTest extends FlatSpec with Matchers with TestUtils {
 
   "Standard scaler" should "subtract the mean and scale to unit variance" in {
     val x = DenseMatrix.rand[Double](10, 5)
-    val y = DenseVector.zeros[Double](5)
     val scaler = StandardScaler()
-    val trainedScaler = scaler.fit(x, y)
-    val (xTransformed, _) = trainedScaler.transform(x, y)
+    val trainedScaler = scaler.fit(x)
+    val xTransformed = trainedScaler.transform(x)
 
     breezeEqual(mean(x(::, *)).t, DenseVector.zeros(5)) shouldBe false
     breezeEqual(stddev(x(::, *)).t, DenseVector.ones(5)) shouldBe false
@@ -25,10 +24,9 @@ class StandardScalerTest extends FlatSpec with Matchers with TestUtils {
 
   it should "handle the zero variance case" in {
     val x = DenseMatrix.ones[Double](10, 5)
-    val y = DenseVector.zeros[Double](5)
     val scaler = StandardScaler()
-    val trainedScaler = scaler.fit(x, y)
-    val (xTransformed, _) = trainedScaler.transform(x, y)
+    val trainedScaler = scaler.fit(x)
+    val xTransformed = trainedScaler.transform(x)
 
     xTransformed.forall(_.isNaN) shouldBe false
   }

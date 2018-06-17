@@ -9,7 +9,7 @@ package object doddlemodel {
   lazy val maxNumThreads: Int =
     System.getProperty("maxNumThreads", Runtime.getRuntime.availableProcessors.toString).toInt
 
-  def loadEstimator[A <: Estimator[A]](filePath: String): A = {
+  def loadEstimator[A <: Estimator](filePath: String): A = {
     val inputStream = new ObjectInputStream(new FileInputStream(filePath))
     val instance = inputStream.readObject.asInstanceOf[A]
     inputStream.close()

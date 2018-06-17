@@ -2,16 +2,18 @@ package com.picnicml.doddlemodel.base
 
 import java.io.Serializable
 
-import com.picnicml.doddlemodel.data.{Dataset, Features, Target}
+import com.picnicml.doddlemodel.data.Features
 
-abstract class Transformer[A <: Transformer[A]] extends Estimator[A] {
+abstract class Transformer[A <: Transformer[A]] extends Estimator {
   this: A with Serializable =>
 
-  def transform(x: Features, y: Target): Dataset = {
+  def fit(x: Features): A
+
+  def transform(x: Features): Features = {
     require(this.isFitted, "Called transform on a transformer that is not fitted yet")
-    this.transformSafe(x, y)
+    this.transformSafe(x)
   }
 
   /** A function that is guaranteed to be called on a fitted transformer. */
-  protected def transformSafe(x: Features, y: Target): Dataset
+  protected def transformSafe(x: Features): Features
 }
