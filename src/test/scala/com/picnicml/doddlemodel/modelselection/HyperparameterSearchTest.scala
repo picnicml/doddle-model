@@ -19,8 +19,8 @@ class HyperparameterSearchTest extends FlatSpec with Matchers {
     val (xTr, yTr) = (xShuffled(trIndices, ::), yShuffled(trIndices))
     val (xTe, yTe) = (xShuffled(teIndices, ::), yShuffled(teIndices))
 
-    val crossValidation = CrossValidation(metric = accuracy, folds = 5)
-    val search = HyperparameterSearch[LogisticRegression](crossVal = crossValidation, numIterations = 100)
+    implicit val cv: CrossValidation = CrossValidation(metric = accuracy, folds = 5)
+    val search = HyperparameterSearch[LogisticRegression](numIterations = 100)
     val grid = (0 until 100).toIterator.map(_.toDouble)
 
     val underfittedModel = LogisticRegression(lambda = 99.0).fit(xTr, yTr)
