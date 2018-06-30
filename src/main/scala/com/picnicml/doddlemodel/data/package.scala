@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel
 
 import java.io.File
 
-import breeze.linalg.{DenseMatrix, DenseVector}
+import breeze.linalg.{DenseMatrix, DenseVector, unique}
 import com.github.tototoshi.csv.CSVReader
 
 import scala.util.Random
@@ -41,5 +41,14 @@ package object data {
     val trIndices = 0 until numTrain
     val teIndices = numTrain until x.rows
     (x(trIndices, ::), y(trIndices), x(teIndices, ::), y(teIndices))
+  }
+
+  def numberOfTargetClasses(y: Target): Int = {
+    val targetClasses = unique(y)
+    require(targetClasses.length >= 2,
+      "Target variable must be comprised of at least two categories")
+    require(targetClasses.toArray.sorted sameElements Array.range(0, targetClasses.length),
+      "Invalid encoding of categories in the target variable")
+    targetClasses.length
   }
 }
