@@ -9,11 +9,14 @@ class RankingMetricsTest extends FlatSpec with Matchers {
   "Ranking metrics" should "compute a correct ROC curve" in {
     val y = DenseVector(1.0, 0.0, 0.0, 0.0, 1.0)
     val yPredProba = DenseVector(1.0, 0.0, 0.0, 0.0, 1.0)
-    val roc = rocCurve(y, yPredProba)
-    // todo
+    val roc = rocCurve(y, yPredProba, 5)
+    println(roc)
   }
 
   they should "calculate a correct AUC value" in {
-    // todo
+    val y = DenseVector(1.0, 0.0, 0.0, 0.0, 1.0)
+    val yPredProba = DenseVector(1.0, 0.0, 0.0, 0.0, 1.0)
+    val aucScore = auc(y, yPredProba)
+    println(aucScore)
   }
 }
