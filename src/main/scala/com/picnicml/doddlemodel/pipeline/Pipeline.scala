@@ -20,8 +20,8 @@ class Pipeline private (val predictor: AnyPredictor, val transformers: AnyTransf
 
   override def fit(x: Features, y: Target): Pipeline = {
 
-    case class TransformResult(xTransformed: Features, fittedTransformers: List[AnyTransformer])
     object TransformResult { def apply(): TransformResult = TransformResult(x, List[AnyTransformer]()) }
+    case class TransformResult(xTransformed: Features, fittedTransformers: List[AnyTransformer])
 
     val transformResult = this.transformers.foldLeft(TransformResult()) {
       case (TransformResult(currentX, fittedTransformers), currentTransformer) =>
