@@ -21,8 +21,11 @@ object RankingMetrics {
 
   case class RocCurve(fpr: RealVector, tpr: RealVector, thresholds: RealVector)
 
-  /** Receiver operating characteristic curve (ROC-curve). **/
-  def rocCurve(y: Target, yPredProba: RealVector, length: Int = 100): RocCurve = {
+  /** Receiver operating characteristic curve (ROC-curve).
+    *
+    * @param length the number of thresholds to take into account, i.e. the number of coordinates returned
+    */
+  def rocCurve(y: Target, yPredProba: RealVector, length: Int = 30): RocCurve = {
     require(length >= 5, "Number of points of the ROC-curve must be at least 3")
     require(numberOfTargetClasses(y) == 2, "ROC-curve is defined for a binary classification task")
     require(min(yPredProba) >= 0 && max(yPredProba) <= 1, "Currently ROC-curve is only defined for probability scores")
