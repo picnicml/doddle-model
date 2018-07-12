@@ -2,8 +2,7 @@ package com.picnicml.doddlemodel.base
 
 import java.io.Serializable
 
-import breeze.linalg.unique
-import com.picnicml.doddlemodel.data.{Features, Simplex, Target}
+import com.picnicml.doddlemodel.data.{Features, Simplex, Target, numberOfTargetClasses}
 
 abstract class Classifier[A <: Classifier[A]] extends Predictor[A] {
   this: A with Serializable =>
@@ -12,14 +11,7 @@ abstract class Classifier[A <: Classifier[A]] extends Predictor[A] {
 
   override def fit(x: Features, y: Target): A = {
     require(!this.isFitted, "Called fit on a model that is already trained")
-
-    val targetClasses = unique(y)
-    require(targetClasses.length >= 2,
-      "Target variable must be comprised of at least two categories")
-    require(targetClasses.toArray.sorted sameElements Array.range(0, targetClasses.length),
-      "Invalid encoding of categories in the target variable")
-
-    this.copy(numClasses = targetClasses.length).fitSafe(x, y)
+    this.copy(numClasses = numberOfTargetClasses(y)).fitSafe(x, y)
   }
 
   /** A function that creates a new classifier with numClasses set. */
