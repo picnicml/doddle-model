@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.DenseVector
-import com.picnicml.doddlemodel.base.Classifier
+import com.picnicml.doddlemodel.typeclasses.Classifier
 import com.picnicml.doddlemodel.data.{Features, Simplex, Target}
 
 /** An immutable dummy classifier that always predicts the most frequent label.

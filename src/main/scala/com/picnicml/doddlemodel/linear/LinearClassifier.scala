@@ -3,7 +3,7 @@ package com.picnicml.doddlemodel.linear
 import java.io.Serializable
 
 import breeze.linalg.DenseVector
-import com.picnicml.doddlemodel.base.Classifier
+import com.picnicml.doddlemodel.typeclasses.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 trait LinearClassifier[A <: LinearClassifier[A]] extends Classifier[A] with LinearModel[A] {

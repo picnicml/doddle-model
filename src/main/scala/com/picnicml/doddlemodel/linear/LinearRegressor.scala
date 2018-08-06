@@ -3,7 +3,7 @@ package com.picnicml.doddlemodel.linear
 import java.io.Serializable
 
 import breeze.linalg.DenseVector
-import com.picnicml.doddlemodel.base.Regressor
+import com.picnicml.doddlemodel.typeclasses.Regressor
 import com.picnicml.doddlemodel.data.{Features, Target}
 
 trait LinearRegressor[A <: LinearRegressor[A]] extends Regressor[A] with LinearModel[A] {

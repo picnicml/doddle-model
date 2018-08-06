@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.DenseVector
 import breeze.stats.distributions.Multinomial
-import com.picnicml.doddlemodel.base.Classifier
+import com.picnicml.doddlemodel.typeclasses.Classifier
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 
 /** An immutable dummy classifier that samples predictions from a stratified categorical distribution.

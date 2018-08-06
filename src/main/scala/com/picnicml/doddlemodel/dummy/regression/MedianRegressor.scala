@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel.dummy.regression
 
 import breeze.linalg.DenseVector
 import breeze.stats.{median => sampleMedian}
-import com.picnicml.doddlemodel.base.Regressor
+import com.picnicml.doddlemodel.typeclasses.Regressor
 import com.picnicml.doddlemodel.data.{Features, Target}
 
 /** An immutable dummy regressor that always predicts the sample median.

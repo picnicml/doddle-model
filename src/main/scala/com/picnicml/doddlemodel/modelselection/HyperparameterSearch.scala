@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.modelselection
 
-import com.picnicml.doddlemodel.base.Predictor
+import com.picnicml.doddlemodel.typeclasses.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
 
 import scala.util.Random

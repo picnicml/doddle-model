@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.*
 import breeze.stats.{mean, stddev}
-import com.picnicml.doddlemodel.base.Transformer
+import com.picnicml.doddlemodel.typeclasses.Transformer
 import com.picnicml.doddlemodel.data.{Features, RealVector}
 
 /** An immutable preprocessor that transforms features by subtracting the mean and scaling to unit variance.

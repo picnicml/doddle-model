@@ -2,7 +2,7 @@ package com.picnicml
 
 import java.io.{FileInputStream, ObjectInputStream}
 
-import com.picnicml.doddlemodel.base.{Estimator, Predictor, Transformer}
+import com.picnicml.doddlemodel.typeclasses.{Estimator, Predictor, Transformer}
 
 import scala.language.existentials
 

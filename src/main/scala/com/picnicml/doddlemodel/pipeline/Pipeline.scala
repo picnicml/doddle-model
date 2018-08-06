@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.pipeline
 
-import com.picnicml.doddlemodel.base.Predictor
+import com.picnicml.doddlemodel.typeclasses.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
 import com.picnicml.doddlemodel.{AnyPredictor, AnyTransformer}
 
