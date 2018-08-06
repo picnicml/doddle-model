@@ -4,7 +4,7 @@ import com.picnicml.doddlemodel.data.{Features, Target}
 
 trait Regressor[A] extends Predictor[A] {
 
-  override final def fit(regressor: A, x: Features, y: Target): A = {
+  final override def fit(regressor: A, x: Features, y: Target): A = {
     require(!this.isFitted(regressor), "Called fit on a model that is already trained")
     require(this.targetVariableAppropriate(regressor, y), "Target variable contains invalid data")
     this.fitSafe(this.copy(regressor), x, y)

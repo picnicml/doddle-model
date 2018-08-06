@@ -4,9 +4,9 @@ import com.picnicml.doddlemodel.data.{Features, Simplex, Target, numberOfTargetC
 
 trait Classifier[A] extends Predictor[A] {
 
-  val numClasses: Option[Int]
+  def numClasses(classifier: A): Option[Int]
 
-  override final def fit(classifier: A, x: Features, y: Target): A = {
+  final override def fit(classifier: A, x: Features, y: Target): A = {
     require(!this.isFitted(classifier), "Called fit on a model that is already trained")
     this.fitSafe(this.copy(classifier, numClasses = numberOfTargetClasses(y)), x, y)
   }
