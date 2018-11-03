@@ -3,6 +3,7 @@ package com.picnicml.doddlemodel.linear
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.picnicml.doddlemodel.TestUtils
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.linear.LinearRegressionNew.linearRegression
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -15,8 +16,8 @@ class LinearRegressionTest extends FlatSpec with Matchers with TestUtils {
     val x = DenseMatrix((3.0, 1.0, 2.0), (-1.0, -2.0, 2.0))
     val y = DenseVector(3.0, 4.0)
 
-    val model = LinearRegression(lambda = 1)
-    model.loss(w, x, y) shouldEqual 24.75
+    val model = LinearRegressionNew(lambda = 1)
+    linearRegression.loss(model, w, x, y) shouldEqual 24.75
   }
 
   it should "calculate the gradient of the loss function wrt. to model parameters" in {
@@ -28,12 +29,14 @@ class LinearRegressionTest extends FlatSpec with Matchers with TestUtils {
     }
 
     def testGrad(w: RealVector, x: Features, y: Target) = {
-      val model = LinearRegression(lambda = 0.5)
-      breezeEqual(gradApprox(w => model.loss(w, x, y), w), model.lossGrad(w, x, y)) shouldEqual true
+      val model = LinearRegressionNew(lambda = 0.5)
+      breezeEqual(
+        gradApprox(w => linearRegression.loss(model, w, x, y), w),
+        linearRegression.lossGrad(model, w, x, y)) shouldEqual true
     }
   }
 
   it should "prevent the usage of negative L2 regularization strength" in {
-    an [IllegalArgumentException] shouldBe thrownBy(LinearRegression(lambda = -0.5))
+    an [IllegalArgumentException] shouldBe thrownBy(LinearRegressionNew(lambda = -0.5))
   }
 }

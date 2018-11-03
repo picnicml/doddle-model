@@ -6,7 +6,7 @@ trait Regressor[A] extends Predictor[A] {
 
   override def fit(regressor: A, x: Features, y: Target): A = {
     require(!isFitted(regressor), "Called fit on a model that is already trained")
-    require(targetVariableAppropriate(regressor, y), "Target variable contains invalid data")
+    require(targetVariableAppropriate(y), "Target variable contains invalid data")
     fitSafe(copy(regressor), x, y)
   }
 
@@ -14,7 +14,7 @@ trait Regressor[A] extends Predictor[A] {
   protected def copy(regressor: A): A
 
   /** A function that checks whether the target variable contains valid data. */
-  protected def targetVariableAppropriate(regressor: A, y: Target): Boolean
+  protected def targetVariableAppropriate(y: Target): Boolean
 
   /**
     * A function that is guaranteed to receive an appropriate target variable when called. Additionally,
