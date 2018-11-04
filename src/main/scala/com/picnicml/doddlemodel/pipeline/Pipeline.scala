@@ -4,6 +4,8 @@ import com.picnicml.doddlemodel.data.{Features, Target}
 import com.picnicml.doddlemodel.pipeline.Pipeline.{Predictable, Transformable}
 import com.picnicml.doddlemodel.typeclasses.{Predictor, Transformer}
 
+import scala.language.existentials
+
 /** An immutable pipeline of multiple transformers and a single predictor applied as the very last step.
   *
   * Examples:

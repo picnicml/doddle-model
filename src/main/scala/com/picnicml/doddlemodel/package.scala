@@ -4,8 +4,6 @@ import java.io.{FileInputStream, ObjectInputStream}
 
 import com.picnicml.doddlemodel.typeclasses.Estimator
 
-import scala.language.implicitConversions
-
 package object doddlemodel {
 
   lazy val maxNumThreads: Int =
