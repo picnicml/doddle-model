@@ -1,4 +1,7 @@
 ## doddle-model
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f6ab9a9bdfeb47d8bc45c9017b5e704e)](https://app.codacy.com/app/inejc/doddle-model?utm_source=github.com&utm_medium=referral&utm_content=picnicml/doddle-model&utm_campaign=Badge_Grade_Settings)
+
 <table>
 <tr>
   <td>Latest Release</td>
