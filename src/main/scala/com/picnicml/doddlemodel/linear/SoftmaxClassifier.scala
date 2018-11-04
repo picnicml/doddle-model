@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.linear
 
-import breeze.linalg.{*, DenseMatrix, View, argmax, convert, max, sum}
+import breeze.linalg._
 import breeze.numerics.{exp, log, pow}
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import com.picnicml.doddlemodel.linear.typeclasses.LinearClassifier

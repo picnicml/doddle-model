@@ -4,11 +4,11 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.numerics.sigmoid
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import com.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.{FlatSpec, Matchers, OptionValues}
 
 case class DummyLinearClassifier(numClasses: Option[Int], w: Option[RealVector])
 
-class LinearClassifierTest extends FlatSpec with Matchers {
+class LinearClassifierTest extends FlatSpec with Matchers with OptionValues {
 
   val ev: LinearClassifier[DummyLinearClassifier] = new LinearClassifier[DummyLinearClassifier] {
 
@@ -56,7 +56,7 @@ class LinearClassifierTest extends FlatSpec with Matchers {
   it should "set the correct number of classes after fit" in {
     ev.numClasses(model).isEmpty shouldBe true
     val trainedModel = ev.fit(model, x, y)
-    ev.numClasses(trainedModel).get shouldBe 2
+    ev.numClasses(trainedModel).value shouldBe 2
   }
 
   it should "throw an exception if fitting a model with an invalid target variable" in {

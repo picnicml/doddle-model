@@ -3,6 +3,7 @@ package com.picnicml.doddlemodel.preprocessing
 import breeze.linalg.*
 import breeze.stats.{mean, stddev}
 import com.picnicml.doddlemodel.data.{Features, RealVector}
+import com.picnicml.doddlemodel.syntax.OptionSyntax._
 import com.picnicml.doddlemodel.typeclasses.Transformer
 
 /** An immutable preprocessor that transforms features by subtracting the mean and scaling to unit variance.
@@ -29,6 +30,6 @@ object StandardScaler {
     }
 
     override protected def transformSafe(model: StandardScaler, x: Features): Features =
-      (x(*, ::) - model.sampleMean.get).apply(*, ::) / model.sampleStdDev.get
+      (x(*, ::) - model.sampleMean.getOrBreak).apply(*, ::) / model.sampleStdDev.getOrBreak
   }
 }

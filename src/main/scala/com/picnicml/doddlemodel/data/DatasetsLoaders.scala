@@ -33,8 +33,8 @@ object DatasetsLoaders {
   private def loadDatasetFromResources(datasetName: String): DenseMatrix[Double] = {
     val input = new InputStreamReader(getClass.getResourceAsStream(s"/$datasetsDir/$datasetName.csv"))
     var matrix = BreezeCSVReader.read(input, separator = ',', quote = '"', escape = '\\', skipLines = 1)
-    matrix = matrix.takeWhile(line => line.nonEmpty && line.head.nonEmpty)
+    matrix = matrix.takeWhile(line => line.nonEmpty && line(0).nonEmpty)
     input.close()
-    DenseMatrix.tabulate(matrix.length, matrix.head.length)((i, j) => matrix(i)(j).toDouble)
+    DenseMatrix.tabulate(matrix.length, matrix(0).length)((i, j) => matrix(i)(j).toDouble)
   }
 }

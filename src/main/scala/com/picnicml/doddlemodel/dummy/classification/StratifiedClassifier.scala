@@ -4,6 +4,7 @@ import breeze.linalg.DenseVector
 import breeze.stats.distributions.Multinomial
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import com.picnicml.doddlemodel.dummy.classification.StratifiedClassifier.ev
+import com.picnicml.doddlemodel.syntax.OptionSyntax._
 import com.picnicml.doddlemodel.typeclasses.Classifier
 
 /** An immutable dummy classifier that samples predictions from a stratified categorical distribution.
@@ -15,7 +16,7 @@ case class StratifiedClassifier private (numClasses: Option[Int], targetDistr: O
 
   def getTargetDistributionParams: RealVector = {
     require(ev.isFitted(this), "Called getTargetDistributionParams on a model that is not trained yet")
-    this.targetDistr.get.params.copy
+    this.targetDistr.getOrBreak.params.copy
   }
 }
 
@@ -41,7 +42,7 @@ object StratifiedClassifier {
     }
 
     override protected def predictSafe(model: StratifiedClassifier, x: Features): Target =
-      DenseVector(Array.fill(x.rows)(model.targetDistr.get.draw.toDouble))
+      DenseVector(Array.fill(x.rows)(model.targetDistr.getOrBreak.draw.toDouble))
 
     override protected def predictProbaSafe(model: StratifiedClassifier, x: Features): Simplex =
       throw new NotImplementedError("Method predictProbaSafe is not defined for StratifiedClassifier")
