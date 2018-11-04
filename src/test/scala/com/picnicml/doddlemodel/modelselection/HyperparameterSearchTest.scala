@@ -2,6 +2,7 @@ package com.picnicml.doddlemodel.modelselection
 
 import com.picnicml.doddlemodel.data.{loadBreastCancerDataset, shuffleDataset}
 import com.picnicml.doddlemodel.linear.LogisticRegression
+import com.picnicml.doddlemodel.linear.LogisticRegression.ev
 import com.picnicml.doddlemodel.metrics.accuracy
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -20,14 +21,14 @@ class HyperparameterSearchTest extends FlatSpec with Matchers {
     val (xTe, yTe) = (xShuffled(teIndices, ::), yShuffled(teIndices))
 
     implicit val cv: CrossValidation = CrossValidation(metric = accuracy, folds = 5)
-    val search = HyperparameterSearch[LogisticRegression](numIterations = 100)
+    val search = HyperparameterSearch(numIterations = 100)
     val grid = (0 until 100).toIterator.map(_.toDouble)
 
-    val underfittedModel = LogisticRegression(lambda = 99.0).fit(xTr, yTr)
+    val underfittedModel = ev.fit(LogisticRegression(lambda = 99.0), xTr, yTr)
     val bestModel = search.bestOf(xTr, yTr) {
       LogisticRegression(lambda = grid.next)
     }
 
-    accuracy(yTe, bestModel.predict(xTe)) > accuracy(yTe, underfittedModel.predict(xTe)) shouldBe true
+    accuracy(yTe, ev.predict(bestModel, xTe)) > accuracy(yTe, ev.predict(underfittedModel, xTe)) shouldBe true
   }
 }

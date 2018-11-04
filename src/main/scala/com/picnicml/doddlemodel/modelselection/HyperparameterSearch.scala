@@ -1,7 +1,7 @@
 package com.picnicml.doddlemodel.modelselection
 
-import com.picnicml.doddlemodel.base.Predictor
 import com.picnicml.doddlemodel.data.{Features, Target}
+import com.picnicml.doddlemodel.typeclasses.Predictor
 
 import scala.util.Random
 
@@ -17,15 +17,15 @@ import scala.util.Random
   *   LogisticRegression(lambda = gamma.draw())
   * }
   */
-class HyperparameterSearch[A <: Predictor[A]] private (val numIterations: Int) {
+class HyperparameterSearch private (val numIterations: Int) {
 
   implicit val cvReusable: CrossValReusable = CrossValReusable(true)
 
-  case class PredictorWithScore(predictor: A, score: Double)
+  def bestOf[A](x: Features, y: Target)(generatePredictor: => A)
+               (implicit ev: Predictor[A], crossVal: CrossValidation, rand: Random = new Random()): A = {
 
-  def bestOf(x: Features, y: Target)
-            (generatePredictor: => A)
-            (implicit crossVal: CrossValidation, rand: Random = new Random()): A = {
+    case class PredictorWithScore(predictor: A, score: Double)
+
     val scores = (0 until this.numIterations).map { _ =>
       val predictor = generatePredictor
       PredictorWithScore(predictor, crossVal.score(predictor, x, y))
@@ -35,19 +35,17 @@ class HyperparameterSearch[A <: Predictor[A]] private (val numIterations: Int) {
     // com.picnicml.doddlemodel.modelselection.CrossValidation for details
     crossVal.shutdownNow()
 
-    if (crossVal.metric.higherValueIsBetter) {
-      scores.maxBy(_.score).predictor.fit(x, y)
-    }
-    else {
-      scores.minBy(_.score).predictor.fit(x, y)
-    }
+    if (crossVal.metric.higherValueIsBetter)
+      ev.fit(scores.maxBy(_.score).predictor, x, y)
+    else
+      ev.fit(scores.minBy(_.score).predictor, x, y)
   }
 }
 
 object HyperparameterSearch {
 
-  def apply[A <: Predictor[A]](numIterations: Int): HyperparameterSearch[A] = {
+  def apply(numIterations: Int): HyperparameterSearch = {
     require(numIterations > 0, "Number of iterations must be positive")
-    new HyperparameterSearch[A](numIterations)
+    new HyperparameterSearch(numIterations)
   }
 }

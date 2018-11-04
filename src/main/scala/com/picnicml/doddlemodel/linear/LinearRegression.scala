@@ -1,6 +1,7 @@
 package com.picnicml.doddlemodel.linear
 
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 
 /** An immutable multiple linear regression model with ridge regularization.
   *
@@ -10,40 +11,47 @@ import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
   * val model = LinearRegression()
   * val model = LinearRegression(lambda = 1.5)
   */
-@SerialVersionUID(1L)
-class LinearRegression private (val lambda: Double, protected val w: Option[RealVector])
-  extends LinearRegressor[LinearRegression] with Serializable {
-
-  override protected def copy: LinearRegression = new LinearRegression(this.lambda, this.w)
-
-  override protected def copy(w: RealVector): LinearRegression = new LinearRegression(this.lambda, Some(w))
-
-  @inline override protected def targetVariableAppropriate(y: Target): Boolean = true
-
-  override protected def predict(w: RealVector, x: Features): Target = x * w
-
+case class LinearRegression private(lambda: Double, private val w: Option[RealVector]) {
   private var yPredCache: Target = _
-  private val wSlice: Range.Inclusive = 1 to -1
-
-  override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = {
-    yPredCache = this.predict(w, x)
-    val d = y - yPredCache
-    .5 * (((d.t * d) / x.rows.toDouble) + this.lambda * (w(wSlice).t * w(wSlice)))
-  }
-
-  override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = {
-    val grad = ((y - yPredCache).t * x).t / (-x.rows.toDouble)
-    grad(wSlice) += this.lambda * w(wSlice)
-    grad
-  }
 }
 
 object LinearRegression {
 
-  def apply(): LinearRegression = new LinearRegression(0, None)
+  def apply(): LinearRegression = LinearRegression(0, None)
 
   def apply(lambda: Double): LinearRegression = {
     require(lambda >= 0, "L2 regularization strength must be positive")
-    new LinearRegression(lambda, None)
+    LinearRegression(lambda, None)
+  }
+
+  private val wSlice: Range.Inclusive = 1 to -1
+
+  implicit lazy val ev: LinearRegressor[LinearRegression] = new LinearRegressor[LinearRegression] {
+
+    override protected def w(model: LinearRegression): Option[RealVector] = model.w
+
+    override protected def copy(model: LinearRegression): LinearRegression =
+      model.copy()
+
+    override protected def copy(model: LinearRegression, w: RealVector): LinearRegression =
+      model.copy(w = Some(w))
+
+    @inline override protected def targetVariableAppropriate(y: Target): Boolean = true
+
+    override protected def predictStateless(model: LinearRegression, w: RealVector, x: Features): Target = x * w
+
+    override protected[linear] def lossStateless(model: LinearRegression,
+                                                 w: RealVector, x: Features, y: Target): Double = {
+      model.yPredCache = predictStateless(model, w, x)
+      val d = y - model.yPredCache
+      .5 * (((d.t * d) / x.rows.toDouble) + model.lambda * (w(wSlice).t * w(wSlice)))
+    }
+
+    override protected[linear] def lossGradStateless(model: LinearRegression,
+                                                     w: RealVector, x: Features, y: Target): RealVector = {
+      val grad = ((y - model.yPredCache).t * x).t / (-x.rows.toDouble)
+      grad(wSlice) += model.lambda * w(wSlice)
+      grad
+    }
   }
 }

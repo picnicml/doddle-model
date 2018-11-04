@@ -2,31 +2,33 @@ package com.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.*
 import breeze.stats.{mean, stddev}
-import com.picnicml.doddlemodel.base.Transformer
 import com.picnicml.doddlemodel.data.{Features, RealVector}
+import com.picnicml.doddlemodel.typeclasses.Transformer
 
 /** An immutable preprocessor that transforms features by subtracting the mean and scaling to unit variance.
   *
   * Examples:
   * val preprocessor = StandardScaler()
   */
-@SerialVersionUID(1L)
-class StandardScaler private (val sampleMean: Option[RealVector], val sampleStdDev: Option[RealVector])
-  extends Transformer[StandardScaler] with Serializable {
-
-  override def isFitted: Boolean = this.sampleMean.isDefined && this.sampleStdDev.isDefined
-
-  override def fit(x: Features): StandardScaler = {
-    val sampleStdDev = stddev(x(::, *)).t
-    sampleStdDev(sampleStdDev :== 0.0) := 1.0
-    new StandardScaler(Some(mean(x(::, *)).t), Some(sampleStdDev))
-  }
-
-  override protected def transformSafe(x: Features): Features =
-    (x(*, ::) - this.sampleMean.get).apply(*, ::) / this.sampleStdDev.get
-}
+case class StandardScaler private (private val sampleMean: Option[RealVector],
+                                   private val sampleStdDev: Option[RealVector])
 
 object StandardScaler {
 
-  def apply(): StandardScaler = new StandardScaler(None, None)
+  def apply(): StandardScaler = StandardScaler(None, None)
+
+  implicit lazy val ev: Transformer[StandardScaler] = new Transformer[StandardScaler] {
+
+    override def isFitted(model: StandardScaler): Boolean =
+      model.sampleMean.isDefined && model.sampleStdDev.isDefined
+
+    override def fit(model: StandardScaler, x: Features): StandardScaler = {
+      val sampleStdDev = stddev(x(::, *)).t
+      sampleStdDev(sampleStdDev :== 0.0) := 1.0
+      StandardScaler(Some(mean(x(::, *)).t), Some(sampleStdDev))
+    }
+
+    override protected def transformSafe(model: StandardScaler, x: Features): Features =
+      (x(*, ::) - model.sampleMean.get).apply(*, ::) / model.sampleStdDev.get
+  }
 }

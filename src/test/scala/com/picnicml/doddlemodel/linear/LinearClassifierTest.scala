@@ -3,56 +3,66 @@ package com.picnicml.doddlemodel.linear
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.numerics.sigmoid
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
+import com.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 import org.scalatest.{FlatSpec, Matchers}
+
+case class DummyLinearClassifier(numClasses: Option[Int], w: Option[RealVector])
 
 class LinearClassifierTest extends FlatSpec with Matchers {
 
-  private class DummyLinearClassifier(val numClasses: Option[Int], val w: Option[RealVector])
-    extends LinearClassifier[DummyLinearClassifier] with Serializable {
+  val ev: LinearClassifier[DummyLinearClassifier] = new LinearClassifier[DummyLinearClassifier] {
 
-    override protected def copy(numClasses: Int): DummyLinearClassifier =
-      new DummyLinearClassifier(Some(numClasses), this.w)
+    override def numClasses(model: DummyLinearClassifier): Option[Int] = model.numClasses
 
-    override protected def copy(w: RealVector): DummyLinearClassifier =
-      new DummyLinearClassifier(this.numClasses, Some(w))
+    override protected def w(model: DummyLinearClassifier): Option[RealVector] = model.w
 
-    override protected def predict(w: RealVector, x: Features): Target = x * w
+    override protected[doddlemodel] def copy(model: DummyLinearClassifier, numClasses: Int): DummyLinearClassifier =
+      model.copy(numClasses = Some(numClasses))
 
-    override protected def predictProba(w: RealVector, x: Features): Simplex = sigmoid(x * w).asDenseMatrix.t
+    override protected def copy(model: DummyLinearClassifier, w: RealVector): DummyLinearClassifier =
+      model.copy(w = Some(w))
 
-    override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = 0
+    override protected def predictStateless(model: DummyLinearClassifier, w: RealVector, x: Features): Target =
+      x * w
 
-    override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = w
+    override protected def predictProbaStateless(model: DummyLinearClassifier, w: RealVector, x: Features): Simplex =
+      sigmoid(x * w).asDenseMatrix.t
+
+    override protected[linear] def lossStateless(model: DummyLinearClassifier,
+                                                 w: RealVector, x: Features, y: Target): Double = 0
+
+    override protected[linear] def lossGradStateless(model: DummyLinearClassifier,
+                                                     w: RealVector, x: Features, y: Target): RealVector = w
   }
 
   private val x = DenseMatrix.rand[Double](10, 5)
   private val y = DenseVector.vertcat(DenseVector.zeros[Double](5), DenseVector.ones[Double](5))
-  private val model = new DummyLinearClassifier(None, None)
+  private val model = DummyLinearClassifier(None, None)
 
   "Linear classifier" should "throw an exception when using fit, predict on trained, untrained models" in {
-    an [IllegalArgumentException] should be thrownBy model.predict(x)
-    val trainedModel = model.fit(x, y)
-    an [IllegalArgumentException] should be thrownBy trainedModel.fit(x, y)
+    an [IllegalArgumentException] should be thrownBy ev.predict(model, x)
+    val trainedModel = ev.fit(model, x, y)
+    an [IllegalArgumentException] should be thrownBy ev.fit(trainedModel, x, y)
   }
 
   it should "implement predictor functions" in {
-    model.isFitted shouldBe false
-    val trainedModel = model.fit(x, y)
-    trainedModel.isFitted shouldBe true
-    val yPred = trainedModel.predict(x)
+    ev.isFitted(model) shouldBe false
+    val trainedModel = ev.fit(model, x, y)
+    ev.isFitted(trainedModel) shouldBe true
+    val yPred = ev.predict(trainedModel, x)
     yPred.length shouldEqual y.length
   }
 
   it should "set the correct number of classes after fit" in {
-    model.numClasses.isEmpty shouldBe true
-    val trainedModel = model.fit(x, y)
-    trainedModel.numClasses.get shouldBe 2
+    ev.numClasses(model).isEmpty shouldBe true
+    val trainedModel = ev.fit(model, x, y)
+    ev.numClasses(trainedModel).get shouldBe 2
   }
 
   it should "throw an exception if fitting a model with an invalid target variable" in {
     val invalidCategoricalY = DenseVector.zeros[Double](10)
-    an [IllegalArgumentException] should be thrownBy model.fit(x, invalidCategoricalY)
+    an [IllegalArgumentException] should be thrownBy ev.fit(model, x, invalidCategoricalY)
     val invalidRealY = DenseVector.rand[Double](10)
-    an [IllegalArgumentException] should be thrownBy model.fit(x, invalidRealY)
+    an [IllegalArgumentException] should be thrownBy ev.fit(model, x, invalidRealY)
   }
 }
