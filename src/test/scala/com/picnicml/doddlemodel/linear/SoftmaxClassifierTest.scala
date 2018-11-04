@@ -1,13 +1,13 @@
 package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-import com.picnicml.doddlemodel.TestUtils
+import com.picnicml.doddlemodel.TestingUtils
 import com.picnicml.doddlemodel.linear.SoftmaxClassifier.ev
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
-class SoftmaxClassifierTest extends FlatSpec with Matchers with TestUtils {
+class SoftmaxClassifierTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 

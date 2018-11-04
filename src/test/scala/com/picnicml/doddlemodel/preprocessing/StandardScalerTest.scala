@@ -2,12 +2,12 @@ package com.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.{*, DenseMatrix, DenseVector}
 import breeze.stats.{mean, stddev}
-import com.picnicml.doddlemodel.TestUtils
+import com.picnicml.doddlemodel.TestingUtils
 import com.picnicml.doddlemodel.preprocessing.StandardScaler.ev
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
-class StandardScalerTest extends FlatSpec with Matchers with TestUtils {
+class StandardScalerTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 

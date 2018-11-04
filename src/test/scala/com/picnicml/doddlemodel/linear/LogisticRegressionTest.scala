@@ -2,13 +2,13 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector, convert}
 import breeze.numerics.round
-import com.picnicml.doddlemodel.TestUtils
+import com.picnicml.doddlemodel.TestingUtils
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import com.picnicml.doddlemodel.linear.LogisticRegression.ev
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
-class LogisticRegressionTest extends FlatSpec with Matchers with TestUtils {
+class LogisticRegressionTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 

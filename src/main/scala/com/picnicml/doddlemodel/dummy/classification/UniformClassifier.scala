@@ -2,30 +2,36 @@ package com.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.{DenseVector, convert}
 import breeze.stats.distributions.Rand
-import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, Simplex, Target}
+import com.picnicml.doddlemodel.typeclasses.Classifier
 
 /** An immutable dummy classifier that samples predictions from a uniform categorical distribution.
   *
   * Examples:
   * val model = UniformClassifier()
   */
-@SerialVersionUID(1L)
-class UniformClassifier private (val numClasses: Option[Int]) extends Classifier[UniformClassifier] with Serializable {
-
-  override def isFitted: Boolean = this.numClasses.isDefined
-
-  override protected def copy(numClasses: Int): UniformClassifier = new UniformClassifier(Some(numClasses))
-
-  override protected def fitSafe(x: Features, y: Target): UniformClassifier = this
-
-  override protected def predictSafe(x: Features): Target =
-    convert(DenseVector.rand(x.rows, Rand.randInt(this.numClasses.get)), Double)
-
-  override protected def predictProbaSafe(x: Features): Simplex = throw new NotImplementedError()
-}
+case class UniformClassifier private (numClasses: Option[Int])
 
 object UniformClassifier {
 
   def apply(): UniformClassifier = new UniformClassifier(None)
+
+  implicit lazy val ev: Classifier[UniformClassifier] = new Classifier[UniformClassifier] {
+
+    override def numClasses(model: UniformClassifier): Option[Int] = model.numClasses
+
+    override def isFitted(model: UniformClassifier): Boolean = model.numClasses.isDefined
+
+    override protected[doddlemodel] def copy(model: UniformClassifier, numClasses: Int): UniformClassifier =
+      model.copy(numClasses = Some(numClasses))
+
+    override protected def fitSafe(model: UniformClassifier, x: Features, y: Target): UniformClassifier =
+      model.copy()
+
+    override protected def predictSafe(model: UniformClassifier, x: Features): Target =
+      convert(DenseVector.rand(x.rows, Rand.randInt(model.numClasses.get)), Double)
+
+    override protected def predictProbaSafe(model: UniformClassifier, x: Features): Simplex =
+      throw new NotImplementedError("Method predictProbaSafe is not defined for UniformClassifier")
+  }
 }
