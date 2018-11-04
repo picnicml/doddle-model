@@ -17,6 +17,14 @@
   </td>
 </tr>
 <tr>
+  <td>Code Quality</td>
+  <td>
+    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+    <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square" alt="code quality"/>
+    </a>
+  </td>
+</tr>
+<tr>
   <td>Coverage</td>
   <td>
     <a href="https://codecov.io/gh/picnicml/doddle-model">
