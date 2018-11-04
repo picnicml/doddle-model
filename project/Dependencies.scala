@@ -5,7 +5,7 @@ object Dependencies {
   object V {
     val breezeVersion = "0.13.2"
     val scalaCSVVersion = "1.3.5"
-    val scalaTestVersion = "3.0.1"
+    val scalaTestVersion = "3.0.5"
   }
 
   val compileDependencies: Seq[ModuleID] = Seq(

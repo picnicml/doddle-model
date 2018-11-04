@@ -4,7 +4,7 @@ lazy val root = (project in file("."))
     organization := "com.picnicml",
     version := Version(),
     scalaVersion := "2.12.6",
-    crossScalaVersions := Seq("2.11.12", "2.12.6"),
+    crossScalaVersions := Seq("2.11.12", "2.12.7"),
     libraryDependencies ++= Dependencies.settings
   )
 
