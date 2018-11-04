@@ -2,8 +2,8 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.picnicml.doddlemodel.TestingUtils
-import com.picnicml.doddlemodel.linear.SoftmaxClassifier.ev
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.linear.SoftmaxClassifier.ev
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
