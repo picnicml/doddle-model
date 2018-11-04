@@ -2,12 +2,13 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector, convert}
 import breeze.stats.distributions.Rand
-import com.picnicml.doddlemodel.TestUtils
+import com.picnicml.doddlemodel.TestingUtils
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.linear.PoissonRegression.ev
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
-class PoissonRegressionTest extends FlatSpec with Matchers with TestUtils {
+class PoissonRegressionTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 
@@ -17,7 +18,7 @@ class PoissonRegressionTest extends FlatSpec with Matchers with TestUtils {
     val y = DenseVector(3.0, 4.0)
 
     val model = PoissonRegression(lambda = 1)
-    model.loss(w, x, y) shouldEqual 29926.429998513137
+    ev.lossStateless(model, w, x, y) shouldEqual 29926.429998513137
   }
 
   it should "calculate the gradient of the loss function wrt. to model parameters" in {
@@ -30,7 +31,9 @@ class PoissonRegressionTest extends FlatSpec with Matchers with TestUtils {
 
     def testGrad(w: RealVector, x: Features, y: Target) = {
       val model = PoissonRegression(lambda = 0.5)
-      breezeEqual(gradApprox(w => model.loss(w, x, y), w), model.lossGrad(w, x, y)) shouldEqual true
+      breezeEqual(
+        gradApprox(w => ev.lossStateless(model, w, x, y), w),
+        ev.lossGradStateless(model, w, x, y)) shouldEqual true
     }
   }
 
@@ -43,6 +46,6 @@ class PoissonRegressionTest extends FlatSpec with Matchers with TestUtils {
     val y = DenseVector.rand[Double](3)
     val model = PoissonRegression()
 
-    an [IllegalArgumentException] shouldBe thrownBy(model.fit(x, y))
+    an [IllegalArgumentException] shouldBe thrownBy(ev.fit(model, x, y))
   }
 }

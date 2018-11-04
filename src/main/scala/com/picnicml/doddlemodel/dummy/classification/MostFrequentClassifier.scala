@@ -1,38 +1,41 @@
 package com.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.DenseVector
-import com.picnicml.doddlemodel.base.Classifier
 import com.picnicml.doddlemodel.data.{Features, Simplex, Target}
+import com.picnicml.doddlemodel.typeclasses.Classifier
 
 /** An immutable dummy classifier that always predicts the most frequent label.
   *
   * Examples:
   * val model = MostFrequentClassifier()
   */
-@SerialVersionUID(1L)
-class MostFrequentClassifier private (val numClasses: Option[Int], val mostFrequentClass: Option[Double])
-  extends Classifier[MostFrequentClassifier] with Serializable {
-
-  override def isFitted: Boolean = this.mostFrequentClass.isDefined
-
-  override protected def copy(numClasses: Int): MostFrequentClassifier =
-    new MostFrequentClassifier(Some(numClasses), None)
-
-  override protected def fitSafe(x: Features, y: Target): MostFrequentClassifier = {
-    val mostFrequentClass = y.activeValuesIterator.foldLeft(Map[Double, Int]()) { (acc, x) =>
-      if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
-    }.toArray.sortBy(_._1).maxBy(_._2)._1
-
-    new MostFrequentClassifier(this.numClasses, Some(mostFrequentClass))
-  }
-
-  override protected def predictSafe(x: Features): Target =
-    DenseVector(Array.fill(x.rows)(this.mostFrequentClass.get))
-
-  override protected def predictProbaSafe(x: Features): Simplex = throw new NotImplementedError()
-}
+case class MostFrequentClassifier private (numClasses: Option[Int], mostFrequentClass: Option[Double])
 
 object MostFrequentClassifier {
 
   def apply(): MostFrequentClassifier = new MostFrequentClassifier(None, None)
+
+  implicit lazy val ev: Classifier[MostFrequentClassifier] = new Classifier[MostFrequentClassifier] {
+
+    override def numClasses(model: MostFrequentClassifier): Option[Int] = model.numClasses
+
+    override def isFitted(model: MostFrequentClassifier): Boolean = model.mostFrequentClass.isDefined
+
+    override protected[doddlemodel] def copy(model: MostFrequentClassifier, numClasses: Int): MostFrequentClassifier =
+      model.copy(numClasses = Some(numClasses))
+
+    override protected def fitSafe(model: MostFrequentClassifier, x: Features, y: Target): MostFrequentClassifier = {
+      val mostFrequentClass = y.activeValuesIterator.foldLeft(Map[Double, Int]()) { (acc, x) =>
+        if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
+      }.toArray.sortBy(_._1).maxBy(_._2)._1
+
+      model.copy(mostFrequentClass = Some(mostFrequentClass))
+    }
+
+    override protected def predictSafe(model: MostFrequentClassifier, x: Features): Target =
+      DenseVector(Array.fill(x.rows)(model.mostFrequentClass.get))
+
+    override protected def predictProbaSafe(model: MostFrequentClassifier, x: Features): Simplex =
+      throw new NotImplementedError("Method predictProbaSafe is not defined for MostFrequentClassifier")
+  }
 }

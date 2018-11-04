@@ -1,12 +1,13 @@
 package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
-import com.picnicml.doddlemodel.TestUtils
+import com.picnicml.doddlemodel.TestingUtils
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.linear.SoftmaxClassifier.ev
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
-class SoftmaxClassifierTest extends FlatSpec with Matchers with TestUtils {
+class SoftmaxClassifierTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 
@@ -15,8 +16,8 @@ class SoftmaxClassifierTest extends FlatSpec with Matchers with TestUtils {
     val x = DenseMatrix((3.0, 1.0, 2.0), (-1.0, -2.0, 2.0), (-2.0, 1.0, 0.0))
     val y = DenseVector(1.0, 0.0, 2.0)
 
-    val model = SoftmaxClassifier(lambda = 1).copy(numClasses = 3)
-    model.loss(w, x, y) shouldEqual 19.843778223530194
+    val model = ev.copy(SoftmaxClassifier(lambda = 1), numClasses = 3)
+    ev.lossStateless(model, w, x, y) shouldEqual 19.843778223530194
   }
 
   it should "calculate the gradient of the loss function wrt. to model parameters" in {
@@ -28,8 +29,10 @@ class SoftmaxClassifierTest extends FlatSpec with Matchers with TestUtils {
     }
 
     def testGrad(w: RealVector, x: Features, y: Target) = {
-      val model = SoftmaxClassifier(lambda = 0.5).copy(numClasses = 10)
-      breezeEqual(gradApprox(w => model.loss(w, x, y), w), model.lossGrad(w, x, y)) shouldEqual true
+      val model = ev.copy(SoftmaxClassifier(lambda = 0.5), numClasses = 10)
+      breezeEqual(
+        gradApprox(w => ev.lossStateless(model, w, x, y), w),
+        ev.lossGradStateless(model, w, x, y)) shouldEqual true
     }
   }
 

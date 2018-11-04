@@ -3,8 +3,9 @@ package com.picnicml.doddlemodel.modelselection
 import java.util.concurrent.Executors
 
 import com.picnicml.doddlemodel.data.{Features, Target}
+import com.picnicml.doddlemodel.maxNumThreads
 import com.picnicml.doddlemodel.metrics.Metric
-import com.picnicml.doddlemodel.{AnyPredictor, maxNumThreads}
+import com.picnicml.doddlemodel.typeclasses.Predictor
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -30,8 +31,10 @@ class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRo
     *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
     *  after the instance is not needed anymore
     */
-  def score(model: AnyPredictor, x: Features, y: Target)
-           (implicit reusable: CrossValReusable = CrossValReusable(false), rand: Random = new Random()): Double = {
+  def score[A](model: A, x: Features, y: Target)
+           (implicit ev: Predictor[A],
+            reusable: CrossValReusable = CrossValReusable(false),
+            rand: Random = new Random()): Double = {
     val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
     val scoreAvg = Future.sequence(foldsScores).map(scores => scores.sum / scores.length)
     val finalScore = Await.result(scoreAvg, Duration.Inf)
@@ -80,8 +83,8 @@ class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRo
     }
   }
 
-  private def foldScore(model: AnyPredictor, split: TrainTestSplit): Future[Double] = Future {
-    this.metric(split.yTe, model.fit(split.xTr, split.yTr).predict(split.xTe))
+  private def foldScore[A](model: A, split: TrainTestSplit)(implicit ev: Predictor[A]): Future[Double] = Future {
+    this.metric(split.yTe, ev.predict(ev.fit(model, split.xTr, split.yTr), split.xTe))
   }
 
   // create a custom execution context that is suitable for training models in parallel

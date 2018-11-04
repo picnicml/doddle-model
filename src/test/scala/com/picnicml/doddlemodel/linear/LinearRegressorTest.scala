@@ -2,41 +2,49 @@ package com.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.picnicml.doddlemodel.data.{Features, RealVector, Target}
+import com.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 import org.scalatest.{FlatSpec, Matchers}
+
+case class DummyLinearRegressor(w: Option[RealVector])
 
 class LinearRegressorTest extends FlatSpec with Matchers {
 
-  private class DummyLinearRegressor(val w: Option[RealVector])
-    extends LinearRegressor[DummyLinearRegressor] with Serializable {
+  val ev: LinearRegressor[DummyLinearRegressor] = new LinearRegressor[DummyLinearRegressor] {
 
-    override protected def copy: DummyLinearRegressor = this
+    override protected def w(model: DummyLinearRegressor): Option[RealVector] = model.w
 
-    override protected def copy(w: RealVector): DummyLinearRegressor = new DummyLinearRegressor(Some(w))
+    override protected def copy(model: DummyLinearRegressor): DummyLinearRegressor = model.copy()
+
+    override protected def copy(model: DummyLinearRegressor, w: RealVector): DummyLinearRegressor =
+      model.copy(Some(w))
 
     override protected def targetVariableAppropriate(y: Target): Boolean = true
 
-    override protected def predict(w: RealVector, x: Features): Target = x * w
+    override protected def predictStateless(model: DummyLinearRegressor, w: RealVector, x: Features): Target =
+      x * w
 
-    override protected[linear] def loss(w: RealVector, x: Features, y: Target): Double = 0
+    override protected[linear] def lossStateless(model: DummyLinearRegressor,
+                                                 w: RealVector, x: Features, y: Target): Double = 0
 
-    override protected[linear] def lossGrad(w: RealVector, x: Features, y: Target): RealVector = w
+    override protected[linear] def lossGradStateless(model: DummyLinearRegressor,
+                                                     w: RealVector, x: Features, y: Target): RealVector = w
   }
 
   private val x = DenseMatrix.rand[Double](10, 5)
   private val y = DenseVector.rand[Double](10)
-  private val model = new DummyLinearRegressor(None)
+  private val model = DummyLinearRegressor(None)
 
   "Linear regressor" should "throw an exception when using fit, predict on trained, untrained models" in {
-    an [IllegalArgumentException] should be thrownBy model.predict(x)
-    val trainedModel = model.fit(x, y)
-    an [IllegalArgumentException] should be thrownBy trainedModel.fit(x, y)
+    an [IllegalArgumentException] should be thrownBy ev.predict(model, x)
+    val trainedModel = ev.fit(model, x, y)
+    an [IllegalArgumentException] should be thrownBy ev.fit(trainedModel, x, y)
   }
 
   it should "implement predictor functions" in {
-    model.isFitted shouldBe false
-    val trainedModel = model.fit(x, y)
-    trainedModel.isFitted shouldBe true
-    val yPred = trainedModel.predict(x)
+    ev.isFitted(model) shouldBe false
+    val trainedModel = ev.fit(model, x, y)
+    ev.isFitted(trainedModel) shouldBe true
+    val yPred = ev.predict(trainedModel, x)
     yPred.length shouldEqual y.length
   }
 }

@@ -1,12 +1,12 @@
 package com.picnicml.doddlemodel.data
 
-import com.picnicml.doddlemodel.TestUtils
+import com.picnicml.doddlemodel.TestingUtils
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
 
-class DataUtilsTest extends FlatSpec with Matchers with TestUtils {
+class DataUtilsTesting extends FlatSpec with Matchers with TestingUtils {
 
   implicit val rand: Random = new Random(0)
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1.0)
