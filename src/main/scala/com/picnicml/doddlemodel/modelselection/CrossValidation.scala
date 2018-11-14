@@ -1,14 +1,11 @@
 package com.picnicml.doddlemodel.modelselection
 
-import java.util.concurrent.Executors
-
 import com.picnicml.doddlemodel.data.{Features, Target}
-import com.picnicml.doddlemodel.maxNumThreads
 import com.picnicml.doddlemodel.metrics.Metric
 import com.picnicml.doddlemodel.typeclasses.Predictor
 
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, Future}
 import scala.util.Random
 
 /** A parallel, n-fold cross validation technique.
@@ -23,7 +20,7 @@ import scala.util.Random
   */
 class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRows: Boolean) {
 
-  case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
+  private implicit val ec: CVExecutionContext = new CVExecutionContext()
 
   /**
     * @param reusable indicates whether to shutdown the thread pool after the cv score is computed
@@ -32,18 +29,17 @@ class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRo
     *  after the instance is not needed anymore
     */
   def score[A](model: A, x: Features, y: Target)
-           (implicit ev: Predictor[A],
-            reusable: CrossValReusable = CrossValReusable(false),
-            rand: Random = new Random()): Double = {
-    val foldsScores = splitData(x, y).map(split => this.foldScore(model, split))
-    val scoreAvg = Future.sequence(foldsScores).map(scores => scores.sum / scores.length)
-    val finalScore = Await.result(scoreAvg, Duration.Inf)
+              (implicit ev: Predictor[A],
+               reusable: CrossValReusable = CrossValReusable(false),
+               rand: Random = new Random()): Double = {
+    val futureFoldsScores = Future.traverse(splitData(x, y))(split => this.foldScore(model, split))
+    val completedFoldsScores = Await.result(futureFoldsScores, Duration.Inf)
     if (!reusable.yes) this.ec.shutdownNow()
-    finalScore
+    completedFoldsScores.sum / completedFoldsScores.length
   }
 
   private[modelselection] def splitData(x: Features, y: Target)
-                                       (implicit rand: Random): List[TrainTestSplit] = {
+                                       (implicit rand: Random): Stream[TrainTestSplit] = {
     require(x.rows >= this.folds, "Number of examples must be at least the same as number of folds")
 
     val shuffleIndices = if (shuffleRows) rand.shuffle[Int, IndexedSeq](0 until y.length) else 0 until y.length
@@ -52,7 +48,7 @@ class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRo
 
     val splitIndices = this.calculateSplitIndices(x.rows)
 
-    splitIndices zip splitIndices.tail map {
+    (splitIndices zip splitIndices.tail).toStream map {
       case (indexStart, indexEnd) =>
         val trIndices = (0 until indexStart) ++ (indexEnd until x.rows)
         val teIndices = indexStart until indexEnd
@@ -85,22 +81,6 @@ class CrossValidation private (val metric: Metric, val folds: Int, val shuffleRo
 
   private def foldScore[A](model: A, split: TrainTestSplit)(implicit ev: Predictor[A]): Future[Double] = Future {
     this.metric(split.yTe, ev.predict(ev.fit(model, split.xTr, split.yTr), split.xTe))
-  }
-
-  // create a custom execution context that is suitable for training models in parallel
-  private trait CVExecutionContext extends ExecutionContext { def shutdownNow(): Unit }
-
-  private implicit val ec: CVExecutionContext = new CVExecutionContext {
-
-    private val threadPool = Executors.newFixedThreadPool(maxNumThreads)
-
-    override def execute(runnable: Runnable): Unit = threadPool.submit(runnable)
-    override def reportFailure(cause: Throwable): Unit = throw cause
-
-    def shutdownNow(): Unit = {
-      val notExecuted = threadPool.shutdownNow()
-      require(notExecuted.isEmpty, "CVExecutionContext received shutdownNow before the tasks were completed")
-    }
   }
 
   /**
