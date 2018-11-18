@@ -11,31 +11,32 @@ import scala.util.Random
   * @param numIterations number of predictors for which the cross validation score is calculated
   *
   * Examples:
-  * implicit val cv: CrossValidation = CrossValidation(metric = accuracy, folds = 5)
-  * val search = HyperparameterSearch[LogisticRegression](folds = 3)
+  * val splitter = KFoldSplitter(folds = 3)
+  * val cv: CrossValidation = CrossValidation(metric = accuracy, dataSplitter = splitter)
+  * val search = HyperparameterSearch(numIterations = 3, crossValidation = cv)
   * val bestModel = search.bestOf(x, y) {
   *   LogisticRegression(lambda = gamma.draw())
   * }
   */
-class HyperparameterSearch private (val numIterations: Int) {
+class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossValidation) {
 
   implicit val cvReusable: CrossValReusable = CrossValReusable(true)
 
   def bestOf[A](x: Features, y: Target)(generatePredictor: => A)
-               (implicit ev: Predictor[A], crossVal: CrossValidation, rand: Random = new Random()): A = {
+               (implicit ev: Predictor[A], rand: Random = new Random()): A = {
 
     case class PredictorWithScore(predictor: A, score: Double)
 
     val scores = (0 until this.numIterations).map { _ =>
       val predictor = generatePredictor
-      PredictorWithScore(predictor, crossVal.score(predictor, x, y))
+      PredictorWithScore(predictor, this.crossVal.score(predictor, x, y))
     }
 
     // this is needed because of cvReusable, see
     // com.picnicml.doddlemodel.modelselection.CrossValidation for details
-    crossVal.shutdownNow()
+    this.crossVal.shutdownNow()
 
-    if (crossVal.metric.higherValueIsBetter)
+    if (this.crossVal.metric.higherValueIsBetter)
       ev.fit(scores.maxBy(_.score).predictor, x, y)
     else
       ev.fit(scores.minBy(_.score).predictor, x, y)
@@ -44,8 +45,8 @@ class HyperparameterSearch private (val numIterations: Int) {
 
 object HyperparameterSearch {
 
-  def apply(numIterations: Int): HyperparameterSearch = {
+  def apply(numIterations: Int, crossValidation: CrossValidation): HyperparameterSearch = {
     require(numIterations > 0, "Number of iterations must be positive")
-    new HyperparameterSearch(numIterations)
+    new HyperparameterSearch(numIterations, crossValidation)
   }
 }

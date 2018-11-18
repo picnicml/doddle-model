@@ -1,14 +1,13 @@
 package com.picnicml.doddlemodel.modelselection
 
 import breeze.linalg.{DenseMatrix, DenseVector, convert}
-import com.picnicml.doddlemodel.metrics.accuracy
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
 
-class CrossValidationTest extends FlatSpec with Matchers {
+class KFoldSplitterTest extends FlatSpec with Matchers {
 
-  val cv = CrossValidation(metric = accuracy, folds = 3, shuffleRows = false)
+  val splitter = KFoldSplitter(folds = 3, shuffleRows = false)
 
   private def dummyData(nRows: Int) =
     (DenseMatrix.zeros[Double](nRows, 1), convert(DenseVector((1 to nRows).toArray), Double))
@@ -16,7 +15,7 @@ class CrossValidationTest extends FlatSpec with Matchers {
   "3-fold cross validation" should "split 8 examples correctly" in {
     implicit val rand: Random = new Random()
     val (x, y) = dummyData(8)
-    val splits = cv.splitData(x, y)
+    val splits = splitter.splitData(x, y)
 
     splits.length shouldBe 3
     splits(0).yTr.toArray shouldBe (4 to 8).toArray
@@ -30,7 +29,7 @@ class CrossValidationTest extends FlatSpec with Matchers {
   it should "split 9 examples correctly" in {
     implicit val rand: Random = new Random()
     val (x, y) = dummyData(9)
-    val splits = cv.splitData(x, y)
+    val splits = splitter.splitData(x, y)
 
     splits.length shouldBe 3
     splits(0).yTr.toArray shouldBe (4 to 9).toArray
@@ -44,7 +43,7 @@ class CrossValidationTest extends FlatSpec with Matchers {
   it should "split 10 examples correctly" in {
     implicit val rand: Random = new Random()
     val (x, y) = dummyData(10)
-    val splits = cv.splitData(x, y)
+    val splits = splitter.splitData(x, y)
 
     splits.length shouldBe 3
     splits(0).yTr.toArray shouldBe (5 to 10).toArray
