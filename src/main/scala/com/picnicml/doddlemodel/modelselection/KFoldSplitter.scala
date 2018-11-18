@@ -1,5 +1,5 @@
 package com.picnicml.doddlemodel.modelselection
-import com.picnicml.doddlemodel.data.{Features, Target}
+import com.picnicml.doddlemodel.data.{Features, IntVector, Target}
 
 import scala.util.Random
 
@@ -14,7 +14,7 @@ import scala.util.Random
   */
 class KFoldSplitter private (val folds: Int, val shuffleRows: Boolean) extends DataSplitter {
 
-  override def splitData(x: Features, y: Target)(implicit rand: Random): Stream[TrainTestSplit] = {
+  override def splitData(x: Features, y: Target)(implicit rand: Random = new Random()): Stream[TrainTestSplit] = {
     require(x.rows >= this.folds, "Number of examples must be at least the same as number of folds")
 
     val shuffleIndices = if (this.shuffleRows) rand.shuffle[Int, IndexedSeq](0 until y.length) else 0 until y.length
@@ -53,6 +53,10 @@ class KFoldSplitter private (val folds: Int, val shuffleRows: Boolean) extends D
       case _ => throw new IllegalStateException("Non-exhaustive match was expected to handle all cases")
     }
   }
+
+
+  override def splitData(x: Features, y: Target, groups: IntVector)(implicit rand: Random): Stream[TrainTestSplit] =
+    throw new NotImplementedError("KFoldSplitter doesn't split data based on groups")
 }
 
 object KFoldSplitter {

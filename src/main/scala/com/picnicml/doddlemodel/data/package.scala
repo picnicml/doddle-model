@@ -13,6 +13,7 @@ package object data {
   type Target = DenseVector[Double]
   type Simplex = DenseMatrix[Double]
   type RealVector = DenseVector[Double]
+  type IntVector = DenseVector[Int]
   type Dataset = (Features, Target)
 
   def loadBostonDataset: Dataset = DatasetsLoaders.loadBostonDataset

@@ -1,6 +1,6 @@
 package com.picnicml.doddlemodel.modelselection
 
-import com.picnicml.doddlemodel.data.{Features, Target}
+import com.picnicml.doddlemodel.data.{Features, IntVector, Target}
 import com.picnicml.doddlemodel.metrics.Metric
 import com.picnicml.doddlemodel.typeclasses.Predictor
 
@@ -28,13 +28,20 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
     *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
     *  after the instance is not needed anymore
     */
-  def score[A](model: A, x: Features, y: Target)
+  def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = None)
               (implicit ev: Predictor[A],
                reusable: CrossValReusable = CrossValReusable(false),
                rand: Random = new Random()): Double = {
-    val futureFoldsScores = Future.traverse(this.dataSplitter.splitData(x, y))(split => this.foldScore(model, split))
+
+    val dataSplits =
+      groups.fold(this.dataSplitter.splitData(x, y))(groups => this.dataSplitter.splitData(x, y, groups))
+
+    val futureFoldsScores = Future.traverse(dataSplits)(split => this.foldScore(model, split))
     val completedFoldsScores = Await.result(futureFoldsScores, Duration.Inf)
-    if (!reusable.yes) this.ec.shutdownNow()
+
+    if (!reusable.yes)
+      this.ec.shutdownNow()
+
     completedFoldsScores.sum / completedFoldsScores.length
   }
 
