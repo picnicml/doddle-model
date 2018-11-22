@@ -1,8 +1,8 @@
 package com.picnicml.doddlemodel
 
-import breeze.linalg.zipValues
+import breeze.linalg.{DenseMatrix, DenseVector, convert, zipValues}
 import breeze.optimize.ApproximateGradientFunction
-import com.picnicml.doddlemodel.data.RealVector
+import com.picnicml.doddlemodel.data.{Dataset, RealVector}
 import org.scalactic.Equality
 
 trait TestingUtils {
@@ -14,4 +14,7 @@ trait TestingUtils {
     val gradApprox = new ApproximateGradientFunction(func)
     gradApprox.gradientAt(x)
   }
+
+  def dummyData(nRows: Int): Dataset =
+    (DenseMatrix.zeros[Double](nRows, 1), convert(DenseVector((0 until nRows).toArray), Double))
 }
