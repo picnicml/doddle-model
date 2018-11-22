@@ -11,7 +11,7 @@ import scala.util.Random
   * @param numIterations number of predictors for which the cross validation score is calculated
   *
   * Examples:
-  * val splitter = KFoldSplitter(folds = 3)
+  * val splitter = KFoldSplitter(numFolds = 3)
   * val cv: CrossValidation = CrossValidation(metric = accuracy, dataSplitter = splitter)
   * val search = HyperparameterSearch(numIterations = 3, crossValidation = cv)
   * val bestModel = search.bestOf(x, y) {

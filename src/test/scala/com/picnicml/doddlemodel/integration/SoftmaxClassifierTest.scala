@@ -13,7 +13,7 @@ class SoftmaxClassifierTest extends FlatSpec with Matchers {
   "Softmax classifier" should "achieve a reasonable score on the iris dataset" in {
     val (x, y) = loadIrisDataset
     val model = SoftmaxClassifier()
-    val cv = CrossValidation(accuracy, KFoldSplitter(folds = 10))
+    val cv = CrossValidation(accuracy, KFoldSplitter(numFolds = 10))
     implicit val rand: Random = new Random(42)
 
     cv.score(model, x, y) should be > 0.94
