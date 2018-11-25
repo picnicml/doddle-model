@@ -4,6 +4,7 @@ import breeze.linalg._
 import breeze.numerics.{exp, log, pow}
 import com.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import com.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
+import com.picnicml.doddlemodel.syntax.OptionSyntax._
 
 /** An immutable multiple multinomial regression model with ridge regularization.
   *
@@ -44,12 +45,7 @@ object SoftmaxClassifier {
       convert(argmax(predictProbaStateless(model, w, x)(*, ::)), Double)
 
     override protected def predictProbaStateless(model: SoftmaxClassifier, w: RealVector, x: Features): Simplex = {
-      val numClasses = model.numClasses match {
-        case Some(nc) => nc
-        case None => throw new IllegalStateException("numClasses not set on a trained model")
-      }
-
-      val z = x * w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
+      val z = x * w.asDenseMatrix.reshape(x.cols, model.numClasses.getOrBreak - 1, View.Require)
       val maxZ = max(z)
       val zExpPivot = DenseMatrix.horzcat(exp(z - maxZ), DenseMatrix.fill[Double](x.rows, 1)(exp(-maxZ)))
       zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))
@@ -57,39 +53,29 @@ object SoftmaxClassifier {
 
     override protected[linear] def lossStateless(model: SoftmaxClassifier,
                                                  w: RealVector, x: Features, y: Target): Double = {
-      val numClasses = model.numClasses match {
-        case Some(nc) => nc
-        case None => throw new IllegalStateException("numClasses must be set during training")
-      }
-
       model.yPredProbaCache = predictProbaStateless(model, w, x)
       val yPredProbaOfTrueClass = 0 until x.rows map { rowIndex =>
         val targetClass = y(rowIndex).toInt
         model.yPredProbaCache(rowIndex, targetClass)
       }
 
-      val wMatrix = w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
+      val wMatrix = w.asDenseMatrix.reshape(x.cols, model.numClasses.getOrBreak - 1, View.Require)
       sum(log(DenseMatrix(yPredProbaOfTrueClass))) / (-x.rows.toDouble) +
         .5 * model.lambda * sum(pow(wMatrix(wSlice, ::), 2))
     }
 
     override protected[linear] def lossGradStateless(model: SoftmaxClassifier,
                                                      w: RealVector, x: Features, y: Target): RealVector = {
-      val numClasses = model.numClasses match {
-        case Some(nc) => nc
-        case None => throw new IllegalStateException("numClasses must be set during training")
-      }
-
       val yPredProba = model.yPredProbaCache(::, 0 to -2)
 
       val indicator = DenseMatrix.zeros[Double](yPredProba.rows, yPredProba.cols)
       0 until indicator.rows foreach { rowIndex =>
         val targetClass = y(rowIndex).toInt
-        if (targetClass < numClasses - 1) indicator(rowIndex, targetClass) = 1.0
+        if (targetClass < model.numClasses.getOrBreak - 1) indicator(rowIndex, targetClass) = 1.0
       }
 
       val grad = (x.t * (indicator - yPredProba)) / (-x.rows.toDouble)
-      val wMatrix = w.asDenseMatrix.reshape(x.cols, numClasses - 1, View.Require)
+      val wMatrix = w.asDenseMatrix.reshape(x.cols, model.numClasses.getOrBreak - 1, View.Require)
       grad(wSlice, ::) += model.lambda * wMatrix(wSlice, ::)
       grad.toDenseVector
     }

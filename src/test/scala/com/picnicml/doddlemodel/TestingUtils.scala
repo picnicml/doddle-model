@@ -7,6 +7,9 @@ import org.scalactic.Equality
 
 trait TestingUtils {
 
+  def breezeEqual(x0: DenseMatrix[Double], x1: DenseMatrix[Double])(implicit tol: Equality[Double]): Boolean =
+    breezeEqual(x0.toDenseVector, x1.toDenseVector)
+
   def breezeEqual(x0: RealVector, x1: RealVector)(implicit tol: Equality[Double]): Boolean =
     zipValues(x0, x1).forall((v0, v1) => tol.areEquivalent(v0, v1))
 
@@ -15,6 +18,6 @@ trait TestingUtils {
     gradApprox.gradientAt(x)
   }
 
-  def dummyData(nRows: Int): Dataset =
-    (DenseMatrix.zeros[Double](nRows, 1), convert(DenseVector((0 until nRows).toArray), Double))
+  def dummyData(nRows: Int, nCols: Int = 1): Dataset =
+    (DenseMatrix.zeros[Double](nRows, nCols), convert(DenseVector((0 until nRows).toArray), Double))
 }

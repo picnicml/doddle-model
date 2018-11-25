@@ -6,6 +6,7 @@ import breeze.linalg.{DenseMatrix, DenseVector, unique}
 import com.github.tototoshi.csv.CSVReader
 
 import scala.util.Random
+import scala.util.control.Exception.nonFatalCatch
 
 package object data {
 
@@ -24,7 +25,9 @@ package object data {
   def loadCsvDataset(filePath: String, headerLine: Boolean = true): DenseMatrix[Double] = {
     val reader = CSVReader.open(new File(filePath))
     if (headerLine) reader.readNext()
-    val data = DenseMatrix(reader.toStream.map(_.map(_.toDouble).toArray):_*)
+    val data = DenseMatrix(
+      reader.toStream.map(_.map(x => (nonFatalCatch opt x.toDouble).getOrElse(Double.NaN)).toArray):_*
+    )
     reader.close()
     data
   }
