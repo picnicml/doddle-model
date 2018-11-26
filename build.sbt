@@ -2,7 +2,7 @@
 lazy val root = (project in file("."))
   .settings(
     name := "doddle-model",
-    organization := "picnicml",
+    organization := "io.github.picnicml",
     homepage := Some(url("https://picnicml.github.io")),
     scmInfo := Some(ScmInfo(
       url("https://github.com/picnicml/doddle-model"),
