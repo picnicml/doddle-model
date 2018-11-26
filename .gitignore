@@ -3,17 +3,11 @@
 *.ipr
 *.iws
 
-## File-based project format:
-*.iws
-
 ## Plugin-specific files:
 /out/
 
 # mpeltonen/sbt-idea plugin
 .idea_modules/
-
-### Intellij Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
 # *.iml
 # modules.xml
@@ -41,5 +35,5 @@ project/plugins/project/
 
 # Custom
 .DS_Store
-!src/main/scala/com/picnicml/doddlemodel/data/
-!src/test/scala/com/picnicml/doddlemodel/data/
+!src/main/scala/io/picnicml/doddlemodel/data/
+!src/test/scala/io/picnicml/doddlemodel/data/
