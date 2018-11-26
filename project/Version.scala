@@ -1,5 +1,9 @@
+import scala.util.Properties.envOrNone
+
 object Version {
-  val baseVersion = "0.0.0"
+
+  private val baseVersion = "v0.0.1"
+
   def apply(): String =
-    baseVersion + "-" + scala.util.Properties.envOrElse("BUILD_NUMBER", "SNAPSHOT")
+    envOrNone("PRE_RELEASE").fold(baseVersion)(preRelease => s"$baseVersion-$preRelease")
 }
