@@ -3,8 +3,8 @@
 <tr>
   <td>Latest Release</td>
   <td>
-    <a href="https://github.com/picnicml/doddle-model/releases">
-    <img src="https://img.shields.io/github/release/picnicml/doddle-model.svg?style=flat-square&label=version" alt="latest release"/>
+    <a href="https://search.maven.org/search?q=g:io.github.picnicml">
+    <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model.svg?style=flat-square&label=maven" alt="latest release"/>
     </a>
   </td>
 </tr>
@@ -12,7 +12,7 @@
   <td>Build Status</td>
   <td>
     <a href="https://circleci.com/gh/picnicml/doddle-model">
-    <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square" alt="build status"/>
+    <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square&label=circleci" alt="build status"/>
     </a>
   </td>
 </tr>
@@ -20,7 +20,7 @@
   <td>Code Quality</td>
   <td>
     <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
-    <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square&label=quality" alt="code quality"/>
+    <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square&label=codacy" alt="code quality"/>
     </a>
   </td>
 </tr>
@@ -50,16 +50,9 @@
 **Caveat emptor!** `doddle-model` is in an early-stage development phase. Any kind of contributions are much appreciated.
 
 ### Installation
-Publish the project to a local Ivy repository:
-```bash
-git clone https://github.com/picnicml/doddle-model.git
-cd doddle-model
-sbt publish-local
-```
-
 Add the dependency to your SBT project definition:
 ```scala
-libraryDependencies += "com.picnicml" %% "doddle-model" % "0.0.0-SNAPSHOT"
+libraryDependencies += "io.github.picnicml" %% "doddle-model" % "v0.0.1-alpha1"
 ```
 
 ### Getting Started
