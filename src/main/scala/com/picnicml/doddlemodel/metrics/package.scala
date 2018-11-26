@@ -13,6 +13,8 @@ package object metrics {
 
   // classification metrics
   lazy val accuracy: Metric = Accuracy
+  lazy val precision: Metric = Precision
+  lazy val recall: Metric = Recall
 
   // ranking metrics
   lazy val auc: Metric = Auc
