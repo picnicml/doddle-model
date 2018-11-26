@@ -8,20 +8,22 @@ import org.scalatest.{FlatSpec, Matchers, OptionValues}
 class MeanValueImputerTest extends FlatSpec with Matchers with TestingUtils with OptionValues {
 
   "Mean value imputer" should "impute data correctly" in {
-    val x = DenseMatrix(
-      List(1.0, 2.0, 3.0),
-      List(1.0, 2.0, 3.0),
-      List(1.0, 2.0, 3.0)
+    val xMissing = DenseMatrix(
+      List(Double.NaN, 1.0, 2.0),
+      List(3.0, Double.NaN, 5.0),
+      List(6.0, 7.0, 8.0)
     )
 
-    val xMissing = x.copy
-    xMissing(0, 0) = Double.NaN
-    xMissing(1, 1) = Double.NaN
+    val xImputedExpected = DenseMatrix(
+      List(4.5, 1.0, 2.0),
+      List(3.0, 4.0, 5.0),
+      List(6.0, 7.0, 8.0)
+    )
 
     val imputer = MeanValueImputer()
     val fittedImputer = imputer.fit(xMissing)
 
-    breezeEqual(fittedImputer.means.value, DenseVector(1.0, 2.0, 3.0)) shouldBe true
-    breezeEqual(fittedImputer.transform(xMissing), x)
+    breezeEqual(fittedImputer.means.value, DenseVector(4.5, 4.0, 5.0)) shouldBe true
+    breezeEqual(fittedImputer.transform(xMissing), xImputedExpected)
   }
 }
