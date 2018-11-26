@@ -2,7 +2,7 @@ package com.picnicml.doddlemodel.impute
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import com.picnicml.doddlemodel.TestingUtils
-import com.picnicml.doddlemodel.syntax.TransformerSyntax._
+import com.picnicml.doddlemodel.impute.MeanValueImputer.ev
 import org.scalatest.{FlatSpec, Matchers, OptionValues}
 
 class MeanValueImputerTest extends FlatSpec with Matchers with TestingUtils with OptionValues {
@@ -21,9 +21,9 @@ class MeanValueImputerTest extends FlatSpec with Matchers with TestingUtils with
     )
 
     val imputer = MeanValueImputer()
-    val fittedImputer = imputer.fit(xMissing)
+    val fittedImputer = ev.fit(imputer, xMissing)
 
     breezeEqual(fittedImputer.means.value, DenseVector(4.5, 4.0, 5.0)) shouldBe true
-    breezeEqual(fittedImputer.transform(xMissing), xImputedExpected)
+    breezeEqual(ev.transform(fittedImputer, xMissing), xImputedExpected)
   }
 }
