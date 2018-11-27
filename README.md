@@ -4,7 +4,7 @@
   <td>Latest Release</td>
   <td>
     <a href="https://search.maven.org/search?q=g:io.github.picnicml">
-    <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model.svg?style=flat-square&label=maven" alt="latest release"/>
+    <img src="https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.picnicml/doddle-model_2.12.svg?style=flat-square" alt="latest release"/>
     </a>
   </td>
 </tr>
@@ -52,7 +52,7 @@
 ### Installation
 Add the dependency to your SBT project definition:
 ```scala
-libraryDependencies += "io.github.picnicml" %% "doddle-model" % "v0.0.1-alpha1"
+libraryDependencies += "io.github.picnicml" %% "doddle-model" % "0.0.1-alpha1"
 ```
 
 ### Getting Started
