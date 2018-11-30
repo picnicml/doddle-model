@@ -52,7 +52,7 @@
 ### Installation
 Add the dependency to your SBT project definition:
 ```scala
-libraryDependencies += "io.github.picnicml" %% "doddle-model" % "0.0.1-alpha1"
+libraryDependencies += "io.github.picnicml" %% "doddle-model" % "<latest_version>"
 ```
 
 ### Getting Started
