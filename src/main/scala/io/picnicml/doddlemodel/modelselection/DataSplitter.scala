@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.modelselection
 
-import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
+import io.picnicml.doddlemodel.data.{Features, IntVector, Target, TrainTestSplit}
 
 import scala.util.Random
 

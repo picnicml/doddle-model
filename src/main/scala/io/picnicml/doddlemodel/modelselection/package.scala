@@ -2,13 +2,9 @@ package io.picnicml.doddlemodel
 
 import java.util.concurrent.Executors
 
-import io.picnicml.doddlemodel.data.{Features, Target}
-
 import scala.concurrent.ExecutionContext
 
 package object modelselection {
-
-  case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
 
   case class CrossValReusable(yes: Boolean)
 

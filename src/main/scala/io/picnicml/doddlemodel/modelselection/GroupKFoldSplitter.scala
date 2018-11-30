@@ -1,14 +1,15 @@
 package io.picnicml.doddlemodel.modelselection
 
-import breeze.linalg.{argmin, unique}
+import breeze.linalg.argmin
 import breeze.stats.hist
-import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
+import io.picnicml.doddlemodel.data._
 import io.picnicml.doddlemodel.modelselection.GroupKFoldSplitter.{TestFolds, TrainTestIndices}
 
 import scala.util.Random
 
 /** K-Folds strategy for splitting data that makes sure groups in each fold are non-overlapping,
-  * i.e no group is present in both training and testing splits.
+  * i.e no group is present in both training and testing splits. Folds try to be as balanced
+  * as possible, i.e. the number of test examples in each fold is approximately the same.
   *
   * @param numFolds number of folds
   *
@@ -20,11 +21,7 @@ class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
 
   override def splitData(x: Features, y: Target, groups: IntVector)
                         (implicit rand: Random = new Random()): Stream[TrainTestSplit] = {
-    val uniqueGroups = unique(groups)
-    require(uniqueGroups.toArray.sorted sameElements Array.range(0, uniqueGroups.length),
-      "Invalid encoding of groups, all group indices in [0, numGroups) have to exist")
-
-    val testFolds = calculateTestFolds(groups, uniqueGroups.length)
+    val testFolds = calculateTestFolds(groups)
 
     (0 until numFolds).toStream.map { foldIndex =>
       val indices = groups.iterator.foldLeft(TrainTestIndices()) { case (acc, (exampleIndex, group)) =>
@@ -35,17 +32,16 @@ class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
       }
 
       TrainTestSplit(
-        // train examples
         x(indices.trIndices, ::).toDenseMatrix,
         y(indices.trIndices).toDenseVector,
-        // test examples
         x(indices.teIndices, ::).toDenseMatrix,
         y(indices.teIndices).toDenseVector
       )
     }
   }
 
-  private def calculateTestFolds(groups: IntVector, numGroups: Int): TestFolds = {
+  private def calculateTestFolds(groups: IntVector): TestFolds = {
+    val numGroups = numberOfUniqueGroups(groups)
     val numSamplesPerGroup = hist(groups, numGroups).hist.toArray
 
     implicit val ordering: Ordering[Int] = Ordering.Int.reverse

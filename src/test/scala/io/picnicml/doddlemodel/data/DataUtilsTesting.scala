@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.data
 
+import breeze.linalg.DenseVector
 import io.picnicml.doddlemodel.TestingUtils
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
@@ -19,8 +20,15 @@ class DataUtilsTesting extends FlatSpec with Matchers with TestingUtils {
   }
 
   they should "split the dataset correctly" in {
-    val (_, yTr, _, yTe) = splitDataset(x, y)
-    yTr.length shouldBe 75
-    yTe.length shouldBe 75
+    val split = splitDataset(x, y)
+    split.yTr.length shouldBe 75
+    split.yTe.length shouldBe 75
+  }
+
+  they should "split the dataset with groups correctly" in {
+    val groups = DenseVector((0 until x.rows).map(x => x % 4):_*)
+    val split = splitDatasetWithGroups(x, y, groups, proportionTrain = 0.8)
+    val groupsTe = split.groupsTe.toArray
+    split.groupsTr.forall(trGroup => !groupsTe.contains(trGroup)) shouldBe true
   }
 }

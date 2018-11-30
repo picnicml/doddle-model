@@ -1,5 +1,5 @@
 package io.picnicml.doddlemodel.modelselection
-import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
+import io.picnicml.doddlemodel.data.{Features, IntVector, Target, TrainTestSplit}
 
 import scala.util.Random
 
@@ -28,10 +28,8 @@ class KFoldSplitter private (val numFolds: Int, val shuffleRows: Boolean) extend
       val teIndices = indexStart until indexEnd
 
       TrainTestSplit(
-        // train examples
         xShuffled(trIndices, ::).toDenseMatrix,
         yShuffled(trIndices).toDenseVector,
-        // test examples
         xShuffled(teIndices, ::).toDenseMatrix,
         yShuffled(teIndices).toDenseVector
       )
