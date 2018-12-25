@@ -42,4 +42,30 @@ object ClassificationMetrics {
       numTp / (numTp + (!yPredPositive &:& yPositive).activeSize.toDouble)
     }
   }
+
+  /** F1 score. */
+  object F1Score extends Metric {
+
+    override lazy val higherValueIsBetter: Boolean = true
+
+    override def apply(y: Target, yPred: Target): Double = {
+      require(y.length == yPred.length, "Target vectors need to be of equal length")
+      require(numberOfTargetClasses(y) == 2, "F1 score is defined for a binary classification task")
+      val prec = precision(y, yPred)
+      val rec = recall(y, yPred)
+
+      2 * (prec * rec) / (prec + rec)
+    }
+  }
+
+  /** Hamming loss. */
+  object HammingLoss extends Metric {
+
+    override lazy val higherValueIsBetter: Boolean = false
+
+    override def apply(y: Target, yPred: Target): Double = {
+      require(y.length == yPred.length, "Target vectors need to be of equal length")
+      1.0 - accuracy(y, yPred)
+    }
+  }
 }

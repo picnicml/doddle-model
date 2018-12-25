@@ -15,6 +15,8 @@ package object metrics {
   lazy val accuracy: Metric = Accuracy
   lazy val precision: Metric = Precision
   lazy val recall: Metric = Recall
+  lazy val f1score: Metric = F1Score
+  lazy val hammingLoss: Metric = HammingLoss
 
   // ranking metrics
   lazy val auc: Metric = Auc
