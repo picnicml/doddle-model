@@ -12,9 +12,18 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = false
 
+    override def apply(y: Target, yPred: Target): Double = sqrt(mse(y, yPred))
+  }
+
+  /** Mean squared error. */
+  object Mse extends Metric {
+
+    override lazy val higherValueIsBetter: Boolean = false
+
     override def apply(y: Target, yPred: Target): Double = {
-      val d = y - yPred
-      sqrt((d.t * d) / y.length.toDouble)
+      require(y.length == yPred.length, "Target vectors need to be of equal length")
+      val diff = y - yPred
+      (diff.t * diff) / y.length.toDouble
     }
   }
 

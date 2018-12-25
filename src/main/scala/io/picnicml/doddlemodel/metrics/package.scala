@@ -7,6 +7,7 @@ import io.picnicml.doddlemodel.metrics.RegressionMetrics._
 package object metrics {
 
   // regression metrics
+  lazy val mse: Metric = Mse
   lazy val rmse: Metric = Rmse
   lazy val mae: Metric = Mae
   lazy val explainedVariance: Metric = ExplainedVariance
