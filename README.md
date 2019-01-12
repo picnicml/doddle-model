@@ -4,7 +4,7 @@
   <td>Latest Release</td>
   <td>
     <a href="https://search.maven.org/search?q=g:io.github.picnicml">
-    <img src="https://img.shields.io/nexus/r/https/oss.sonatype.org/io.github.picnicml/doddle-model_2.12.svg?style=flat-square" alt="latest release"/>
+    <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square" alt="latest release"/>
     </a>
   </td>
 </tr>
