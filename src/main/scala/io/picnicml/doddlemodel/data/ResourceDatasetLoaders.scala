@@ -1,11 +1,9 @@
 package io.picnicml.doddlemodel.data
 
-import java.io.InputStreamReader
-
-import breeze.io.{CSVReader => BreezeCSVReader}
 import breeze.linalg.DenseMatrix
+import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
 
-object DatasetsLoaders {
+object ResourceDatasetLoaders {
 
   private val datasetsDir = "datasets"
 
@@ -30,11 +28,13 @@ object DatasetsLoaders {
     (data(::, 0 to -2), data(::, -1))
   }
 
+  private[data] def loadDummyCsvReadingDataset: Dataset = {
+    val data = loadDatasetFromResources("dummy_csv_reading")
+    (data(::, 0 to -2), data(::, -1))
+  }
+
   private def loadDatasetFromResources(datasetName: String): DenseMatrix[Double] = {
-    val input = new InputStreamReader(getClass.getResourceAsStream(s"/$datasetsDir/$datasetName.csv"))
-    var matrix = BreezeCSVReader.read(input, separator = ',', quote = '"', escape = '\\', skipLines = 1)
-    matrix = matrix.takeWhile(line => line.nonEmpty && line(0).nonEmpty)
-    input.close()
-    DenseMatrix.tabulate(matrix.length, matrix(0).length)((i, j) => matrix(i)(j).toDouble)
+    val path = getClass.getResource(s"/$datasetsDir/$datasetName.csv").getPath
+    loadCsvDataset(path)
   }
 }

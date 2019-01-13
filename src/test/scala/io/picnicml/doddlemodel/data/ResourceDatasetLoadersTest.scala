@@ -3,7 +3,7 @@ package io.picnicml.doddlemodel.data
 import breeze.linalg.sum
 import org.scalatest.{FlatSpec, Matchers}
 
-class DatasetsLoadersTest extends FlatSpec with Matchers {
+class ResourceDatasetLoadersTest extends FlatSpec with Matchers {
 
   "Data loaders" should "load the boston housing prices dataset" in {
     val (x, y) = loadBostonDataset
