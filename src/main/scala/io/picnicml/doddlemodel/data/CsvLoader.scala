@@ -21,13 +21,14 @@ object CsvLoader {
     val labelEncoder = inferLabelEncoder(datasetFile, naString, featureNames, featureTypes)
 
     val data = reader.toStream.map(rowValues => rowValues.zipWithIndex.map { case (value, colIndex) =>
-      if (value == naString)
-        Double.NaN
-      else if (featureTypes(colIndex) == numericalFeatureString)
-        (nonFatalCatch opt value.toDouble).fold(throw new IllegalArgumentException(
-          s"Numerical feature ${featureNames(colIndex)} contains non-numerical values"))(identity)
-      else
-        labelEncoder.encode(featureNames(colIndex), value)
+      value match {
+        case x if x == naString => Double.NaN
+        case _ if featureTypes(colIndex) == numericalFeatureString =>
+          (nonFatalCatch opt value.toDouble)
+            .fold(throw new IllegalArgumentException(
+              s"Numerical feature ${featureNames(colIndex)} contains non-numerical values"))(identity)
+        case _ => labelEncoder.encode(featureNames(colIndex), value)
+      }
     })
 
     val dataset = DenseMatrix(data:_*)
@@ -65,15 +66,13 @@ object CsvLoader {
 
     val encoder = reader.toStream.foldLeft(uniqueValuesInitial) { case (currentUniqueValuesRow, rowValues) =>
       rowValues.zipWithIndex.foldLeft(currentUniqueValuesRow) { case (currentUniqueValuesCol, (value, colIndex)) =>
-        if (value == naString)
-          currentUniqueValuesCol
-        else if (featureTypes(colIndex) == categoricalFeatureString)
-          currentUniqueValuesCol.updated(
-            featureNames(colIndex),
-            currentUniqueValuesCol(featureNames(colIndex)) + value
-          )
-        else
-          currentUniqueValuesCol
+        value match {
+          case x if x == naString => currentUniqueValuesCol
+          case _ if featureTypes(colIndex) == categoricalFeatureString =>
+            val update = currentUniqueValuesCol(featureNames(colIndex)) + value
+            currentUniqueValuesCol.updated(featureNames(colIndex), update)
+          case _ => currentUniqueValuesCol
+        }
       }
     }.mapValues(_.zipWithIndex.toMap.mapValues(_.toDouble))
 
