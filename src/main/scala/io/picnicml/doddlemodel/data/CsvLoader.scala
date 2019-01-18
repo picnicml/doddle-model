@@ -13,8 +13,7 @@ object CsvLoader {
   private val categoricalFeatureString = "c"
 
   /** Loads a csv dataset with 2 header lines (feature names and types). */
-  def loadCsvDataset(filePath: String, naString: String = "NA"): DenseMatrix[Double] = {
-    val datasetFile = new File(filePath)
+  def loadCsvDataset(datasetFile: File, naString: String = "NA"): DenseMatrix[Double] = {
     val reader = CSVReader.open(datasetFile)
 
     val (featureNames, featureTypes) = inferHeaderLines(reader)
