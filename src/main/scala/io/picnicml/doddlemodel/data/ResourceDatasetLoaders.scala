@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.data
 
-import java.io.{File, FileOutputStream, IOException}
+import java.io.{File, FileOutputStream}
 
 import breeze.linalg.DenseMatrix
 import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
@@ -49,23 +49,21 @@ object ResourceDatasetLoaders {
     file
   }
 
-  private def readResourceFileWithinJar(path: String): File = try {
-    val input = getClass.getResourceAsStream(path)
+  private def readResourceFileWithinJar(path: String): File = {
+    val inputStream = getClass.getResourceAsStream(path)
     val tempFile = File.createTempFile("tempfile", ".tmp")
-    val out = new FileOutputStream(tempFile)
+    val outputStream = new FileOutputStream(tempFile)
 
-    val bytes = new Array[Byte](130 * 1024)
-    var read = input.read(bytes)
-
-    while (read != -1) {
-      out.write(bytes, 0, read)
-      read = input.read(bytes)
+    val buffer = new Array[Byte](130 * 1024)
+    Iterator.continually(inputStream.read(buffer)).takeWhile(_ != -1).foreach { bytesRead =>
+      outputStream.write(buffer, 0, bytesRead)
+      outputStream.flush()
     }
+
+    inputStream.close()
+    outputStream.close()
 
     tempFile.deleteOnExit()
     tempFile
-  } catch {
-    case ex: IOException =>
-      throw ex
   }
 }

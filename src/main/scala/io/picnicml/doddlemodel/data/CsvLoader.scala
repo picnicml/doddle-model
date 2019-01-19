@@ -10,19 +10,7 @@ import scala.util.control.Exception.nonFatalCatch
 
 object CsvLoader {
 
-  private sealed trait FeatureType extends Product with Serializable {
-    val headerLineString: String
-  }
-
-  private final case object NumericalFeature extends FeatureType {
-    override val headerLineString = "n"
-  }
-
-  private final case object CategoricalFeature extends FeatureType {
-    override val headerLineString = "c"
-  }
-
-  /** Loads a csv dataset with 2 header lines (feature names and types). */
+  /** Loads a csv dataset with 2 header lines (1st line for feature names and 2nd for types). */
   def loadCsvDataset(datasetFile: File, naString: String = "NA"): DenseMatrix[Double] = {
     val reader = CSVReader.open(datasetFile)
 
@@ -44,6 +32,18 @@ object CsvLoader {
     dataset
   }
 
+  private sealed trait FeatureType extends Product with Serializable {
+    val headerLineString: String
+  }
+
+  private final case object NumericalFeature extends FeatureType {
+    override val headerLineString = "n"
+  }
+
+  private final case object CategoricalFeature extends FeatureType {
+    override val headerLineString = "c"
+  }
+
   private def inferHeaderLine(reader: CSVReader): HeaderLine = {
     val featureNames = reader.readNext
       .fold(throw new IllegalArgumentException("File has a missing header line: feature names"))(_.toArray)
@@ -51,13 +51,10 @@ object CsvLoader {
     val featureTypes = reader.readNext.fold {
       throw new IllegalArgumentException("File has a missing header line: feature types")
     } {
-      typeStrings => typeStrings.map { typeString =>
-        if (typeString == NumericalFeature.headerLineString)
-          NumericalFeature
-        else if (typeString == CategoricalFeature.headerLineString)
-          CategoricalFeature
-        else
-          throw new IllegalArgumentException("File contains invalid feature type encoding (second header line)")
+      typeStrings => typeStrings.map {
+        case x if x == NumericalFeature.headerLineString => NumericalFeature
+        case x if x == CategoricalFeature.headerLineString => CategoricalFeature
+        case _ => throw new IllegalArgumentException("File contains invalid feature type encoding (second header line)")
       }.toArray
     }
 
