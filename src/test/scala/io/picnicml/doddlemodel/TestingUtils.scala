@@ -11,7 +11,7 @@ trait TestingUtils {
     breezeEqual(x0.toDenseVector, x1.toDenseVector)
 
   def breezeEqual(x0: RealVector, x1: RealVector)(implicit tol: Equality[Double]): Boolean =
-    zipValues(x0, x1).forall((v0, v1) => tol.areEquivalent(v0, v1))
+    zipValues(x0, x1).forall((v0, v1) => (v0.isNaN && v1.isNaN) || tol.areEquivalent(v0, v1))
 
   def gradApprox(func: RealVector => Double, x: RealVector): RealVector = {
     val gradApprox = new ApproximateGradientFunction(func)

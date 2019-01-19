@@ -1,6 +1,7 @@
 package io.picnicml.doddlemodel.modelselection
 
-import io.picnicml.doddlemodel.data.{loadBreastCancerDataset, shuffleDataset}
+import io.picnicml.doddlemodel.data.DatasetUtils.shuffleDataset
+import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.linear.LogisticRegression
 import io.picnicml.doddlemodel.linear.LogisticRegression.ev
 import io.picnicml.doddlemodel.metrics.accuracy

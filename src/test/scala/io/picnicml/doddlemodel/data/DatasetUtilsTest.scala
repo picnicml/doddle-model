@@ -2,19 +2,20 @@ package io.picnicml.doddlemodel.data
 
 import breeze.linalg.DenseVector
 import io.picnicml.doddlemodel.TestingUtils
+import io.picnicml.doddlemodel.data.DatasetUtils.{shuffleDataset, splitDataset, splitDatasetWithGroups}
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
 
-class DataUtilsTesting extends FlatSpec with Matchers with TestingUtils {
+class DatasetUtilsTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val rand: Random = new Random(0)
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1.0)
 
   val (x, y) = loadIrisDataset
 
-  "Data utils" should "shuffle the dataset correctly" in {
+  "Dataset utils" should "shuffle the dataset correctly" in {
     val (_, yShuffled) = shuffleDataset(x, y)
     breezeEqual(y, yShuffled) shouldBe false
   }
