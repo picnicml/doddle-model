@@ -30,7 +30,7 @@ class ClassificationMetricsTest extends FlatSpec with Matchers {
     val y = DenseVector(1.0, 0.0, 0.0, 0.0, 1.0)
     val yPred = DenseVector(1.0, 1.0, 0.0, 1.0, 0.0)
 
-    f1score(y, yPred) shouldBe 0.4
+    f1Score(y, yPred) shouldBe 0.4
   }
 
   they should "calculate a correct Hamming loss value" in {

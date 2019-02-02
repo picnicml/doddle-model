@@ -54,7 +54,7 @@ object ClassificationMetrics {
       val prec = precision(y, yPred)
       val rec = recall(y, yPred)
 
-      2 * (prec * rec) / (prec + rec)
+      2.0 * (prec * rec) / (prec + rec)
     }
   }
 
