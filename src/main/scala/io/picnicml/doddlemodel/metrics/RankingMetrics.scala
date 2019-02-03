@@ -10,7 +10,7 @@ object RankingMetrics {
 
     override lazy val higherValueIsBetter: Boolean = true
 
-    override def apply(y: Target, yPredProba: RealVector): Double = {
+    override def calculateValueSafe(y: Target, yPredProba: Target): Double = {
       val roc = rocCurve(y, yPredProba)
       // integrate with the trapezoid rule
       (1 until roc.thresholds.length).foldLeft(0.0) { case (integral, index) =>

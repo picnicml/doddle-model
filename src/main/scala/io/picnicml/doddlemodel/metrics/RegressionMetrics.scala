@@ -12,9 +12,17 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = false
 
-    override def apply(y: Target, yPred: Target): Double = {
-      val d = y - yPred
-      sqrt((d.t * d) / y.length.toDouble)
+    override def calculateValueSafe(y: Target, yPred: Target): Double = sqrt(mse(y, yPred))
+  }
+
+  /** Mean squared error. */
+  object Mse extends Metric {
+
+    override lazy val higherValueIsBetter: Boolean = false
+
+    override def calculateValueSafe(y: Target, yPred: Target): Double = {
+      val diff = y - yPred
+      (diff.t * diff) / y.length.toDouble
     }
   }
 
@@ -23,7 +31,7 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = false
 
-    override def apply(y: Target, yPred: Target): Double = sum(abs(y - yPred)) / y.length.toDouble
+    override def calculateValueSafe(y: Target, yPred: Target): Double = sum(abs(y - yPred)) / y.length.toDouble
   }
 
 
@@ -32,6 +40,6 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = true
 
-    override def apply(y: Target, yPred: Target): Double = 1.0 - variance(y - yPred) / variance(y)
+    override def calculateValueSafe(y: Target, yPred: Target): Double = 1.0 - variance(y - yPred) / variance(y)
   }
 }
