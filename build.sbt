@@ -9,7 +9,8 @@ lazy val root = (project in file("."))
       "https://github.com/picnicml/doddle-model.git")
     ),
     version := Version(),
-    scalaVersion := "2.12.7",
+    scalaVersion := "2.12.8",
+    crossScalaVersions := Seq("2.11.12", "2.12.8"),
     libraryDependencies ++= Dependencies.settings,
     developers := List(
       Developer("inejc", "Nejc Ilenic", "nejc.ilenic@gmail.com", url("https://github.com/inejc"))
