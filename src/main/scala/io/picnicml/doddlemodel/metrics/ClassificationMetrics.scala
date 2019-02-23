@@ -11,6 +11,8 @@ object ClassificationMetrics {
 
     override def calculateValueSafe(y: Target, yPred: Target): Double =
       (y :== yPred).activeSize / y.length.toDouble
+
+    override def toString: String = "accuracy"
   }
 
   /** Positive predictive value. */
@@ -30,6 +32,8 @@ object ClassificationMetrics {
       val numTp = (yPredPositive &:& yPositive).activeSize.toDouble
       numTp / (numTp + (yPredPositive &:& !yPositive).activeSize.toDouble)
     }
+
+    override def toString: String = "precision"
   }
 
   /** Sensitivity. */
@@ -49,6 +53,8 @@ object ClassificationMetrics {
       val numTp = (yPredPositive &:& yPositive).activeSize.toDouble
       numTp / (numTp + (!yPredPositive &:& yPositive).activeSize.toDouble)
     }
+
+    override def toString: String = "recall"
   }
 
   /** F1 score. */
@@ -67,6 +73,8 @@ object ClassificationMetrics {
 
       2.0 * (prec * rec) / (prec + rec)
     }
+
+    override def toString: String = "F1 score"
   }
 
   /** Hamming loss. */
@@ -75,5 +83,7 @@ object ClassificationMetrics {
     override lazy val higherValueIsBetter: Boolean = false
 
     override def calculateValueSafe(y: Target, yPred: Target): Double = 1.0 - accuracy(y, yPred)
+
+    override def toString: String = "Hamming loss"
   }
 }

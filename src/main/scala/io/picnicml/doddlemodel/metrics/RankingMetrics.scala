@@ -17,6 +17,8 @@ object RankingMetrics {
         integral + ((roc.tpr(index - 1) + roc.tpr(index)) * 0.5 * (roc.fpr(index) - roc.fpr(index - 1)))
       }
     }
+
+    override def toString: String = "AUC"
   }
 
   case class RocCurve(fpr: RealVector, tpr: RealVector, thresholds: RealVector)
