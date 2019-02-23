@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.modelselection
 
-import io.picnicml.doddlemodel.data.{Features, Target}
+import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
 import io.picnicml.doddlemodel.typeclasses.Predictor
 
 import scala.util.Random
@@ -9,6 +9,8 @@ import scala.util.Random
 /** A parallel hyperparameter search using n-fold cross validation.
   *
   * @param numIterations number of predictors for which the cross validation score is calculated
+  * @param verbose flag that specifies whether validation score of the selected model is
+  *                printed to standard output
   *
   * Examples:
   * val splitter = KFoldSplitter(numFolds = 3)
@@ -18,35 +20,40 @@ import scala.util.Random
   *   LogisticRegression(lambda = gamma.draw())
   * }
   */
-class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossValidation) {
+class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossValidation, verbose: Boolean) {
 
   implicit val cvReusable: CrossValReusable = CrossValReusable(true)
 
-  def bestOf[A](x: Features, y: Target)(generatePredictor: => A)
+  def bestOf[A](x: Features, y: Target, groups: Option[IntVector] = None)(generatePredictor: => A)
                (implicit ev: Predictor[A], rand: Random = new Random()): A = {
 
     case class PredictorWithScore(predictor: A, score: Double)
 
-    val scores = (0 until this.numIterations).map { _ =>
+    val scoresPredictors = (0 until this.numIterations).map { _ =>
       val predictor = generatePredictor
-      PredictorWithScore(predictor, this.crossVal.score(predictor, x, y))
+      PredictorWithScore(predictor, this.crossVal.score(predictor, x, y, groups))
     }
 
     // this is needed because of cvReusable, see
     // io.picnicml.doddlemodel.modelselection.CrossValidation for details
     this.crossVal.shutdownNow()
 
-    if (this.crossVal.metric.higherValueIsBetter)
-      ev.fit(scores.maxBy(_.score).predictor, x, y)
+    val bestScorePredictor = if (this.crossVal.metric.higherValueIsBetter)
+      scoresPredictors.maxBy(_.score)
     else
-      ev.fit(scores.minBy(_.score).predictor, x, y)
+      scoresPredictors.minBy(_.score)
+
+    if (verbose)
+      println(f"Validation ${this.crossVal.metric} of the selected model: ${bestScorePredictor.score}%1.4f")
+
+    ev.fit(bestScorePredictor.predictor, x, y)
   }
 }
 
 object HyperparameterSearch {
 
-  def apply(numIterations: Int, crossValidation: CrossValidation): HyperparameterSearch = {
+  def apply(numIterations: Int, crossValidation: CrossValidation, verbose: Boolean = true): HyperparameterSearch = {
     require(numIterations > 0, "Number of iterations must be positive")
-    new HyperparameterSearch(numIterations, crossValidation)
+    new HyperparameterSearch(numIterations, crossValidation, verbose)
   }
 }

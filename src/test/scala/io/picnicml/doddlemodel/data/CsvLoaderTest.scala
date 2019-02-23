@@ -15,7 +15,7 @@ class CsvLoaderTest extends FlatSpec with Matchers with TestingUtils {
       List(2.0, 1.0, 0.3, Double.NaN),
       List(3.0, 2.0, 0.4, 1.4),
       List(0.0, 0.0, 0.1, 1.1),
-      List(3.0, Double.NaN, 0.4, 1.4),
+      List(3.0, Double.NaN, 0.4, 1.4)
     )
     val yCorrect = DenseVector(0.0, 1.0, 2.0, 3.0, 0.0, 3.0)
     breezeEqual(x, xCorrect) shouldBe true
