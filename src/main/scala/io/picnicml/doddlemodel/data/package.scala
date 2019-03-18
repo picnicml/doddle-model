@@ -10,6 +10,7 @@ package object data {
   type RealVector = DenseVector[Double]
   type IntVector = DenseVector[Int]
   type Dataset = (Features, Target)
+  type FeatureIndex = IndexedSeq[Int]
 
   case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
   case class GroupTrainTestSplit(xTr: Features,
