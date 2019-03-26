@@ -12,6 +12,7 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
   *
   * Examples:
   * val preprocessor = StandardScaler()
+  * val preprocessorSubsetOfColumns = StandardScaler(featureIndex = IndexedSeq(0, 1, 5))
   */
 case class StandardScaler private (private val sampleMean: Option[RealVector],
                                    private val sampleStdDev: Option[RealVector],
