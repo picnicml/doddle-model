@@ -2,7 +2,7 @@ package io.picnicml.doddlemodel.data
 
 import scala.reflect.ClassTag
 
-object FeatureIndex {
+object Feature {
 
   sealed trait FeatureType extends Product with Serializable {
     val headerLineString: String
@@ -30,7 +30,7 @@ object FeatureIndex {
       this.subset(subsetIndices)
     }
 
-    def apply(subsetNames: List[String]): FeatureIndex = {
+    def apply(subsetNames: String*): FeatureIndex = {
       val nameToIndex = this.names.zipWithIndex.toMap
       this.subset(subsetNames.map(n => nameToIndex(n)).toIndexedSeq)
     }
@@ -44,16 +44,25 @@ object FeatureIndex {
 
   object FeatureIndex {
 
-    def dummyCategorical(columnIndices: IndexedSeq[Int]): FeatureIndex =
-      dummy(columnIndices, CategoricalFeature)
+    def categorical(n: Int): FeatureIndex =
+      categorical((0 until n).toList)
 
-    def dummyNumerical(columnIndices: IndexedSeq[Int]): FeatureIndex =
-      dummy(columnIndices, NumericalFeature)
+    def categorical(columnIndices: List[Int]): FeatureIndex =
+      apply(columnIndices.indices.map(i => s"f$i").toList, columnIndices.map(_ => CategoricalFeature), columnIndices)
 
-    private def dummy(columnIndices: IndexedSeq[Int], featureType: FeatureType): FeatureIndex = new FeatureIndex(
-      columnIndices.map(i => s"f$i"),
-      columnIndices.map(_ => featureType),
-      columnIndices
-    )
+    def numerical(n: Int): FeatureIndex =
+      numerical((0 until n).toList)
+
+    def numerical(columnIndices: List[Int]): FeatureIndex =
+      apply(columnIndices.indices.map(i => s"f$i").toList, columnIndices.map(_ => NumericalFeature), columnIndices)
+
+    def apply(types: List[FeatureType]): FeatureIndex =
+      apply(types.indices.map(i => s"f$i").toList, types, types.indices.toList)
+
+    def apply(types: List[FeatureType], columnIndices: List[Int]): FeatureIndex =
+      apply(types.indices.map(i => s"f$i").toList, types, columnIndices)
+
+    def apply(names: List[String], types: List[FeatureType], columnIndices: List[Int]): FeatureIndex =
+      new FeatureIndex(names.toIndexedSeq, types.toIndexedSeq, columnIndices.toIndexedSeq)
   }
 }
