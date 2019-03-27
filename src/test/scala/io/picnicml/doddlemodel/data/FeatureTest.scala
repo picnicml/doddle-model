@@ -3,7 +3,7 @@ package io.picnicml.doddlemodel.data
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 import org.scalatest.{FlatSpec, Matchers}
 
-class FeatureIndexTest extends FlatSpec with Matchers {
+class FeatureTest extends FlatSpec with Matchers {
 
   "Feature index" should "return a subset of categorical features" in {
     val featureIndex = FeatureIndex(List(CategoricalFeature, NumericalFeature, CategoricalFeature))
@@ -45,5 +45,29 @@ class FeatureIndexTest extends FlatSpec with Matchers {
       NumericalFeature
     )
     subset.columnIndices shouldBe IndexedSeq(1, 3, 4, 5, 8)
+  }
+
+  it should "return a subset of features based on indices" in {
+    val types = List(
+      CategoricalFeature,
+      NumericalFeature,
+      CategoricalFeature,
+      CategoricalFeature,
+      NumericalFeature,
+      CategoricalFeature,
+      NumericalFeature,
+      CategoricalFeature,
+      NumericalFeature,
+      NumericalFeature
+    )
+    val featureIndex = FeatureIndex(types)
+    val subset = featureIndex(1 to 3)
+    subset.names shouldBe IndexedSeq("f1", "f2", "f3")
+    subset.types shouldBe IndexedSeq(
+      NumericalFeature,
+      CategoricalFeature,
+      CategoricalFeature
+    )
+    subset.columnIndices shouldBe IndexedSeq(1, 2, 3)
   }
 }
