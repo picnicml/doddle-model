@@ -8,7 +8,7 @@ import org.scalatest.{FlatSpec, Matchers, OptionValues}
 class MostFrequentClassifierTest extends FlatSpec with Matchers with OptionValues {
 
   "Most frequent classifier" should "infer the most frequent class from the iris dataset" in {
-    val (x, y) = loadIrisDataset
+    val (x, y, _) = loadIrisDataset
     val model = MostFrequentClassifier()
     val trainedModel = ev.fit(model, x, y)
     trainedModel.mostFrequentClass.value shouldBe 0.0
@@ -16,7 +16,7 @@ class MostFrequentClassifierTest extends FlatSpec with Matchers with OptionValue
   }
 
   it should "infer the most frequent class from the breast cancer dataset" in {
-    val (x, y) = loadBreastCancerDataset
+    val (x, y, _) = loadBreastCancerDataset
     val model = MostFrequentClassifier()
     val trainedModel = ev.fit(model, x, y)
     trainedModel.mostFrequentClass.value shouldBe 1.0

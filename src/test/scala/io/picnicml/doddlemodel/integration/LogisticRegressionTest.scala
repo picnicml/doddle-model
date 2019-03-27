@@ -11,7 +11,7 @@ import scala.util.Random
 class LogisticRegressionTest extends FlatSpec with Matchers {
 
   "Logistic regression" should "achieve a reasonable score on the breast cancer dataset" in {
-    val (x, y) = loadBreastCancerDataset
+    val (x, y, _) = loadBreastCancerDataset
     val model = LogisticRegression()
     val cv = CrossValidation(accuracy, KFoldSplitter(numFolds = 10))
     implicit val rand: Random = new Random(42)

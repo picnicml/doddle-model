@@ -12,7 +12,7 @@ import scala.util.Random
 class HyperparameterSearchTest extends FlatSpec with Matchers {
 
   "Hyperparameter search" should "return the best model from available candidates" in {
-    val (x, y) = loadBreastCancerDataset
+    val (x, y, _) = loadBreastCancerDataset
 
     implicit val rand: Random = new Random(42)
     val (xShuffled, yShuffled) = shuffleDataset(x, y)

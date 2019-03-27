@@ -11,7 +11,7 @@ import scala.util.Random
 class LinearRegressionTest extends FlatSpec with Matchers {
 
   "Linear regression" should "achieve a reasonable score on the Boston housing dataset" in {
-    val (x, y) = loadBostonDataset
+    val (x, y, _) = loadBostonDataset
     val model = LinearRegression()
     val cv = CrossValidation(rmse, KFoldSplitter(numFolds = 10))
     implicit val rand: Random = new Random(42)

@@ -2,7 +2,8 @@ package io.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.*
 import breeze.stats.{mean, stddev}
-import io.picnicml.doddlemodel.data.{FeatureIndex, Features, RealVector}
+import io.picnicml.doddlemodel.data.Feature.FeatureIndex
+import io.picnicml.doddlemodel.data.{Features, RealVector}
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Transformer
 
@@ -12,7 +13,7 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
   *
   * Examples:
   * val preprocessor = StandardScaler()
-  * val preprocessorSubsetOfColumns = StandardScaler(featureIndex = IndexedSeq(0, 1, 5))
+  * val preprocessorSubsetOfColumns = StandardScaler(FeatureIndex.numerical(List(0, 2, 3)))
   */
 case class StandardScaler private (private val sampleMean: Option[RealVector],
                                    private val sampleStdDev: Option[RealVector],
@@ -31,7 +32,7 @@ object StandardScaler {
       model.sampleMean.isDefined && model.sampleStdDev.isDefined
 
     override def fit(model: StandardScaler, x: Features): StandardScaler = {
-      val xToPreprocess = model.featureIndex.fold(x)(columnIndices => x(::, columnIndices).toDenseMatrix)
+      val xToPreprocess = model.featureIndex.fold(x)(index => x(::, index.columnIndices).toDenseMatrix)
       val sampleStdDev = stddev(xToPreprocess(::, *)).t
       sampleStdDev(sampleStdDev :== 0.0) := 1.0
       StandardScaler(Some(mean(xToPreprocess(::, *)).t), Some(sampleStdDev), model.featureIndex)
@@ -45,7 +46,7 @@ object StandardScaler {
     }
 
     private def preprocessSubset(x: Features, index: FeatureIndex, mean: RealVector, stdDev: RealVector): Features = {
-      index.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
+      index.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
         (0 until x.rows).foreach { rowIndex =>
           x(rowIndex, colIndex) = (x(rowIndex, colIndex) - mean(statisticIndex)) / stdDev(statisticIndex)
         }

@@ -13,7 +13,7 @@ class DatasetUtilsTest extends FlatSpec with Matchers with TestingUtils {
   implicit val rand: Random = new Random(0)
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1.0)
 
-  val (x, y) = loadIrisDataset
+  val (x, y, _) = loadIrisDataset
 
   "Dataset utils" should "shuffle the dataset correctly" in {
     val (_, yShuffled) = shuffleDataset(x, y)
