@@ -3,6 +3,7 @@ package io.picnicml.doddlemodel.preprocessing
 import breeze.linalg.{*, DenseMatrix, DenseVector}
 import breeze.stats.{mean, stddev}
 import io.picnicml.doddlemodel.TestingUtils
+import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.preprocessing.StandardScaler.ev
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
@@ -34,7 +35,7 @@ class StandardScalerTest extends FlatSpec with Matchers with TestingUtils {
 
   it should "preprocess a subset of columns if specified" in {
     val x = DenseMatrix.rand[Double](10, 5)
-    val scaler = StandardScaler(featureIndex = IndexedSeq(0, 2, 4))
+    val scaler = StandardScaler(featureIndex = FeatureIndex.numerical(List(0, 2, 4)))
     val trainedScaler = ev.fit(scaler, x)
     val xTransformed = ev.transform(trainedScaler, x)
 
