@@ -27,18 +27,18 @@ object Feature {
     private def onlyFeaturesOfType[A <: FeatureType: ClassTag]: FeatureIndex = {
       val cls = implicitly[ClassTag[A]].runtimeClass
       val subsetIndices = this.types.zipWithIndex.flatMap { case (t, i) => if (cls.isInstance(t)) Some(i) else None }
-      this.subset(subsetIndices)
+      apply(subsetIndices)
     }
 
     def apply(subsetNames: String*): FeatureIndex = {
       val nameToIndex = this.names.zipWithIndex.toMap
-      this.subset(subsetNames.map(n => nameToIndex(n)).toIndexedSeq)
+      apply(subsetNames.map(n => nameToIndex(n)).toIndexedSeq)
     }
 
-    private def subset(indices: IndexedSeq[Int]): FeatureIndex = new FeatureIndex(
-      indices.map(i => this.names(i)),
-      indices.map(i => this.types(i)),
-      indices.map(i => this.columnIndices(i))
+    def apply(subsetIndices: IndexedSeq[Int]): FeatureIndex = new FeatureIndex(
+      subsetIndices.map(i => this.names(i)),
+      subsetIndices.map(i => this.types(i)),
+      subsetIndices.map(i => this.columnIndices(i))
     )
   }
 

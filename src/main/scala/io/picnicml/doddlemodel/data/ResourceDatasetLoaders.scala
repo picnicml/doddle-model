@@ -2,38 +2,37 @@ package io.picnicml.doddlemodel.data
 
 import java.io.{File, FileOutputStream}
 
-import breeze.linalg.DenseMatrix
 import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
 
 object ResourceDatasetLoaders {
 
-  def loadBostonDataset: Dataset = {
-    val data = loadDatasetFromResources("boston_housing_prices")
-    (data(::, 0 to -2), data(::, -1))
+  def loadBostonDataset: DatasetWithIndex = {
+    val (data, featureIndex) = loadDatasetFromResources("boston_housing_prices")
+    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
   }
 
-  def loadBreastCancerDataset: Dataset = {
-    val data = loadDatasetFromResources("breast_cancer")
-    (data(::, 0 to -2), data(::, -1))
+  def loadBreastCancerDataset: DatasetWithIndex = {
+    val (data, featureIndex) = loadDatasetFromResources("breast_cancer")
+    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
   }
 
-  def loadIrisDataset: Dataset = {
-    val data = loadDatasetFromResources("iris")
-    (data(::, 0 to -2), data(::, -1))
+  def loadIrisDataset: DatasetWithIndex = {
+    val (data, featureIndex) = loadDatasetFromResources("iris")
+    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
   }
 
   /** An artificial dataset with a Poisson target variable. */
-  def loadHighSchoolTestDataset: Dataset = {
-    val data = loadDatasetFromResources("high_school_test")
-    (data(::, 0 to -2), data(::, -1))
+  def loadHighSchoolTestDataset: DatasetWithIndex = {
+    val (data, featureIndex) = loadDatasetFromResources("high_school_test")
+    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
   }
 
-  private[data] def loadDummyCsvReadingDataset: Dataset = {
-    val data = loadDatasetFromResources("dummy_csv_reading")
-    (data(::, 0 to -2), data(::, -1))
+  private[data] def loadDummyCsvReadingDataset: DatasetWithIndex = {
+    val (data, featureIndex) = loadDatasetFromResources("dummy_csv_reading")
+    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
   }
 
-  private def loadDatasetFromResources(datasetName: String): DenseMatrix[Double] =
+  private def loadDatasetFromResources(datasetName: String): FeaturesWithIndex =
     loadCsvDataset(getResourceFile(s"/datasets/$datasetName.csv"))
 
   private def getResourceFile(path: String): File = {

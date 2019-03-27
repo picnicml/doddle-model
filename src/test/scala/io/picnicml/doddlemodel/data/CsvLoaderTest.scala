@@ -2,13 +2,14 @@ package io.picnicml.doddlemodel.data
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import io.picnicml.doddlemodel.TestingUtils
+import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, NumericalFeature}
 import io.picnicml.doddlemodel.data.ResourceDatasetLoaders.loadDummyCsvReadingDataset
 import org.scalatest.{FlatSpec, Matchers}
 
 class CsvLoaderTest extends FlatSpec with Matchers with TestingUtils {
 
   "Csv loader" should "load and encode data correctly" in {
-    val (x, y) = loadDummyCsvReadingDataset
+    val (x, y, featureIndex) = loadDummyCsvReadingDataset
     val xCorrect = DenseMatrix(
       List(0.0, 0.0, 0.1, 1.1),
       List(1.0, Double.NaN, 0.2, 1.2),
@@ -20,5 +21,13 @@ class CsvLoaderTest extends FlatSpec with Matchers with TestingUtils {
     val yCorrect = DenseVector(0.0, 1.0, 2.0, 3.0, 0.0, 3.0)
     breezeEqual(x, xCorrect) shouldBe true
     breezeEqual(y, yCorrect) shouldBe true
+    featureIndex.names shouldBe IndexedSeq("f0", "f1", "f2", "f3")
+    featureIndex.types shouldBe IndexedSeq(
+      CategoricalFeature,
+      CategoricalFeature,
+      NumericalFeature,
+      NumericalFeature
+    )
+    featureIndex.columnIndices shouldBe (0 until 4)
   }
 }

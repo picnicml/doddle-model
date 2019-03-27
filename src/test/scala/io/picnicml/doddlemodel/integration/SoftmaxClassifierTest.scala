@@ -11,7 +11,7 @@ import scala.util.Random
 class SoftmaxClassifierTest extends FlatSpec with Matchers {
 
   "Softmax classifier" should "achieve a reasonable score on the iris dataset" in {
-    val (x, y) = loadIrisDataset
+    val (x, y, _) = loadIrisDataset
     val model = SoftmaxClassifier()
     val cv = CrossValidation(accuracy, KFoldSplitter(numFolds = 10))
     implicit val rand: Random = new Random(42)

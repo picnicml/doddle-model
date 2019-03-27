@@ -1,15 +1,20 @@
 package io.picnicml.doddlemodel
 
 import breeze.linalg.{DenseMatrix, DenseVector, unique}
+import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 
 package object data {
 
-  type Features = DenseMatrix[Double]
-  type Target = DenseVector[Double]
-  type Simplex = DenseMatrix[Double]
   type RealVector = DenseVector[Double]
   type IntVector = DenseVector[Int]
+  type Simplex = DenseMatrix[Double]
+
+  type Features = DenseMatrix[Double]
+  type Target = DenseVector[Double]
+
+  type FeaturesWithIndex = (Features, FeatureIndex)
   type Dataset = (Features, Target)
+  type DatasetWithIndex = (Features, Target, FeatureIndex)
 
   case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
   case class GroupTrainTestSplit(xTr: Features,
@@ -19,10 +24,10 @@ package object data {
                                  yTe: Target,
                                  groupsTe: IntVector)
 
-  def loadBostonDataset: Dataset = ResourceDatasetLoaders.loadBostonDataset
-  def loadBreastCancerDataset: Dataset = ResourceDatasetLoaders.loadBreastCancerDataset
-  def loadIrisDataset: Dataset = ResourceDatasetLoaders.loadIrisDataset
-  def loadHighSchoolTestDataset: Dataset = ResourceDatasetLoaders.loadHighSchoolTestDataset
+  def loadBostonDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBostonDataset
+  def loadBreastCancerDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBreastCancerDataset
+  def loadIrisDataset: DatasetWithIndex = ResourceDatasetLoaders.loadIrisDataset
+  def loadHighSchoolTestDataset: DatasetWithIndex = ResourceDatasetLoaders.loadHighSchoolTestDataset
 
   def numberOfUniqueGroups(groups: IntVector): Int = {
     val uniqueGroups = unique(groups)
