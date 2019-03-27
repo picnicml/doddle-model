@@ -40,6 +40,9 @@ object Feature {
       subsetIndices.map(i => this.types(i)),
       subsetIndices.map(i => this.columnIndices(i))
     )
+
+    override def toString: String =
+      this.names.zip(this.types).map { case (n, t) => s"$n (${t.headerLineString})" } mkString ", "
   }
 
   object FeatureIndex {
