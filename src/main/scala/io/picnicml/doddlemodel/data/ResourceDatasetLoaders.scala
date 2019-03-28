@@ -8,28 +8,28 @@ object ResourceDatasetLoaders {
 
   def loadBostonDataset: DatasetWithIndex = {
     val (data, featureIndex) = loadDatasetFromResources("boston_housing_prices")
-    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
+    (data(::, 0 to -2), data(::, -1), featureIndex.drop(data.cols - 1))
   }
 
   def loadBreastCancerDataset: DatasetWithIndex = {
     val (data, featureIndex) = loadDatasetFromResources("breast_cancer")
-    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
+    (data(::, 0 to -2), data(::, -1), featureIndex.drop(data.cols - 1))
   }
 
   def loadIrisDataset: DatasetWithIndex = {
     val (data, featureIndex) = loadDatasetFromResources("iris")
-    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
+    (data(::, 0 to -2), data(::, -1), featureIndex.drop(data.cols - 1))
   }
 
   /** An artificial dataset with a Poisson target variable. */
   def loadHighSchoolTestDataset: DatasetWithIndex = {
     val (data, featureIndex) = loadDatasetFromResources("high_school_test")
-    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
+    (data(::, 0 to -2), data(::, -1), featureIndex.drop(data.cols - 1))
   }
 
   private[data] def loadDummyCsvReadingDataset: DatasetWithIndex = {
     val (data, featureIndex) = loadDatasetFromResources("dummy_csv_reading")
-    (data(::, 0 to -2), data(::, -1), featureIndex(0 until data.cols - 1))
+    (data(::, 0 to -2), data(::, -1), featureIndex.drop(data.cols - 1))
   }
 
   private def loadDatasetFromResources(datasetName: String): FeaturesWithIndex =

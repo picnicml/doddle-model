@@ -27,18 +27,26 @@ object Feature {
     private def onlyFeaturesOfType[A <: FeatureType: ClassTag]: FeatureIndex = {
       val cls = implicitly[ClassTag[A]].runtimeClass
       val subsetIndices = this.types.zipWithIndex.flatMap { case (t, i) => if (cls.isInstance(t)) Some(i) else None }
-      apply(subsetIndices)
+      subset(subsetIndices)
     }
 
-    def apply(subsetNames: String*): FeatureIndex = {
+    def subset(names: String*): FeatureIndex = {
       val nameToIndex = this.names.zipWithIndex.toMap
-      apply(subsetNames.map(n => nameToIndex(n)).toIndexedSeq)
+      subset(names.map(n => nameToIndex(n)).toIndexedSeq)
     }
 
-    def apply(subsetIndices: IndexedSeq[Int]): FeatureIndex = new FeatureIndex(
-      subsetIndices.map(i => this.names(i)),
-      subsetIndices.map(i => this.types(i)),
-      subsetIndices.map(i => this.columnIndices(i))
+    def subset(indices: IndexedSeq[Int]): FeatureIndex = new FeatureIndex(
+      indices.map(i => this.names(i)),
+      indices.map(i => this.types(i)),
+      indices.map(i => this.columnIndices(i))
+    )
+
+    def drop(index: Int): FeatureIndex = new FeatureIndex(
+      this.names.zipWithIndex.flatMap { case (n, i) => if (i != index) Some(n) else None },
+      this.types.zipWithIndex.flatMap { case (t, i) => if (i != index) Some(t) else None },
+      this.columnIndices.zipWithIndex.flatMap { case (ci, i) =>
+        if (i == index) None else if (i > index) Some(ci - 1) else Some(ci)
+      }
     )
 
     override def toString: String =

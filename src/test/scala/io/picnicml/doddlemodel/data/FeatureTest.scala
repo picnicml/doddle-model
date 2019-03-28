@@ -35,7 +35,7 @@ class FeatureTest extends FlatSpec with Matchers {
       NumericalFeature
     )
     val featureIndex = FeatureIndex(types)
-    val subset = featureIndex("f1", "f3", "f4", "f5", "f8")
+    val subset = featureIndex.subset("f1", "f3", "f4", "f5", "f8")
     subset.names shouldBe IndexedSeq("f1", "f3", "f4", "f5", "f8")
     subset.types shouldBe IndexedSeq(
       NumericalFeature,
@@ -61,7 +61,7 @@ class FeatureTest extends FlatSpec with Matchers {
       NumericalFeature
     )
     val featureIndex = FeatureIndex(types)
-    val subset = featureIndex(1 to 3)
+    val subset = featureIndex.subset(1 to 3)
     subset.names shouldBe IndexedSeq("f1", "f2", "f3")
     subset.types shouldBe IndexedSeq(
       NumericalFeature,
@@ -69,5 +69,21 @@ class FeatureTest extends FlatSpec with Matchers {
       CategoricalFeature
     )
     subset.columnIndices shouldBe IndexedSeq(1, 2, 3)
+  }
+
+  it should "drop a column" in {
+    val featureIndex = FeatureIndex(List(CategoricalFeature, NumericalFeature, CategoricalFeature))
+    val droppedFirst = featureIndex.drop(0)
+    droppedFirst.names shouldBe IndexedSeq("f1", "f2")
+    droppedFirst.types shouldBe IndexedSeq(NumericalFeature, CategoricalFeature)
+    droppedFirst.columnIndices shouldBe IndexedSeq(0, 1)
+    val droppedMiddle = featureIndex.drop(1)
+    droppedMiddle.names shouldBe IndexedSeq("f0", "f2")
+    droppedMiddle.types shouldBe IndexedSeq(CategoricalFeature, CategoricalFeature)
+    droppedMiddle.columnIndices shouldBe IndexedSeq(0, 1)
+    val droppedLast = featureIndex.drop(2)
+    droppedLast.names shouldBe IndexedSeq("f0", "f1")
+    droppedLast.types shouldBe IndexedSeq(CategoricalFeature, NumericalFeature)
+    droppedLast.columnIndices shouldBe IndexedSeq(0, 1)
   }
 }
