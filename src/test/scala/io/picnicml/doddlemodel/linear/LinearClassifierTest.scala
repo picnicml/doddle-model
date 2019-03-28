@@ -53,7 +53,7 @@ class LinearClassifierTest extends FlatSpec with Matchers with OptionValues {
     yPred.length shouldEqual y.length
   }
 
-  it should "set the correct number of classes after fit" in {
+  it should "set the number of classes after fit" in {
     ev.numClasses(model).isEmpty shouldBe true
     val trainedModel = ev.fit(model, x, y)
     ev.numClasses(trainedModel).value shouldBe 2

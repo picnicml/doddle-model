@@ -8,7 +8,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class CsvLoaderTest extends FlatSpec with Matchers with TestingUtils {
 
-  "Csv loader" should "load and encode data correctly" in {
+  "Csv loader" should "load and encode data" in {
     val (x, y, featureIndex) = loadDummyCsvReadingDataset
     val xCorrect = DenseMatrix(
       List(0.0, 0.0, 0.1, 1.1),

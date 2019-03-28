@@ -7,7 +7,7 @@ import org.scalatest.{FlatSpec, Matchers, OptionValues}
 
 class MeanValueImputerTest extends FlatSpec with Matchers with TestingUtils with OptionValues {
 
-  "Mean value imputer" should "impute data correctly" in {
+  "Mean value imputer" should "impute the data" in {
     val xMissing = DenseMatrix(
       List(Double.NaN, 1.0, 2.0),
       List(3.0, Double.NaN, 5.0),

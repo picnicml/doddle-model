@@ -15,18 +15,18 @@ class DatasetUtilsTest extends FlatSpec with Matchers with TestingUtils {
 
   val (x, y, _) = loadIrisDataset
 
-  "Dataset utils" should "shuffle the dataset correctly" in {
+  "Dataset utils" should "shuffle the dataset" in {
     val (_, yShuffled) = shuffleDataset(x, y)
     breezeEqual(y, yShuffled) shouldBe false
   }
 
-  they should "split the dataset correctly" in {
+  they should "split the dataset" in {
     val split = splitDataset(x, y)
     split.yTr.length shouldBe 75
     split.yTe.length shouldBe 75
   }
 
-  they should "split the dataset with groups correctly" in {
+  they should "split the dataset with groups" in {
     val groups = DenseVector((0 until x.rows).map(x => x % 4):_*)
     val split = splitDatasetWithGroups(x, y, groups, proportionTrain = 0.8)
     val groupsTe = split.groupsTe.toArray

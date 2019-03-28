@@ -6,7 +6,7 @@ import org.scalatest.{FlatSpec, Matchers, OptionValues}
 
 class MeanRegressorTest extends FlatSpec with Matchers with OptionValues {
 
-  "Mean regressor" should "infer the correct mean from the boston housing dataset" in {
+  "Mean regressor" should "infer mean from the boston housing dataset" in {
     val (x, y, _) = loadBostonDataset
     val model = MeanRegressor()
     val trainedModel = ev.fit(model, x, y)

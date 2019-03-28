@@ -6,7 +6,7 @@ import org.scalatest.{FlatSpec, Matchers, OptionValues}
 
 class MedianRegressorTest extends FlatSpec with Matchers with OptionValues {
 
-  "Median regressor" should "infer the correct median from the boston housing dataset" in {
+  "Median regressor" should "infer median from the boston housing dataset" in {
     val (x, y, _) = loadBostonDataset
     val model = MedianRegressor()
     val trainedModel = ev.fit(model, x, y)

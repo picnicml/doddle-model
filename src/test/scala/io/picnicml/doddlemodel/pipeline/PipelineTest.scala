@@ -10,7 +10,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class PipelineTest extends FlatSpec with Matchers {
 
-  "Pipeline" should "implement the isFitted function correctly" in {
+  "Pipeline" should "implement the isFitted function" in {
     val (x, y, _) = loadBreastCancerDataset
     val pipeline = initializePipeline
     ev.isFitted(pipeline) shouldBe false
@@ -18,7 +18,7 @@ class PipelineTest extends FlatSpec with Matchers {
     ev.isFitted(trainedPipeline) shouldBe true
   }
 
-  it should "apply the transformation steps correctly" in {
+  it should "apply the transformation steps" in {
     val (x, y, _) = loadBreastCancerDataset
     val trainedPipeline = ev.fit(initializePipeline, x, y)
     accuracy(y, ev.predict(trainedPipeline, x)) should be > 0.98

@@ -9,7 +9,7 @@ class KFoldSplitterTest extends FlatSpec with Matchers with TestingUtils {
 
   val splitter = KFoldSplitter(numFolds = 3, shuffleRows = false)
 
-  "KFoldSplitter" should "split 8 examples correctly" in {
+  "KFoldSplitter" should "split 8 examples" in {
     implicit val rand: Random = new Random()
     val (x, y) = dummyData(8)
     val splits = splitter.splitData(x, y)
@@ -23,7 +23,7 @@ class KFoldSplitterTest extends FlatSpec with Matchers with TestingUtils {
     splits(2).yTe.toArray shouldBe Array(6, 7)
   }
 
-  it should "split 9 examples correctly" in {
+  it should "split 9 examples" in {
     implicit val rand: Random = new Random()
     val (x, y) = dummyData(9)
     val splits = splitter.splitData(x, y)
@@ -37,7 +37,7 @@ class KFoldSplitterTest extends FlatSpec with Matchers with TestingUtils {
     splits(2).yTe.toArray shouldBe (6 to 8).toArray
   }
 
-  it should "split 10 examples correctly" in {
+  it should "split 10 examples" in {
     implicit val rand: Random = new Random()
     val (x, y) = dummyData(10)
     val splits = splitter.splitData(x, y)
