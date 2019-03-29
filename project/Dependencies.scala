@@ -2,20 +2,20 @@ import sbt._
 
 object Dependencies {
 
-  object V {
-    val breezeVersion = "0.13.2"
-    val scalaCSVVersion = "1.3.5"
-    val scalaTestVersion = "3.0.5"
+  object DependencyVersion {
+    val breeze = "0.13.2"
+    val scalaCSV = "1.3.5"
+    val scalaTest = "3.0.7"
   }
 
   val compileDependencies: Seq[ModuleID] = Seq(
-    "org.scalanlp" %% "breeze" % V.breezeVersion,
-    "org.scalanlp" %% "breeze-natives" % V.breezeVersion,
-    "com.github.tototoshi" %% "scala-csv" % V.scalaCSVVersion
+    "org.scalanlp" %% "breeze" % DependencyVersion.breeze,
+    "org.scalanlp" %% "breeze-natives" % DependencyVersion.breeze,
+    "com.github.tototoshi" %% "scala-csv" % DependencyVersion.scalaCSV
   )
 
   val testDependencies: Seq[ModuleID] = Seq(
-    "org.scalatest" %% "scalatest" % V.scalaTestVersion
+    "org.scalatest" %% "scalatest" % DependencyVersion.scalaTest
   ).map(_ % "test")
 
   def settings: Seq[ModuleID] = {

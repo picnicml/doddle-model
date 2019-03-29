@@ -29,7 +29,6 @@ val compilerOptions = Seq(
   "-deprecation",
   "-encoding", "UTF-8",
   "-feature",
-  "-language:existentials",
   "-language:higherKinds",
   "-unchecked",
   "-Yno-adapted-args",
