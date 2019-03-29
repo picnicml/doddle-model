@@ -4,7 +4,7 @@
   <td>Latest Release</td>
   <td>
     <a href="https://search.maven.org/search?q=g:io.github.picnicml">
-    <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square" alt="latest release"/>
+    <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square&label=maven%20central" alt="latest release"/>
     </a>
   </td>
 </tr>
@@ -19,8 +19,8 @@
 <tr>
   <td>Coverage</td>
   <td>
-    <a href="https://codecov.io/gh/picnicml/doddle-model">
-    <img src="https://img.shields.io/codecov/c/github/picnicml/doddle-model.svg?label=codecov&style=flat-square" alt="coverage"/>
+    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+    <img src="https://img.shields.io/codacy/coverage/9f1dad5c6d6041dd85db71adabba3e72.svg?style=flat-square&label=codacy" alt="coverage"/>
     </a>
   </td>
 </tr>
@@ -44,7 +44,7 @@
   <td>License</td>
   <td>
     <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/picnicml/doddle-model.svg?style=flat-square" alt="license"/>
+    <img src="https://img.shields.io/github/license/picnicml/doddle-model.svg?style=flat-square&label=picnicml" alt="license"/>
     </a>
   </td>
 </tr>

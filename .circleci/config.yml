@@ -16,7 +16,7 @@ jobs:
           keys:
           - v1-dependencies-{{ checksum "build.sbt" }}
           - v1-dependencies-
-      - run: cat /dev/null | sbt test:compile
+      - run: cat /dev/null | sbt +test:compile
       - save_cache:
           paths:
             - ~/.m2
