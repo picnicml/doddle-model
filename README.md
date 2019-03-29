@@ -3,7 +3,7 @@
 <tr>
   <td>Latest Release</td>
   <td>
-    <a href="https://search.maven.org/search?q=g:io.github.picnicml">
+    <a href="https://search.maven.org/search?q=g:io.github.picnicml" target="_blank">
     <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square&label=maven%20central" alt="latest release"/>
     </a>
   </td>
@@ -11,7 +11,7 @@
 <tr>
   <td>Build Status</td>
   <td>
-    <a href="https://circleci.com/gh/picnicml/doddle-model">
+    <a href="https://circleci.com/gh/picnicml/doddle-model" target="_blank">
     <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square&label=circleci" alt="build status"/>
     </a>
   </td>
@@ -19,7 +19,7 @@
 <tr>
   <td>Coverage</td>
   <td>
-    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard" target="_blank">
     <img src="https://img.shields.io/codacy/coverage/9f1dad5c6d6041dd85db71adabba3e72.svg?style=flat-square&label=codacy" alt="coverage"/>
     </a>
   </td>
@@ -27,7 +27,7 @@
 <tr>
   <td>Code Quality</td>
   <td>
-    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard" target="_blank">
     <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square&label=codacy" alt="code quality"/>
     </a>
   </td>
@@ -35,7 +35,7 @@
 <tr>
   <td>Chat</td>
   <td>
-    <a href="https://gitter.im/picnicml/doddle-model">
+    <a href="https://gitter.im/picnicml/doddle-model" target="_blank">
     <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square&label=picnicml" alt="chat"/>
     </a>
   </td>
@@ -43,7 +43,7 @@
 <tr>
   <td>License</td>
   <td>
-    <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE">
+    <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE" target="_blank">
     <img src="https://img.shields.io/github/license/picnicml/doddle-model.svg?style=flat-square&label=picnicml" alt="license"/>
     </a>
   </td>
