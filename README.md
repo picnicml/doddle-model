@@ -53,7 +53,7 @@
 `doddle-model` is an in-memory machine learning library that can be summed up with three main characteristics:
 * it is built on top of [Breeze](https://github.com/scalanlp/breeze)
 * it provides [immutable objects](https://en.wikipedia.org/wiki/Immutable_object) that are a _doddle_ to use in parallel code
-* it exposes its functionality through a [scikit-learn](https://github.com/scikit-learn/scikit-learn)-like API [2] in idiomatic Scala using typeclasses
+* it exposes its functionality through a [scikit-learn](https://github.com/scikit-learn/scikit-learn)-like API [2] in idiomatic Scala using [typeclasses](https://en.wikipedia.org/wiki/Type_class)
 
 **Caveat emptor!** `doddle-model` is in an early-stage development phase. Any kind of contributions are much appreciated.
 
