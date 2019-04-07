@@ -1,6 +1,7 @@
 package io.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 import org.scalatest.{FlatSpec, Matchers}
@@ -16,7 +17,7 @@ class LinearRegressorTest extends FlatSpec with Matchers {
     override protected def copy(model: DummyLinearRegressor): DummyLinearRegressor = model.copy()
 
     override protected def copy(model: DummyLinearRegressor, w: RealVector): DummyLinearRegressor =
-      model.copy(Some(w))
+      model.copy(w.some)
 
     override protected def targetVariableAppropriate(y: Target): Boolean = true
 
@@ -32,7 +33,7 @@ class LinearRegressorTest extends FlatSpec with Matchers {
 
   private val x = DenseMatrix.rand[Double](10, 5)
   private val y = DenseVector.rand[Double](10)
-  private val model = DummyLinearRegressor(None)
+  private val model = DummyLinearRegressor(none)
 
   "Linear regressor" should "throw an exception when using fit, predict on trained, untrained models" in {
     an [IllegalArgumentException] should be thrownBy ev.predict(model, x)

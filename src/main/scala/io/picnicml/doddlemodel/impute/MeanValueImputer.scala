@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.impute
 
 import breeze.linalg.DenseVector
 import breeze.stats.mean
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.{Features, RealVector}
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
@@ -20,9 +21,9 @@ case class MeanValueImputer private (private[impute] val means: Option[RealVecto
 
 object MeanValueImputer {
 
-  def apply(): MeanValueImputer = MeanValueImputer(None, None)
+  def apply(): MeanValueImputer = MeanValueImputer(none, none)
 
-  def apply(featureIndex: FeatureIndex): MeanValueImputer = MeanValueImputer(None, Some(featureIndex))
+  def apply(featureIndex: FeatureIndex): MeanValueImputer = MeanValueImputer(none, featureIndex.some)
 
   implicit val ev: Transformer[MeanValueImputer] = new Transformer[MeanValueImputer] {
 
@@ -34,7 +35,7 @@ object MeanValueImputer {
       0 until xToPreprocess.cols foreach { colIndex =>
         means(colIndex) = mean(xToPreprocess(xToPreprocess(::, colIndex).findAll(!_.isNaN), colIndex))
       }
-      model.copy(Some(means))
+      model.copy(means.some)
     }
 
     override protected def transformSafe(model: MeanValueImputer, x: Features): Features = {

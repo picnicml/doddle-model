@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.*
 import breeze.stats.{mean, stddev}
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.{Features, RealVector}
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
@@ -21,10 +22,10 @@ case class StandardScaler private (private val sampleMean: Option[RealVector],
 
 object StandardScaler {
 
-  def apply(): StandardScaler = StandardScaler(None, None, None)
+  def apply(): StandardScaler = StandardScaler(none, none, none)
 
   def apply(featureIndex: FeatureIndex): StandardScaler =
-    StandardScaler(None, None, Some(featureIndex))
+    StandardScaler(none, none, featureIndex.some)
 
   implicit lazy val ev: Transformer[StandardScaler] = new Transformer[StandardScaler] {
 
@@ -35,7 +36,7 @@ object StandardScaler {
       val xToPreprocess = model.featureIndex.fold(x)(index => x(::, index.columnIndices).toDenseMatrix)
       val sampleStdDev = stddev(xToPreprocess(::, *)).t
       sampleStdDev(sampleStdDev :== 0.0) := 1.0
-      StandardScaler(Some(mean(xToPreprocess(::, *)).t), Some(sampleStdDev), model.featureIndex)
+      model.copy(mean(xToPreprocess(::, *)).t.some, sampleStdDev.some)
     }
 
     override protected def transformSafe(model: StandardScaler, x: Features): Features = model.featureIndex match {

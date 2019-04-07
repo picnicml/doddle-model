@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.modelselection
 
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
 import io.picnicml.doddlemodel.typeclasses.Predictor
 
@@ -24,7 +25,7 @@ class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossV
 
   implicit val cvReusable: CrossValReusable = CrossValReusable(true)
 
-  def bestOf[A](x: Features, y: Target, groups: Option[IntVector] = None)(generatePredictor: => A)
+  def bestOf[A](x: Features, y: Target, groups: Option[IntVector] = none)(generatePredictor: => A)
                (implicit ev: Predictor[A], rand: Random = new Random()): A = {
 
     case class PredictorWithScore(predictor: A, score: Double)

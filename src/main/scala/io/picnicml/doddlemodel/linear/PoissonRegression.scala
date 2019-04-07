@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.linear
 
 import breeze.linalg.{all, sum}
 import breeze.numerics.{exp, floor, isFinite, log}
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 
@@ -19,11 +20,11 @@ case class PoissonRegression private(lambda: Double, private val w: Option[RealV
 
 object PoissonRegression {
 
-  def apply(): PoissonRegression = PoissonRegression(0, None)
+  def apply(): PoissonRegression = PoissonRegression(0, none)
 
   def apply(lambda: Double): PoissonRegression = {
     require(lambda >= 0, "L2 regularization strength must be positive")
-    PoissonRegression(lambda, None)
+    PoissonRegression(lambda, none)
   }
 
   private val wSlice: Range.Inclusive = 1 to -1
@@ -35,7 +36,7 @@ object PoissonRegression {
     override protected def copy(model: PoissonRegression): PoissonRegression = model.copy()
 
     override protected def copy(model: PoissonRegression, w: RealVector): PoissonRegression =
-      model.copy(w = Some(w))
+      model.copy(w = w.some)
 
     override protected def targetVariableAppropriate(y: Target): Boolean =
       y == floor(y) && all(isFinite(y))

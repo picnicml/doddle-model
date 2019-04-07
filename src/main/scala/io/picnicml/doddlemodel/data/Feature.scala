@@ -1,5 +1,7 @@
 package io.picnicml.doddlemodel.data
 
+import cats.syntax.option._
+
 import scala.reflect.ClassTag
 
 object Feature {
@@ -26,7 +28,9 @@ object Feature {
 
     private def onlyFeaturesOfType[A <: FeatureType: ClassTag]: FeatureIndex = {
       val cls = implicitly[ClassTag[A]].runtimeClass
-      val subsetIndices = this.types.zipWithIndex.flatMap { case (t, i) => if (cls.isInstance(t)) Some(i) else None }
+      val subsetIndices = this.types.zipWithIndex.flatMap {
+        case (t, i) => if (cls.isInstance(t)) i.some else none[Int]
+      }
       subset(subsetIndices)
     }
 
@@ -42,10 +46,10 @@ object Feature {
     )
 
     def drop(index: Int): FeatureIndex = new FeatureIndex(
-      this.names.zipWithIndex.flatMap { case (n, i) => if (i != index) Some(n) else None },
-      this.types.zipWithIndex.flatMap { case (t, i) => if (i != index) Some(t) else None },
+      this.names.zipWithIndex.flatMap { case (n, i) => if (i != index) n.some else none[String] },
+      this.types.zipWithIndex.flatMap { case (t, i) => if (i != index) t.some else none[FeatureType] },
       this.columnIndices.zipWithIndex.flatMap { case (ci, i) =>
-        if (i == index) None else if (i > index) Some(ci - 1) else Some(ci)
+        if (i == index) none[Int] else if (i > index) (ci - 1).some else ci.some
       }
     )
 

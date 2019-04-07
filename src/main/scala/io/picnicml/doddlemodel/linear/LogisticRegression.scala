@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.linear
 
 import breeze.linalg.sum
 import breeze.numerics.{log, sigmoid}
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 
@@ -19,11 +20,11 @@ case class LogisticRegression private(lambda: Double, numClasses: Option[Int], p
 
 object LogisticRegression {
 
-  def apply(): LogisticRegression = LogisticRegression(0, None, None)
+  def apply(): LogisticRegression = LogisticRegression(0, none, none)
 
   def apply(lambda: Double): LogisticRegression = {
     require(lambda >= 0, "L2 regularization strength must be positive")
-    LogisticRegression(lambda, None, None)
+    LogisticRegression(lambda, none, none)
   }
 
   private val wSlice: Range.Inclusive = 1 to -1
@@ -35,10 +36,10 @@ object LogisticRegression {
     override protected def w(model: LogisticRegression): Option[RealVector] = model.w
 
     override protected[doddlemodel] def copy(model: LogisticRegression, numClasses: Int): LogisticRegression =
-      model.copy(numClasses = Some(numClasses))
+      model.copy(numClasses = numClasses.some)
 
     override protected def copy(model: LogisticRegression, w: RealVector): LogisticRegression =
-      model.copy(w = Some(w))
+      model.copy(w = w.some)
 
     override protected def predictStateless(model: LogisticRegression, w: RealVector, x: Features): Target =
       (predictProbaStateless(model, w, x)(::, 0) >:> 0.5).map(x => if (x) 1.0 else 0.0)

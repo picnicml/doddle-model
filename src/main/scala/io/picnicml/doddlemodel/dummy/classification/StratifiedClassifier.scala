@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.DenseVector
 import breeze.stats.distributions.Multinomial
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.dummy.classification.StratifiedClassifier.ev
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
@@ -22,7 +23,7 @@ case class StratifiedClassifier private (numClasses: Option[Int], targetDistr: O
 
 object StratifiedClassifier {
 
-  def apply(): StratifiedClassifier = new StratifiedClassifier(None, None)
+  def apply(): StratifiedClassifier = StratifiedClassifier(none, none)
 
   implicit lazy val ev: Classifier[StratifiedClassifier] = new Classifier[StratifiedClassifier] {
 
@@ -31,14 +32,14 @@ object StratifiedClassifier {
     override def isFitted(model: StratifiedClassifier): Boolean = model.targetDistr.isDefined
 
     override protected[doddlemodel] def copy(model: StratifiedClassifier, numClasses: Int): StratifiedClassifier =
-      model.copy(numClasses = Some(numClasses))
+      model.copy(numClasses = numClasses.some)
 
     override protected def fitSafe(model: StratifiedClassifier, x: Features, y: Target): StratifiedClassifier = {
       val probs = y.activeValuesIterator.foldLeft(Map[Double, Int]()) { (acc, x) =>
         if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
       }.toArray.sortBy(_._1).map(_._2 / y.length.toDouble)
 
-      model.copy(targetDistr = Some(Multinomial[RealVector, Int](DenseVector(probs))))
+      model.copy(targetDistr = Multinomial[RealVector, Int](DenseVector(probs)).some)
     }
 
     override protected def predictSafe(model: StratifiedClassifier, x: Features): Target =

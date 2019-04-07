@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.numerics.sigmoid
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 import org.scalatest.{FlatSpec, Matchers, OptionValues}
@@ -17,10 +18,10 @@ class LinearClassifierTest extends FlatSpec with Matchers with OptionValues {
     override protected def w(model: DummyLinearClassifier): Option[RealVector] = model.w
 
     override protected[doddlemodel] def copy(model: DummyLinearClassifier, numClasses: Int): DummyLinearClassifier =
-      model.copy(numClasses = Some(numClasses))
+      model.copy(numClasses = numClasses.some)
 
     override protected def copy(model: DummyLinearClassifier, w: RealVector): DummyLinearClassifier =
-      model.copy(w = Some(w))
+      model.copy(w = w.some)
 
     override protected def predictStateless(model: DummyLinearClassifier, w: RealVector, x: Features): Target =
       x * w
@@ -37,7 +38,7 @@ class LinearClassifierTest extends FlatSpec with Matchers with OptionValues {
 
   private val x = DenseMatrix.rand[Double](10, 5)
   private val y = DenseVector.vertcat(DenseVector.zeros[Double](5), DenseVector.ones[Double](5))
-  private val model = DummyLinearClassifier(None, None)
+  private val model = DummyLinearClassifier(none, none)
 
   "Linear classifier" should "throw an exception when using fit, predict on trained, untrained models" in {
     an [IllegalArgumentException] should be thrownBy ev.predict(model, x)

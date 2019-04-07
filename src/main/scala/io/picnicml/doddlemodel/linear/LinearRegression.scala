@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.linear
 
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 
@@ -17,11 +18,11 @@ case class LinearRegression private(lambda: Double, private val w: Option[RealVe
 
 object LinearRegression {
 
-  def apply(): LinearRegression = LinearRegression(0, None)
+  def apply(): LinearRegression = LinearRegression(0, none)
 
   def apply(lambda: Double): LinearRegression = {
     require(lambda >= 0, "L2 regularization strength must be positive")
-    LinearRegression(lambda, None)
+    LinearRegression(lambda, none)
   }
 
   private val wSlice: Range.Inclusive = 1 to -1
@@ -34,7 +35,7 @@ object LinearRegression {
       model.copy()
 
     override protected def copy(model: LinearRegression, w: RealVector): LinearRegression =
-      model.copy(w = Some(w))
+      model.copy(w = w.some)
 
     @inline override protected def targetVariableAppropriate(y: Target): Boolean = true
 

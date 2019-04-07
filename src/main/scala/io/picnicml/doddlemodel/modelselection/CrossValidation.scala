@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.modelselection
 
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, IntVector, Target, TrainTestSplit}
 import io.picnicml.doddlemodel.metrics.Metric
 import io.picnicml.doddlemodel.typeclasses.Predictor
@@ -28,7 +29,7 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
     *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
     *  after the instance is not needed anymore
     */
-  def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = None)
+  def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = none)
               (implicit ev: Predictor[A],
                reusable: CrossValReusable = CrossValReusable(false),
                rand: Random = new Random()): Double = {

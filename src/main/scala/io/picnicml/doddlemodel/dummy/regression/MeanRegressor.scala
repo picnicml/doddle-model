@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.dummy.regression
 
 import breeze.linalg.DenseVector
 import breeze.stats.{mean => sampleMean}
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Target}
 import io.picnicml.doddlemodel.typeclasses.Regressor
 
@@ -14,7 +15,7 @@ case class MeanRegressor private (mean: Option[Double])
 
 object MeanRegressor {
 
-  def apply(): MeanRegressor = new MeanRegressor(None)
+  def apply(): MeanRegressor = MeanRegressor(none)
 
   implicit lazy val ev: Regressor[MeanRegressor] = new Regressor[MeanRegressor] {
 
@@ -25,7 +26,7 @@ object MeanRegressor {
     @inline override protected def targetVariableAppropriate(y: Target): Boolean = true
 
     override protected def fitSafe(model: MeanRegressor, x: Features, y: Target): MeanRegressor =
-      model.copy(mean = Some(sampleMean(y)))
+      model.copy(mean = sampleMean(y).some)
 
     override protected def predictSafe(model: MeanRegressor, x: Features): Target =
       DenseVector(Array.fill(x.rows)(model.mean.get))

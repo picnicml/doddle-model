@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.linear
 
 import breeze.linalg._
 import breeze.numerics.{exp, log, pow}
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
@@ -20,11 +21,11 @@ case class SoftmaxClassifier private(lambda: Double, numClasses: Option[Int], pr
 
 object SoftmaxClassifier {
 
-  def apply(): SoftmaxClassifier = SoftmaxClassifier(0, None, None)
+  def apply(): SoftmaxClassifier = SoftmaxClassifier(0, none, none)
 
   def apply(lambda: Double): SoftmaxClassifier = {
     require(lambda > 0, "L2 regularization strength must be positive")
-    SoftmaxClassifier(lambda, None, None)
+    SoftmaxClassifier(lambda, none, none)
   }
 
   private val wSlice: Range.Inclusive = 1 to -1
@@ -36,10 +37,10 @@ object SoftmaxClassifier {
     override protected def w(model: SoftmaxClassifier): Option[RealVector] = model.w
 
     override protected[doddlemodel] def copy(model: SoftmaxClassifier, numClasses: Int): SoftmaxClassifier =
-      model.copy(numClasses = Some(numClasses))
+      model.copy(numClasses = numClasses.some)
 
     override protected def copy(model: SoftmaxClassifier, w: RealVector): SoftmaxClassifier =
-      model.copy(w = Some(w))
+      model.copy(w = w.some)
 
     override protected def predictStateless(model: SoftmaxClassifier, w: RealVector, x: Features): Target =
       convert(argmax(predictProbaStateless(model, w, x)(*, ::)), Double)

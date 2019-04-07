@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.{DenseVector, convert}
 import breeze.stats.distributions.Rand
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Simplex, Target}
 import io.picnicml.doddlemodel.typeclasses.Classifier
 
@@ -14,7 +15,7 @@ case class UniformClassifier private (numClasses: Option[Int])
 
 object UniformClassifier {
 
-  def apply(): UniformClassifier = new UniformClassifier(None)
+  def apply(): UniformClassifier = UniformClassifier(none)
 
   implicit lazy val ev: Classifier[UniformClassifier] = new Classifier[UniformClassifier] {
 
@@ -23,7 +24,7 @@ object UniformClassifier {
     override def isFitted(model: UniformClassifier): Boolean = model.numClasses.isDefined
 
     override protected[doddlemodel] def copy(model: UniformClassifier, numClasses: Int): UniformClassifier =
-      model.copy(numClasses = Some(numClasses))
+      model.copy(numClasses = numClasses.some)
 
     override protected def fitSafe(model: UniformClassifier, x: Features, y: Target): UniformClassifier =
       model.copy()

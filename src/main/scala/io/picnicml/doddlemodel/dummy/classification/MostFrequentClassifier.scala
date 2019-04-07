@@ -1,6 +1,7 @@
 package io.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.DenseVector
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Simplex, Target}
 import io.picnicml.doddlemodel.typeclasses.Classifier
 
@@ -13,7 +14,7 @@ case class MostFrequentClassifier private (numClasses: Option[Int], mostFrequent
 
 object MostFrequentClassifier {
 
-  def apply(): MostFrequentClassifier = new MostFrequentClassifier(None, None)
+  def apply(): MostFrequentClassifier = MostFrequentClassifier(none, none)
 
   implicit lazy val ev: Classifier[MostFrequentClassifier] = new Classifier[MostFrequentClassifier] {
 
@@ -22,14 +23,14 @@ object MostFrequentClassifier {
     override def isFitted(model: MostFrequentClassifier): Boolean = model.mostFrequentClass.isDefined
 
     override protected[doddlemodel] def copy(model: MostFrequentClassifier, numClasses: Int): MostFrequentClassifier =
-      model.copy(numClasses = Some(numClasses))
+      model.copy(numClasses = numClasses.some)
 
     override protected def fitSafe(model: MostFrequentClassifier, x: Features, y: Target): MostFrequentClassifier = {
       val mostFrequentClass = y.activeValuesIterator.foldLeft(Map[Double, Int]()) { (acc, x) =>
         if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
       }.toArray.sortBy(_._1).maxBy(_._2)._1
 
-      model.copy(mostFrequentClass = Some(mostFrequentClass))
+      model.copy(mostFrequentClass = mostFrequentClass.some)
     }
 
     override protected def predictSafe(model: MostFrequentClassifier, x: Features): Target =

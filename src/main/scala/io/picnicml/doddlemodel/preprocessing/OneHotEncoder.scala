@@ -13,6 +13,9 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
   * a value larger than during training is encountered it is ignored, i.e. no value is set in the binary encoded matrix.
   * Transformed categorical columns are appended at the end of the feature matrix.
   *
+  * @param featureIndex feature index associated with features, this is needed so that only categorical features
+  *                     are transformed by this preprocessor, could be a subset of columns to be transformed
+  *
   * Examples:
   * val encoder = OneHotEncoder(featureIndex)
   * val encoderSubsetOfColumns = OneHotEncoder(FeatureIndex.categorical(List(0, 2, 3)))
@@ -22,7 +25,7 @@ case class OneHotEncoder private (private val numBinaryColumns: Option[Vector[In
 
 object OneHotEncoder {
 
-  def apply(featureIndex: FeatureIndex): OneHotEncoder = OneHotEncoder(None, featureIndex)
+  def apply(featureIndex: FeatureIndex): OneHotEncoder = OneHotEncoder(none, featureIndex)
 
   implicit lazy val ev: Transformer[OneHotEncoder] = new Transformer[OneHotEncoder] {
 

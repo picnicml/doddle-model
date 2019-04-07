@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.dummy.regression
 
 import breeze.linalg.DenseVector
 import breeze.stats.{median => sampleMedian}
+import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Target}
 import io.picnicml.doddlemodel.typeclasses.Regressor
 
@@ -14,7 +15,7 @@ case class MedianRegressor private (median: Option[Double])
 
 object MedianRegressor {
 
-  def apply(): MedianRegressor = new MedianRegressor(None)
+  def apply(): MedianRegressor = MedianRegressor(none)
 
   implicit lazy val ev: Regressor[MedianRegressor] = new Regressor[MedianRegressor] {
 
@@ -25,7 +26,7 @@ object MedianRegressor {
     @inline override protected def targetVariableAppropriate(y: Target): Boolean = true
 
     override protected def fitSafe(model: MedianRegressor, x: Features, y: Target): MedianRegressor =
-      model.copy(median = Some(sampleMedian(y)))
+      model.copy(median = sampleMedian(y).some)
 
     override protected def predictSafe(model: MedianRegressor, x: Features): Target =
       DenseVector(Array.fill(x.rows)(model.median.get))
