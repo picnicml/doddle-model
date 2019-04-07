@@ -30,6 +30,7 @@ val compilerOptions = Seq(
   "-encoding", "UTF-8",
   "-feature",
   "-language:higherKinds",
+  "-Ypartial-unification",
   "-unchecked",
   "-Yno-adapted-args",
   "-Ywarn-dead-code",
