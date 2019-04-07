@@ -4,6 +4,7 @@ object Dependencies {
 
   object DependencyVersion {
     val breeze = "0.13.2"
+    val cats = "1.6.0"
     val scalaCSV = "1.3.5"
     val scalaTest = "3.0.7"
   }
@@ -11,6 +12,7 @@ object Dependencies {
   val compileDependencies: Seq[ModuleID] = Seq(
     "org.scalanlp" %% "breeze" % DependencyVersion.breeze,
     "org.scalanlp" %% "breeze-natives" % DependencyVersion.breeze,
+    "org.typelevel" %% "cats-core" % DependencyVersion.cats,
     "com.github.tototoshi" %% "scala-csv" % DependencyVersion.scalaCSV
   )
 
