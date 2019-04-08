@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.pipeline
 
+import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.impute.MeanValueImputer
 import io.picnicml.doddlemodel.linear.LogisticRegression
@@ -11,23 +12,23 @@ import org.scalatest.{FlatSpec, Matchers}
 class PipelineTest extends FlatSpec with Matchers {
 
   "Pipeline" should "implement the isFitted function" in {
-    val (x, y, _) = loadBreastCancerDataset
-    val pipeline = initializePipeline
+    val (x, y, featureIndex) = loadBreastCancerDataset
+    val pipeline = initializePipeline(featureIndex)
     ev.isFitted(pipeline) shouldBe false
     val trainedPipeline = ev.fit(pipeline, x, y)
     ev.isFitted(trainedPipeline) shouldBe true
   }
 
   it should "apply the transformation steps" in {
-    val (x, y, _) = loadBreastCancerDataset
-    val trainedPipeline = ev.fit(initializePipeline, x, y)
+    val (x, y, featureIndex) = loadBreastCancerDataset
+    val trainedPipeline = ev.fit(initializePipeline(featureIndex), x, y)
     accuracy(y, ev.predict(trainedPipeline, x)) should be > 0.98
   }
 
-  private def initializePipeline: Pipeline = {
+  private def initializePipeline(featureIndex: FeatureIndex): Pipeline = {
     val transformers: PipelineTransformers = List(
-      pipe(MeanValueImputer()),
-      pipe(StandardScaler())
+      pipe(MeanValueImputer(featureIndex)),
+      pipe(StandardScaler(featureIndex))
     )
     Pipeline(transformers)(pipe(LogisticRegression()))
   }

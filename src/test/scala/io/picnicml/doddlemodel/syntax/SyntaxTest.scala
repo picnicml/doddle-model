@@ -1,6 +1,7 @@
 package io.picnicml.doddlemodel.syntax
 
 import io.picnicml.doddlemodel.TestingUtils
+import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.linear.{LinearRegression, LogisticRegression}
 import io.picnicml.doddlemodel.preprocessing.StandardScaler
 import org.scalatest.{FlatSpec, Matchers}
@@ -37,7 +38,7 @@ class SyntaxTest extends FlatSpec with Matchers with TestingUtils {
 
   it should "provide syntax for transformer typeclass instances" in {
     import io.picnicml.doddlemodel.syntax.TransformerSyntax._
-    val transformer = StandardScaler()
+    val transformer = StandardScaler(FeatureIndex.numerical(1))
     val trainedTransformer = transformer.fit(x)
     trainedTransformer.transform(x)
     trainedTransformer.isFitted

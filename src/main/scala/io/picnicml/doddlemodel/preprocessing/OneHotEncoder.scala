@@ -18,7 +18,7 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
   *
   * Examples:
   * val encoder = OneHotEncoder(featureIndex)
-  * val encoderSubsetOfColumns = OneHotEncoder(FeatureIndex.categorical(List(0, 2, 3)))
+  * val encoderSubsetOfColumns = OneHotEncoder(featureIndex.subset("f0", "f2"))
   */
 case class OneHotEncoder private (private val numBinaryColumns: Option[Vector[Int]],
                                   private val featureIndex: FeatureIndex)

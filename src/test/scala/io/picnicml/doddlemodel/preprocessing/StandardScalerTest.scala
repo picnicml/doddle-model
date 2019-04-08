@@ -3,7 +3,7 @@ package io.picnicml.doddlemodel.preprocessing
 import breeze.linalg.{*, DenseMatrix, DenseVector}
 import breeze.stats.{mean, stddev}
 import io.picnicml.doddlemodel.TestingUtils
-import io.picnicml.doddlemodel.data.Feature.FeatureIndex
+import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 import io.picnicml.doddlemodel.preprocessing.StandardScaler.ev
 import org.scalactic.{Equality, TolerantNumerics}
 import org.scalatest.{FlatSpec, Matchers}
@@ -12,30 +12,45 @@ class StandardScalerTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 
-  "Standard scaler" should "subtract the mean and scale to unit variance" in {
+  "Standard scaler" should "preprocess the numerical features" in {
     val x = DenseMatrix.rand[Double](10, 5)
-    val scaler = StandardScaler()
+    val featureIndex = FeatureIndex(
+      List(
+        NumericalFeature,
+        NumericalFeature,
+        NumericalFeature,
+        NumericalFeature,
+        CategoricalFeature
+      )
+    )
+    val scaler = StandardScaler(featureIndex)
     val trainedScaler = ev.fit(scaler, x)
     val xTransformed = ev.transform(trainedScaler, x)
 
     breezeEqual(mean(x(::, *)).t, DenseVector.zeros[Double](5)) shouldBe false
     breezeEqual(stddev(x(::, *)).t, DenseVector.ones[Double](5)) shouldBe false
-    breezeEqual(mean(xTransformed(::, *)).t, DenseVector.zeros[Double](5)) shouldBe true
-    breezeEqual(stddev(xTransformed(::, *)).t, DenseVector.ones[Double](5)) shouldBe true
+
+    val expectedMeans = DenseVector.zeros[Double](5)
+    expectedMeans(-1) = mean(x(::, -1))
+    breezeEqual(mean(xTransformed(::, *)).t, expectedMeans) shouldBe true
+
+    val expectedStdDevs = DenseVector.ones[Double](5)
+    expectedStdDevs(-1) = stddev(x(::, -1))
+    breezeEqual(stddev(xTransformed(::, *)).t, expectedStdDevs) shouldBe true
   }
 
   it should "handle the zero variance case" in {
     val x = DenseMatrix.ones[Double](10, 5)
-    val scaler = StandardScaler()
+    val scaler = StandardScaler(FeatureIndex.numerical(5))
     val trainedScaler = ev.fit(scaler, x)
     val xTransformed = ev.transform(trainedScaler, x)
 
     xTransformed.forall(_.isNaN) shouldBe false
   }
 
-  it should "preprocess a subset of columns if specified" in {
+  it should "preprocess a subset of numerical features" in {
     val x = DenseMatrix.rand[Double](10, 5)
-    val scaler = StandardScaler(featureIndex = FeatureIndex.numerical(List(0, 2, 4)))
+    val scaler = StandardScaler(FeatureIndex.numerical(5).subset("f0", "f2", "f4"))
     val trainedScaler = ev.fit(scaler, x)
     val xTransformed = ev.transform(trainedScaler, x)
 

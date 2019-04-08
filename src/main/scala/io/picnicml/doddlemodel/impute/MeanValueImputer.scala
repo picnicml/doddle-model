@@ -10,27 +10,26 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
 
 /** An immutable simple imputer that replaces all NaN values with column means.
   *
-  * @param featureIndex a subset of columns to be imputed by this preprocessor
+  * @param featureIndex feature index associated with features, this is needed so that only numerical features
+  *                     are transformed by this preprocessor, could be a subset of columns to be transformed
   *
   * Examples:
-  * val imputer = MeanValueImputer()
-  * val imputerSubsetOfColumns = MeanValueImputer(FeatureIndex.numerical(List(0, 2, 3)))
+  * val imputer = MeanValueImputer(featureIndex)
+  * val imputerSubsetOfColumns = MeanValueImputer(featureIndex.subset("f0", "f2"))
   */
 case class MeanValueImputer private (private[impute] val means: Option[RealVector],
-                                     private val featureIndex: Option[FeatureIndex])
+                                     private val featureIndex: FeatureIndex)
 
 object MeanValueImputer {
 
-  def apply(): MeanValueImputer = MeanValueImputer(none, none)
-
-  def apply(featureIndex: FeatureIndex): MeanValueImputer = MeanValueImputer(none, featureIndex.some)
+  def apply(featureIndex: FeatureIndex): MeanValueImputer = MeanValueImputer(none, featureIndex)
 
   implicit val ev: Transformer[MeanValueImputer] = new Transformer[MeanValueImputer] {
 
     override def isFitted(model: MeanValueImputer): Boolean = model.means.isDefined
 
     override def fit(model: MeanValueImputer, x: Features): MeanValueImputer = {
-      val xToPreprocess = model.featureIndex.fold(x)(index => x(::, index.columnIndices).toDenseMatrix)
+      val xToPreprocess = x(::, model.featureIndex.numerical.columnIndices)
       val means = DenseVector.zeros[Double](xToPreprocess.cols)
       0 until xToPreprocess.cols foreach { colIndex =>
         means(colIndex) = mean(xToPreprocess(xToPreprocess(::, colIndex).findAll(!_.isNaN), colIndex))
@@ -40,8 +39,7 @@ object MeanValueImputer {
 
     override protected def transformSafe(model: MeanValueImputer, x: Features): Features = {
       val xCopy = x.copy
-      val colIndices = model.featureIndex.fold[IndexedSeq[Int]](0 until xCopy.cols)(index => index.columnIndices)
-      colIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
+      model.featureIndex.numerical.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
         xCopy(::, colIndex).findAll(_.isNaN).iterator.foreach { rowIndex =>
           xCopy(rowIndex, colIndex) = model.means.getOrBreak(statisticIndex)
         }

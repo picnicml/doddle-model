@@ -10,22 +10,20 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
 
 /** An immutable preprocessor that transforms features by subtracting the mean and scaling to unit variance.
   *
-  * @param featureIndex a subset of columns to be transformed by this preprocessor
+  * @param featureIndex feature index associated with features, this is needed so that only numerical features
+  *                     are transformed by this preprocessor, could be a subset of columns to be transformed
   *
   * Examples:
-  * val preprocessor = StandardScaler()
-  * val preprocessorSubsetOfColumns = StandardScaler(FeatureIndex.numerical(List(0, 2, 3)))
+  * val preprocessor = StandardScaler(featureIndex)
+  * val preprocessorSubsetOfColumns = StandardScaler(featureIndex.subset("f0", "f2"))
   */
 case class StandardScaler private (private val sampleMean: Option[RealVector],
                                    private val sampleStdDev: Option[RealVector],
-                                   private val featureIndex: Option[FeatureIndex])
+                                   private val featureIndex: FeatureIndex)
 
 object StandardScaler {
 
-  def apply(): StandardScaler = StandardScaler(none, none, none)
-
-  def apply(featureIndex: FeatureIndex): StandardScaler =
-    StandardScaler(none, none, featureIndex.some)
+  def apply(featureIndex: FeatureIndex): StandardScaler = StandardScaler(none, none, featureIndex)
 
   implicit lazy val ev: Transformer[StandardScaler] = new Transformer[StandardScaler] {
 
@@ -33,26 +31,21 @@ object StandardScaler {
       model.sampleMean.isDefined && model.sampleStdDev.isDefined
 
     override def fit(model: StandardScaler, x: Features): StandardScaler = {
-      val xToPreprocess = model.featureIndex.fold(x)(index => x(::, index.columnIndices).toDenseMatrix)
-      val sampleStdDev = stddev(xToPreprocess(::, *)).t
+      val xToPreprocess = x(::, model.featureIndex.numerical.columnIndices)
+      val sampleStdDev = stddev(xToPreprocess(::, *)).t.toDenseVector
       sampleStdDev(sampleStdDev :== 0.0) := 1.0
-      model.copy(mean(xToPreprocess(::, *)).t.some, sampleStdDev.some)
+      model.copy(mean(xToPreprocess(::, *)).t.toDenseVector.some, sampleStdDev.some)
     }
 
-    override protected def transformSafe(model: StandardScaler, x: Features): Features = model.featureIndex match {
-      case Some(index) =>
-        this.preprocessSubset(x.copy, index, model.sampleMean.getOrBreak, model.sampleStdDev.getOrBreak)
-      case None =>
-        (x(*, ::) - model.sampleMean.getOrBreak).apply(*, ::) / model.sampleStdDev.getOrBreak
-    }
-
-    private def preprocessSubset(x: Features, index: FeatureIndex, mean: RealVector, stdDev: RealVector): Features = {
-      index.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
-        (0 until x.rows).foreach { rowIndex =>
-          x(rowIndex, colIndex) = (x(rowIndex, colIndex) - mean(statisticIndex)) / stdDev(statisticIndex)
+    override protected def transformSafe(model: StandardScaler, x: Features): Features = {
+      val xCopy = x.copy
+      model.featureIndex.numerical.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
+        (0 until xCopy.rows).foreach { rowIndex =>
+          xCopy(rowIndex, colIndex) = (xCopy(rowIndex, colIndex) - model.sampleMean.getOrBreak(statisticIndex)) /
+            model.sampleStdDev.getOrBreak(statisticIndex)
         }
       }
-      x
+      xCopy
     }
   }
 }
