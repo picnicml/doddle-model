@@ -5,7 +5,7 @@ import io.picnicml.doddlemodel.typeclasses.Predictor
 
 object PredictorSyntax {
 
-  implicit class PredictorOps[A](model: A) {
+  implicit class PredictorOps[A](val model: A) extends AnyVal {
 
     def isFitted(implicit ev: Predictor[A]): Boolean = ev.isFitted(model)
 

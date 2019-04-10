@@ -2,7 +2,7 @@ package io.picnicml.doddlemodel.syntax
 
 object OptionSyntax {
 
-  implicit class OptionOps[A](parameter: Option[A]) {
+  implicit class OptionOps[A](val parameter: Option[A]) extends AnyVal {
 
     def getOrBreak: A =
       parameter.getOrElse(

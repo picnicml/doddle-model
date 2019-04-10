@@ -5,7 +5,7 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
 
 object TransformerSyntax {
 
-  implicit class TransformerOps[A](model: A) {
+  implicit class TransformerOps[A](val model: A) extends AnyVal {
 
     def isFitted(implicit ev: Transformer[A]): Boolean = ev.isFitted(model)
 

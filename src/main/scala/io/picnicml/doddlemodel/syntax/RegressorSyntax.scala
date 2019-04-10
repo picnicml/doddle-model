@@ -5,7 +5,7 @@ import io.picnicml.doddlemodel.typeclasses.Regressor
 
 object RegressorSyntax {
 
-  implicit class RegressorOps[A](model: A) {
+  implicit class RegressorOps[A](val model: A) extends AnyVal {
 
     def isFitted(implicit ev: Regressor[A]): Boolean = ev.isFitted(model)
 

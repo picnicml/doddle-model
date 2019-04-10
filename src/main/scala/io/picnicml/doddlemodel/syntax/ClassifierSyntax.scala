@@ -5,7 +5,7 @@ import io.picnicml.doddlemodel.typeclasses.Classifier
 
 object ClassifierSyntax {
 
-  implicit class ClassifierOps[A](model: A) {
+  implicit class ClassifierOps[A](val model: A) extends AnyVal {
 
     def numClasses(implicit ev: Classifier[A]): Option[Int] = ev.numClasses(model)
 
