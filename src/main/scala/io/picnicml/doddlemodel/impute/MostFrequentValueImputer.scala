@@ -38,10 +38,8 @@ object MostFrequentValueImputer {
     }
 
     private def getMostFrequent(column: SliceVector[(Int, Int), Double]): Double = {
-      val initialCounts = Map.empty[Double, Int].withDefaultValue(0)
-      val counts = column.toArray.foldLeft[Map[Double, Int]](initialCounts) { case (currentCounts, value) =>
-        currentCounts.updated(value, currentCounts(value) + 1)
-      }
+      val counts = scala.collection.mutable.Map.empty[Double, Int].withDefaultValue(0)
+      column.foreachValue(value => counts(value) = counts(value) + 1)
       counts.maxBy(_._2)._1
     }
 
