@@ -67,17 +67,17 @@ For a complete list of code examples see [doddle-model-examples](https://github.
 ### Performance
 `doddle-model` is developed with performance in mind, for benchmarks see the [doddle-benchmark](https://github.com/picnicml/doddle-benchmark) repository.
 
-##### Native Linear Algebra Libraries
+##### 1. Native Linear Algebra Libraries
 [Breeze](https://github.com/scalanlp/breeze) utilizes [netlib-java](https://github.com/fommil/netlib-java) for accessing hardware optimised linear algebra libraries. TL;DR seeing something like
 ```
 INFO: successfully loaded /var/folders/9h/w52f2svd3jb750h890q1x4j80000gn/T/jniloader3358656786070405996netlib-native_system-osx-x86_64.jnilib
 ```
 means that BLAS/LAPACK/ARPACK implementations are used. For more information see the [Breeze](https://github.com/scalanlp/breeze) documentation.
 
-##### Memory
+##### 2. Memory
 If you encounter `java.lang.OutOfMemoryError: Java heap space` increase the maximum heap size with `-Xms` and `-Xmx` JVM properties. E.g. use `-Xms8192m -Xmx8192m` for initial and maximum heap space of 8Gb. Note that the maximum heap limit for the 32-bit JVM is 4Gb (at least in theory) so make sure to use 64-bit JVM if more memory is needed. If the error still occurs and you are using hyperparameter search or cross validation, see the next section.
 
-##### Parallelism
+##### 3. Parallelism
 To limit the number of threads running at one time (and thus memory consumption) when doing cross validation and hyperparameter search, a `FixedThreadPool` executor is used. By default maximum number of threads is set to the number of system's cores. Set the `-DmaxNumThreads` JVM property to change that, e.g. to allow for 16 threads use `-DmaxNumThreads=16`.
 
 ### Development
