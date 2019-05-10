@@ -3,55 +3,51 @@
 ---
 
 <table>
-<tr>
-  <td>Latest Release</td>
-  <td>
-    <a href="https://search.maven.org/search?q=g:io.github.picnicml">
-    <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square&label=maven%20central" alt="latest release"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Build Status</td>
-  <td>
-    <a href="https://circleci.com/gh/picnicml/doddle-model">
-    <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square&label=circleci" alt="build status"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Coverage</td>
-  <td>
-    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
-    <img src="https://img.shields.io/codacy/coverage/9f1dad5c6d6041dd85db71adabba3e72.svg?style=flat-square&label=codacy" alt="coverage"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Code Quality</td>
-  <td>
-    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
-    <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square&label=codacy" alt="code quality"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Chat</td>
-  <td>
-    <a href="https://gitter.im/picnicml/doddle-model">
-    <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square&label=picnicml" alt="chat"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>License</td>
-  <td>
-    <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/picnicml/doddle-model.svg?style=flat-square&label=picnicml" alt="license"/>
-    </a>
-  </td>
-</tr>
+    <tr>
+        <td>Latest Release</td>
+        <td>
+            <a href="https://search.maven.org/search?q=g:io.github.picnicml">
+                <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square&label=maven%20central" alt="latest release"/>
+            </a>
+        </td>
+        <td>Build Status</td>
+        <td>
+            <a href="https://circleci.com/gh/picnicml/doddle-model">
+                <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square&label=circleci" alt="build status"/>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>Coverage</td>
+        <td>
+            <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+                <img src="https://img.shields.io/codacy/coverage/9f1dad5c6d6041dd85db71adabba3e72.svg?style=flat-square&label=codacy" alt="coverage"/>
+            </a>
+        </td>
+        <td>Code Quality</td>
+        <td>
+            <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+                <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square&label=codacy" alt="code quality"/>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>Chat</td>
+        <td>
+            <a href="https://gitter.im/picnicml/doddle-model">
+                <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square&label=picnicml" alt="chat"/>
+            </a>
+        </td>
+        <td>License</td>
+        <td>
+            <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE">
+                <img src="https://img.shields.io/github/license/picnicml/doddle-model.svg?style=flat-square&label=picnicml" alt="license"/>
+            </a>
+        </td>
+    </tr>
 </table>
+
+---
 
 `doddle-model` is an in-memory machine learning library that can be summed up with three main characteristics:
 * it is built on top of [Breeze](https://github.com/scalanlp/breeze)
