@@ -1,4 +1,6 @@
 ## doddle-model
+<img src="https://github.com/picnicml/doddle-model/blob/master/.github/doddle-model-header.png" alt="doddle-model"/>
+
 <table>
 <tr>
   <td>Latest Release</td>
