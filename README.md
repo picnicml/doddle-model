@@ -1,54 +1,51 @@
-## doddle-model
+<img src="https://github.com/picnicml/doddle-model/blob/readme-header/.github/doddle-model-header.png" alt="doddle-model"/>
+
+---
+
 <table>
-<tr>
-  <td>Latest Release</td>
-  <td>
-    <a href="https://search.maven.org/search?q=g:io.github.picnicml">
-    <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square&label=maven%20central" alt="latest release"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Build Status</td>
-  <td>
-    <a href="https://circleci.com/gh/picnicml/doddle-model">
-    <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square&label=circleci" alt="build status"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Coverage</td>
-  <td>
-    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
-    <img src="https://img.shields.io/codacy/coverage/9f1dad5c6d6041dd85db71adabba3e72.svg?style=flat-square&label=codacy" alt="coverage"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Code Quality</td>
-  <td>
-    <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
-    <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square&label=codacy" alt="code quality"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>Chat</td>
-  <td>
-    <a href="https://gitter.im/picnicml/doddle-model">
-    <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square&label=picnicml" alt="chat"/>
-    </a>
-  </td>
-</tr>
-<tr>
-  <td>License</td>
-  <td>
-    <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/picnicml/doddle-model.svg?style=flat-square&label=picnicml" alt="license"/>
-    </a>
-  </td>
-</tr>
+    <tr>
+        <th>Latest Release</th>
+        <th>Build Status</th>
+        <th>Coverage</th>
+        <th>Code Quality</th>
+        <th>License</th>
+        <th>Chat</th>
+    </tr>
+    <tr>
+        <td>
+            <a href="https://search.maven.org/search?q=g:io.github.picnicml">
+                <img src="https://img.shields.io/maven-central/v/io.github.picnicml/doddle-model_2.12.svg?style=flat-square&label=maven%20central" alt="latest release"/>
+            </a>
+        </td>
+        <td>
+            <a href="https://circleci.com/gh/picnicml/doddle-model">
+                <img src="https://img.shields.io/circleci/project/github/picnicml/doddle-model/master.svg?style=flat-square&label=circleci" alt="build status"/>
+            </a>
+        </td>
+        <td>
+            <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+                <img src="https://img.shields.io/codacy/coverage/9f1dad5c6d6041dd85db71adabba3e72.svg?style=flat-square&label=codacy" alt="coverage"/>
+            </a>
+        </td>
+        <td>
+            <a href="https://app.codacy.com/project/inejc/doddle-model/dashboard">
+                <img src="https://img.shields.io/codacy/grade/9f1dad5c6d6041dd85db71adabba3e72/master.svg?style=flat-square&label=codacy" alt="code quality"/>
+            </a>
+        </td>
+        <td>
+            <a href="https://github.com/picnicml/doddle-model/blob/master/LICENSE">
+                <img src="https://img.shields.io/github/license/picnicml/doddle-model.svg?style=flat-square&label=picnicml" alt="license"/>
+            </a>
+        </td>
+        <td>
+            <a href="https://gitter.im/picnicml/doddle-model">
+                <img src="https://img.shields.io/gitter/room/nwjs/nw.js.svg?style=flat-square&label=picnicml" alt="chat"/>
+            </a>
+        </td>
+    </tr>
 </table>
+
+---
 
 `doddle-model` is an in-memory machine learning library that can be summed up with three main characteristics:
 * it is built on top of [Breeze](https://github.com/scalanlp/breeze)
@@ -70,17 +67,17 @@ For a complete list of code examples see [doddle-model-examples](https://github.
 ### Performance
 `doddle-model` is developed with performance in mind, for benchmarks see the [doddle-benchmark](https://github.com/picnicml/doddle-benchmark) repository.
 
-##### Native Linear Algebra Libraries
+##### 1. Native Linear Algebra Libraries
 [Breeze](https://github.com/scalanlp/breeze) utilizes [netlib-java](https://github.com/fommil/netlib-java) for accessing hardware optimised linear algebra libraries. TL;DR seeing something like
 ```
 INFO: successfully loaded /var/folders/9h/w52f2svd3jb750h890q1x4j80000gn/T/jniloader3358656786070405996netlib-native_system-osx-x86_64.jnilib
 ```
 means that BLAS/LAPACK/ARPACK implementations are used. For more information see the [Breeze](https://github.com/scalanlp/breeze) documentation.
 
-##### Memory
+##### 2. Memory
 If you encounter `java.lang.OutOfMemoryError: Java heap space` increase the maximum heap size with `-Xms` and `-Xmx` JVM properties. E.g. use `-Xms8192m -Xmx8192m` for initial and maximum heap space of 8Gb. Note that the maximum heap limit for the 32-bit JVM is 4Gb (at least in theory) so make sure to use 64-bit JVM if more memory is needed. If the error still occurs and you are using hyperparameter search or cross validation, see the next section.
 
-##### Parallelism
+##### 3. Parallelism
 To limit the number of threads running at one time (and thus memory consumption) when doing cross validation and hyperparameter search, a `FixedThreadPool` executor is used. By default maximum number of threads is set to the number of system's cores. Set the `-DmaxNumThreads` JVM property to change that, e.g. to allow for 16 threads use `-DmaxNumThreads=16`.
 
 ### Development
