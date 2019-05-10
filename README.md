@@ -1,4 +1,4 @@
-<img src="https://github.com/picnicml/doddle-model/blob/readme-header/.github/doddle-model-header.png" alt="doddle-model"/>
+<img src="https://github.com/picnicml/doddle-model/blob/master/.github/doddle-model-header.png" alt="doddle-model"/>
 
 ---
 
