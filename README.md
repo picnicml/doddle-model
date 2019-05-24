@@ -57,7 +57,11 @@
 ### Installation
 Add the dependency to your SBT project definition:
 ```scala
-libraryDependencies += "io.github.picnicml" %% "doddle-model" % "<latest_version>"
+libraryDependencies  ++= Seq(
+  "io.github.picnicml" %% "doddle-model" % "<latest_version>",
+  // add optionally to utilize native libraries for a significant performance boost
+  "org.scalanlp" %% "breeze-natives" % "0.13.2"
+)
 ```
 Note that the latest version is displayed in the _Latest Release_ badge above and that the _v_ prefix should be removed from the SBT definition.
 
@@ -68,7 +72,7 @@ For a complete list of code examples see [doddle-model-examples](https://github.
 `doddle-model` is developed with performance in mind, for benchmarks see the [doddle-benchmark](https://github.com/picnicml/doddle-benchmark) repository.
 
 ##### 1. Native Linear Algebra Libraries
-[Breeze](https://github.com/scalanlp/breeze) utilizes [netlib-java](https://github.com/fommil/netlib-java) for accessing hardware optimised linear algebra libraries. TL;DR seeing something like
+[Breeze](https://github.com/scalanlp/breeze) utilizes [netlib-java](https://github.com/fommil/netlib-java) for accessing hardware optimised linear algebra libraries (note that the `breeze-natives` dependency needs to be added to the SBT project definition). TL;DR seeing something like
 ```
 INFO: successfully loaded /var/folders/9h/w52f2svd3jb750h890q1x4j80000gn/T/jniloader3358656786070405996netlib-native_system-osx-x86_64.jnilib
 ```
