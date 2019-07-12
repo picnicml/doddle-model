@@ -11,14 +11,13 @@ object Normalizer {
 
   def apply(norm: String = "l2"): Normalizer = {
     // TODO: expose norms for re-use
-    if(norm == "l2")
-      new Normalizer((x: Features) => sqrt(sum(pow(x, 2), Axis._1)))
-    else if(norm == "l1")
-      new Normalizer((x: Features) => sum(abs(x), Axis._1))
-    else if(norm == "max")
-      new Normalizer((x: Features) => max(abs(x), Axis._1))
-    else
-      throw new IllegalArgumentException("Unsupported norm")
+    val normFunction = norm match {
+      case "l2" => (x: Features) => sqrt(sum(pow(x, 2), Axis._1))
+      case "l1" => (x: Features) => sum(abs(x), Axis._1)
+      case "max" => (x: Features) => max(abs(x), Axis._1)
+      case _ => throw new IllegalArgumentException("Unsupported norm")
+    }
+    new Normalizer(normFunction)
   }
 
   implicit lazy val ev: Transformer[Normalizer] = new Transformer[Normalizer] {

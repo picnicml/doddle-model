@@ -15,15 +15,17 @@ case class RangeScaler private (private val scale: Option[RealVector],
 object RangeScaler {
 
   def apply(range: (Double, Double), featureIndex: FeatureIndex): RangeScaler = {
+    val (lowerBound, upperBound) = range
     val numNumeric = featureIndex.numerical.columnIndices.length
     require(numNumeric > 0, "There must be at least 1 numeric column in the given data")
-    require(range._2 > range._1, "Upper bound of range must be greater than lower bound")
+    require(upperBound > lowerBound, "Upper bound of range must be greater than lower bound")
     RangeScaler(none, none, range, featureIndex)
   }
 
   implicit lazy val ev: Transformer[RangeScaler] = new Transformer[RangeScaler] {
 
     override def fit(model: RangeScaler, x: Features): RangeScaler = {
+      val (lowerBound, upperBound) = model.range
       val numericColsOnly = x(::, model.featureIndex.numerical.columnIndices).toDenseMatrix
       val (colMax: RealVector, colMin: RealVector) =
         (max(numericColsOnly, Axis._0).inner, min(numericColsOnly, Axis._0).inner)
@@ -31,8 +33,8 @@ object RangeScaler {
       // avoid division by zero for constant features (max == min)
       dataRange(dataRange :== 0.0) := 1.0
 
-      val scale = (model.range._2 - model.range._1) / dataRange
-      val minAdjustment = model.range._1 - (colMin *:* scale)
+      val scale = (upperBound - lowerBound) / dataRange
+      val minAdjustment = lowerBound - (colMin *:* scale)
 
       model.copy(scale.some, minAdjustment.some)
     }
