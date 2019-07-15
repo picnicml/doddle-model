@@ -9,11 +9,6 @@ import io.picnicml.doddlemodel.dummy.classification.StratifiedClassifier.ev
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Classifier
 
-/** An immutable dummy classifier that samples predictions from a stratified categorical distribution.
-  *
-  * Examples:
-  * val model = StratifiedClassifier()
-  */
 case class StratifiedClassifier private (numClasses: Option[Int],
                                          targetDistr: Option[Multinomial[DenseVector[Double], Int]]) {
 
@@ -23,6 +18,13 @@ case class StratifiedClassifier private (numClasses: Option[Int],
   }
 }
 
+/** An immutable dummy classifier that samples predictions from a stratified categorical distribution.
+  *
+  * @example
+  *   {{{
+  *     val model = StratifiedClassifier()
+  *   }}}
+  */
 object StratifiedClassifier {
 
   def apply(): StratifiedClassifier = StratifiedClassifier(none, none)

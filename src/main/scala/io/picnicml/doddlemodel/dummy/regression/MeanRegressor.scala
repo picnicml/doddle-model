@@ -8,8 +8,10 @@ import io.picnicml.doddlemodel.typeclasses.Regressor
 
 /** An immutable dummy regressor that always predicts the sample mean.
   *
-  * Examples:
-  * val model = MeanRegressor()
+  * @example
+  *   {{{
+  *     val model = MeanRegressor()
+  *   }}}
   */
 case class MeanRegressor private (mean: Option[Float])
 

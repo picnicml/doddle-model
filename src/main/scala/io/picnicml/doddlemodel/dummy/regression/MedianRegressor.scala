@@ -8,8 +8,10 @@ import io.picnicml.doddlemodel.typeclasses.Regressor
 
 /** An immutable dummy regressor that always predicts the sample median.
   *
-  * Examples:
-  * val model = MedianRegressor()
+  * @example
+  *   {{{
+  *     val model = MedianRegressor()
+  *   }}}
   */
 case class MedianRegressor private (median: Option[Float])
 

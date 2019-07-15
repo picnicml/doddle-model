@@ -6,13 +6,15 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Simplex, Target}
 import io.picnicml.doddlemodel.typeclasses.Classifier
 
-/** An immutable dummy classifier that samples predictions from a uniform categorical distribution.
-  *
-  * Examples:
-  * val model = UniformClassifier()
-  */
 case class UniformClassifier private (numClasses: Option[Int])
 
+/** An immutable dummy classifier that samples predictions from a uniform categorical distribution.
+  *
+  * @example
+  *   {{{
+  *     val model = UniformClassifier()
+  *   }}}
+  */
 object UniformClassifier {
 
   def apply(): UniformClassifier = UniformClassifier(none)
