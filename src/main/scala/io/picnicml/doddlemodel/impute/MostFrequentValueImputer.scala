@@ -7,20 +7,30 @@ import io.picnicml.doddlemodel.data.{Features, RealVector}
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Transformer
 
-/** An immutable simple imputer that replaces all NaN values with most frequent value of a corresponding column.
-  *
-  * @param featureIndex feature index associated with features, this is needed so that only categorical features
-  *                     are transformed by this preprocessor, could be a subset of columns to be transformed
-  *
-  * Examples:
-  * val imputer = MostFrequentValueImputer(featureIndex)
-  * val imputerSubsetOfColumns = MostFrequentValueImputer(featureIndex.subset("f0", "f2"))
-  */
 case class MostFrequentValueImputer private (private[impute] val mostFrequent: Option[RealVector],
                                              private val featureIndex: FeatureIndex)
-
+/** An immutable simple imputer that replaces all NaN values with most frequent value of a corresponding column. */
 object MostFrequentValueImputer {
 
+  /** Create an imputer based on a feature index.
+    *
+    * @param featureIndex feature index associated with features, this is needed so that only categorical features
+    *                     are transformed by this preprocessor, could be a subset of columns to be transformed
+    *
+    * @example Impute values for all (numerical) features.
+    *   {{{
+    *     val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature, NumericalFeature,
+    *       NumericalFeature))
+    *     val imputer = MostFrequentValueImputer(featureIndex)
+    *   }}}
+    *
+    * @example Impute values for a subset of features.
+    *   {{{
+    *     val featureIndex = FeatureIndex(List("f0", "f1", "f2"), List(NumericalFeature, NumericalFeature,
+    *       NumericalFeature), List(0, 1, 2))
+    *     val imputerSubsetOfColumns = MostFrequentValueImputer(featureIndex.subset("f0", "f2"))
+    *   }}}
+    */
   def apply(featureIndex: FeatureIndex): MostFrequentValueImputer =
     MostFrequentValueImputer(None, featureIndex)
 
