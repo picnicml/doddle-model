@@ -6,20 +6,27 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 
-/** An immutable multiple Poisson regression model with ridge regularization.
-  *
-  * @param lambda L2 regularization strength, must be positive, 0 means no regularization
-  *
-  * Examples:
-  * val model = PoissonRegression()
-  * val model = PoissonRegression(lambda = 1.5f)
-  */
+/** An immutable multiple Poisson regression model with ridge regularization. */
 case class PoissonRegression private (lambda: Float, private val w: Option[RealVector]) {
   private var yPredMeanCache: Target = _
 }
 
 object PoissonRegression {
 
+  /** Create a regularized Poisson regression model.
+    *
+    * @param lambda L2 regularization strength, must be non-negative, 0.0 means no regularization
+    *
+    * @example Create and fit a regularized Poisson regression model with lambda = 1.5.
+    *   {{{
+    *     import io.picnicml.doddlemodel.linear.PoissonRegression.ev
+    *
+    *     val X: Features = DenseMatrix(List(1.0, 2.0), List(3.0, 4.0))
+    *     val y: Target = DenseVector(-3.0, 2.0)
+    *     val model = PoissonRegression(lambda = 1.5f)
+    *     val fittedModel = ev.fit(model, X, y)
+    *   }}}
+    */
   def apply(lambda: Float = 0.0f): PoissonRegression = {
     require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     PoissonRegression(lambda, none)

@@ -6,20 +6,27 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 
-/** An immutable multiple logistic regression model with ridge regularization.
-  *
-  * @param lambda L2 regularization strength, must be positive, 0 means no regularization
-  *
-  * Examples:
-  * val model = LogisticRegression()
-  * val model = LogisticRegression(lambda = 1.5f)
-  */
+/** An immutable multiple logistic regression model with ridge regularization. */
 case class LogisticRegression private (lambda: Float, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: RealVector = _
 }
 
 object LogisticRegression {
 
+  /** Create a regularized logistic regression model.
+    *
+    * @param lambda L2 regularization strength, must be non-negative, 0.0 means no regularization
+    *
+    * @example Create and fit a logistic regression model with lambda = 1.5.
+    * {{{
+    *     import io.picnicml.doddlemodel.linear.LogisticRegression.ev
+    *
+    *     val X: Features = DenseMatrix(List(1.0, 2.0), List(3.0, 4.0))
+    *     val y: Target = DenseVector(0.0, 1.0)
+    *     val model = LogisticRegression(lambda = 1.5f)
+    *     val fittedModel = ev.fit(model, X, y)
+    * }}}
+    */
   def apply(lambda: Float = 0.0f): LogisticRegression = {
     require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     LogisticRegression(lambda, none, none)
