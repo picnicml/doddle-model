@@ -22,20 +22,21 @@ lazy val root = (project in file("."))
         Opts.resolver.sonatypeSnapshots
       else
         Opts.resolver.sonatypeStaging
+    ),
+    scalacOptions ++= Seq(
+      "-deprecation",
+      "-encoding", "UTF-8",
+      "-feature",
+      "-language:existentials",
+      "-language:higherKinds",
+      "-language:implicitConversions",
+      "-unchecked",
+      "-Xfatal-warnings",
+      "-Xlint",
+      "-Ywarn-dead-code",
+      "-Ywarn-numeric-widen",
+      "-Ywarn-value-discard",
+      "-Yno-adapted-args",
+      "-Xfuture"
     )
   )
-
-val compilerOptions = Seq(
-  "-deprecation",
-  "-encoding", "UTF-8",
-  "-feature",
-  "-language:higherKinds",
-  "-Ypartial-unification",
-  "-unchecked",
-  "-Yno-adapted-args",
-  "-Ywarn-dead-code",
-  "-Ywarn-numeric-widen",
-  "-Xfuture",
-  "-Yno-predef",
-  "-Ywarn-unused-import"
-)

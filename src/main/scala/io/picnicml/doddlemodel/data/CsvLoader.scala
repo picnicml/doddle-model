@@ -66,7 +66,7 @@ object CsvLoader {
       categoricalFeatures.columnIndices.zip(categoricalFeatures.names).foreach { case (columnIndex, name) =>
         val featureValue = rowValuesArray(columnIndex)
         if (featureValue != naString && !encoder(name).contains(featureValue))
-          encoder(name)(featureValue) = encoder(name).size
+          encoder(name)(featureValue) = encoder(name).size.toDouble
       }
     }
 

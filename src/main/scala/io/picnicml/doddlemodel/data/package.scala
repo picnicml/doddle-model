@@ -16,14 +16,6 @@ package object data {
   type Dataset = (Features, Target)
   type DatasetWithIndex = (Features, Target, FeatureIndex)
 
-  case class TrainTestSplit(xTr: Features, yTr: Target, xTe: Features, yTe: Target)
-  case class GroupTrainTestSplit(xTr: Features,
-                                 yTr: Target,
-                                 groupsTr: IntVector,
-                                 xTe: Features,
-                                 yTe: Target,
-                                 groupsTe: IntVector)
-
   def loadBostonDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBostonDataset
   def loadBreastCancerDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBreastCancerDataset
   def loadIrisDataset: DatasetWithIndex = ResourceDatasetLoaders.loadIrisDataset

@@ -44,15 +44,6 @@ object PoissonRegression {
     override protected def predictStateless(model: PoissonRegression, w: RealVector, x: Features): Target =
       floor(this.predictMean(w, x))
 
-    /**
-      * A function that returns the mean of the Poisson distribution, similar to
-      * predictProba(...) in io.picnicml.doddlemodel.linear.LogisticRegression.
-      */
-    def predictMean(model: PoissonRegression, x: Features): Target = {
-      require(isFitted(model), "Called predictMean on a model that is not trained yet")
-      predictMean(w(model).get, x)
-    }
-
     private def predictMean(w: RealVector, x: Features): Target = exp(x * w)
 
     override protected[linear] def lossStateless(model: PoissonRegression,
