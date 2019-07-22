@@ -17,7 +17,7 @@ class KFoldSplitter private (val numFolds: Int, val shuffleRows: Boolean) extend
   override def splitData(x: Features, y: Target)(implicit rand: Random = new Random()): Stream[TrainTestSplit] = {
     require(x.rows >= this.numFolds, "Number of examples must be at least the same as number of folds")
 
-    val shuffleIndices = if (this.shuffleRows) rand.shuffle[Int, IndexedSeq](0 until y.length) else 0 until y.length
+    val shuffleIndices = if (this.shuffleRows) rand.shuffle((0 until y.length).toIndexedSeq) else 0 until y.length
     val xShuffled = x(shuffleIndices, ::)
     val yShuffled = y(shuffleIndices)
 
