@@ -23,7 +23,7 @@ lazy val root = (project in file("."))
       else
         Opts.resolver.sonatypeStaging
     ),
-    scalacOptions ++= Seq(
+    scalacOptions ++= (Seq(
       "-deprecation",
       "-encoding", "UTF-8",
       "-feature",
@@ -35,8 +35,12 @@ lazy val root = (project in file("."))
       "-Xlint",
       "-Ywarn-dead-code",
       "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Yno-adapted-args",
-      "-Xfuture"
-    )
+      "-Ywarn-value-discard"
+    ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq.empty[String]
+      case _ => Seq(
+        "-Yno-adapted-args",
+        "-Xfuture"
+      )
+    }))
   )
