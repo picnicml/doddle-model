@@ -15,7 +15,7 @@ lazy val root = (project in file("."))
     developers := List(
       Developer("inejc", "Nejc Ilenic", "nejc.ilenic@gmail.com", url("https://github.com/inejc"))
     ),
-    licenses := List("MIT" -> url("https://opensource.org/licenses/MIT")),
+    licenses := List("Apache-2.0" -> url("https://opensource.org/licenses/Apache-2.0")),
     publishMavenStyle := true,
     publishTo := Some(
       if (isSnapshot.value)
