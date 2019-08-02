@@ -9,6 +9,8 @@ import io.picnicml.doddlemodel.pipeline.Pipeline.{ev, pipe}
 import io.picnicml.doddlemodel.preprocessing.StandardScaler
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.math.Ordering.Double.TotalOrdering
+
 class PipelineTest extends FlatSpec with Matchers {
 
   "Pipeline" should "implement the isFitted function" in {

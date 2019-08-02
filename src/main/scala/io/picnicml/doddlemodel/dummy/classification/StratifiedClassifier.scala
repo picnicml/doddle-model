@@ -8,6 +8,8 @@ import io.picnicml.doddlemodel.dummy.classification.StratifiedClassifier.ev
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Classifier
 
+import scala.math.Ordering.Double.TotalOrdering
+
 /** An immutable dummy classifier that samples predictions from a stratified categorical distribution.
   *
   * Examples:

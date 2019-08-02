@@ -6,6 +6,7 @@ import io.picnicml.doddlemodel.metrics.rmse
 import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
 import org.scalatest.{FlatSpec, Matchers}
 
+import scala.math.Ordering.Double.TotalOrdering
 import scala.util.Random
 
 class LinearRegressionTest extends FlatSpec with Matchers {

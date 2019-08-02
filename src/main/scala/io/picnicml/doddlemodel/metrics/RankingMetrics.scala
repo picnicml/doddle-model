@@ -3,6 +3,8 @@ package io.picnicml.doddlemodel.metrics
 import breeze.linalg.{DenseMatrix, linspace, max, min}
 import io.picnicml.doddlemodel.data.{RealVector, Target, numberOfTargetClasses}
 
+import scala.collection.immutable.ArraySeq
+
 object RankingMetrics {
 
   /** Area under the ROC-curve. **/
@@ -51,7 +53,7 @@ object RankingMetrics {
     }
 
     val thresholds = linspace(1.0, 0.0, length)
-    val coordinates = DenseMatrix(thresholds.toArray.map(threshold => fprTpr(threshold)):_*)
+    val coordinates = DenseMatrix(ArraySeq.unsafeWrapArray(thresholds.toArray.map(threshold => fprTpr(threshold))):_*)
     RocCurve(coordinates(::, 0), coordinates(::, 1), thresholds)
   }
 }

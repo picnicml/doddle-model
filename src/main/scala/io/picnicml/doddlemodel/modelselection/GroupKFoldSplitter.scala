@@ -20,10 +20,10 @@ import scala.util.Random
 class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
 
   override def splitData(x: Features, y: Target, groups: IntVector)
-                        (implicit rand: Random = new Random()): Stream[TrainTestSplit] = {
+                        (implicit rand: Random = new Random()): LazyList[TrainTestSplit] = {
     val testFolds = calculateTestFolds(groups)
 
-    (0 until numFolds).toStream.map { foldIndex =>
+    (0 until numFolds).to(LazyList).map { foldIndex =>
       val indices = groups.iterator.foldLeft(TrainTestIndices()) { case (acc, (exampleIndex, group)) =>
         if (testFolds.groupToTestFoldIndex(group) == foldIndex)
           acc.addToTestIndex(exampleIndex)
@@ -56,7 +56,7 @@ class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
     }
   }
 
-  override def splitData(x: Features, y: Target)(implicit rand: Random): Stream[TrainTestSplit] =
+  override def splitData(x: Features, y: Target)(implicit rand: Random): LazyList[TrainTestSplit] =
     throw new NotImplementedError("GroupKFoldSplitter only splits data based on groups")
 }
 
