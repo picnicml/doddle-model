@@ -4,8 +4,8 @@ import breeze.linalg.{*, Axis, max, min}
 import cats.syntax.option._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.{Features, RealVector}
-import io.picnicml.doddlemodel.typeclasses.Transformer
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
+import io.picnicml.doddlemodel.typeclasses.Transformer
 
 case class RangeScaler private (private val scale: Option[RealVector],
                                 private val minAdjustment: Option[RealVector],
@@ -16,17 +16,19 @@ object RangeScaler {
 
   def apply(range: (Double, Double), featureIndex: FeatureIndex): RangeScaler = {
     val (lowerBound, upperBound) = range
-    val numNumeric = featureIndex.numerical.columnIndices.length
-    require(numNumeric > 0, "There must be at least 1 numeric column in the given data")
     require(upperBound > lowerBound, "Upper bound of range must be greater than lower bound")
     RangeScaler(none, none, range, featureIndex)
   }
 
   implicit lazy val ev: Transformer[RangeScaler] = new Transformer[RangeScaler] {
 
+    override def isFitted(model: RangeScaler): Boolean =
+      model.scale.isDefined && model.minAdjustment.isDefined
+
     override def fit(model: RangeScaler, x: Features): RangeScaler = {
       val (lowerBound, upperBound) = model.range
-      val numericColsOnly = x(::, model.featureIndex.numerical.columnIndices).toDenseMatrix
+      val numericColIndices = model.featureIndex.numerical.columnIndices
+      val numericColsOnly = x(::, numericColIndices).toDenseMatrix
       val (colMax: RealVector, colMin: RealVector) =
         (max(numericColsOnly, Axis._0).inner, min(numericColsOnly, Axis._0).inner)
       val dataRange = colMax - colMin
@@ -40,13 +42,17 @@ object RangeScaler {
     }
 
     override protected def transformSafe(model: RangeScaler, x: Features): Features = {
-      val numericColsOnly = x(::, model.featureIndex.numerical.columnIndices).toDenseMatrix
-      val colsScaled: Features = numericColsOnly(*, ::) *:* model.scale.getOrBreak
-      colsScaled(*, ::) +:+ model.minAdjustment.getOrBreak
+      val xCopy = x.copy
+      val numericColIndices = model.featureIndex.numerical.columnIndices
+      // only perform scaling if there are numerical columns, otherwise keep input
+      if(numericColIndices.nonEmpty) {
+        val numericColsOnly = x(::, numericColIndices).toDenseMatrix
+        numericColsOnly := numericColsOnly(*, ::) *:* model.scale.getOrBreak
+        numericColsOnly := numericColsOnly(*, ::) +:+ model.minAdjustment.getOrBreak
+        xCopy(::, numericColIndices) := numericColsOnly
+      }
+
+      xCopy
     }
-
-    override def isFitted(model: RangeScaler): Boolean =
-      model.scale.isDefined && model.minAdjustment.isDefined
   }
-
 }

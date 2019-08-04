@@ -7,7 +7,8 @@ import io.picnicml.doddlemodel.preprocessing.Binarizer.ev
 import org.scalatest.{FlatSpec, Matchers}
 
 class BinarizerTest extends FlatSpec with Matchers with TestingUtils {
-  val xMatrix = DenseMatrix(
+
+  private val x = DenseMatrix(
     List(0.0, 1.0, 0.0),
     List(0.3, -1.0, 1.0),
     List(-0.3, 2.0, 0.0)
@@ -18,11 +19,13 @@ class BinarizerTest extends FlatSpec with Matchers with TestingUtils {
     val thresholds: DenseVector[Double] = DenseVector(0.0, -1.5)
 
     val binarizer = Binarizer(thresholds, featureIndex)
+    val xBinarizedExpected = DenseMatrix(
+      List(0.0, 1.0, 0.0),
+      List(1.0, 1.0, 1.0),
+      List(0.0, 1.0, 0.0)
+    )
 
-    breezeEqual(ev.transform(binarizer, xMatrix), DenseMatrix(
-      List(0.0, 1.0),
-      List(1.0, 1.0),
-      List(0.0, 1.0))) shouldBe true
+    breezeEqual(ev.transform(binarizer, x), xBinarizedExpected) shouldBe true
   }
 
   it should "process all the numerical columns by a single threshold" in {
@@ -30,22 +33,32 @@ class BinarizerTest extends FlatSpec with Matchers with TestingUtils {
     val threshold: Double = 0.5
 
     val binarizer = Binarizer(threshold, featureIndex)
-
-    breezeEqual(ev.transform(binarizer, xMatrix), DenseMatrix(
+    val xBinarizedExpected = DenseMatrix(
       List(0.0, 1.0, 0.0),
       List(0.0, 0.0, 1.0),
       List(0.0, 1.0, 0.0)
-    ))
+    )
+
+    breezeEqual(ev.transform(binarizer, x), xBinarizedExpected) shouldBe true
   }
 
-  it should "fail when there are insufficient/no numeric features in data" in {
-    val featureIndex1 = FeatureIndex(List(NumericalFeature, NumericalFeature, NumericalFeature))
-    val featureIndex2 = FeatureIndex(List(CategoricalFeature, CategoricalFeature, CategoricalFeature))
+  it should "amount to no-op if there are no numerical features in data" in {
+    val featureIndex = FeatureIndex(List(CategoricalFeature, CategoricalFeature, CategoricalFeature))
+    val thresholds1: DenseVector[Double] = DenseVector(0.0, -1.5)
+    val thresholds2: Double = 0.5
+
+    val binarizer1 = Binarizer(thresholds1, featureIndex)
+    val binarizer2 = Binarizer(thresholds2, featureIndex)
+
+    breezeEqual(ev.transform(binarizer1, x), x) shouldBe true
+    breezeEqual(ev.transform(binarizer2, x), x) shouldBe true
+  }
+
+  it should "fail when the amount of passed thresholds is different to number of numerical features in data" in {
+    val featureIndex = FeatureIndex(List(NumericalFeature, NumericalFeature, NumericalFeature))
     val thresholds: DenseVector[Double] = DenseVector(0.0, -1.5)
 
     // 3 numeric columns vs 2 thresholds
-    an [IllegalArgumentException] should be thrownBy Binarizer(thresholds, featureIndex1)
-    // 0 numeric columns
-    an [IllegalArgumentException] should be thrownBy Binarizer(thresholds, featureIndex2)
+    an [IllegalArgumentException] should be thrownBy Binarizer(thresholds, featureIndex)
   }
 }
