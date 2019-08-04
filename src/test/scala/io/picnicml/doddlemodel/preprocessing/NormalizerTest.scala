@@ -26,7 +26,8 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
         List(0.3333, 0.6666, 0.6666),
         List(-0.6666, 0.6666, 0.3333),
         List(-1.0, 0.0, 0.0)
-      )) shouldBe true
+      )
+    ) shouldBe true
 
     breezeEqual(ev.transform(l1Normalizer, x),
       DenseMatrix(
