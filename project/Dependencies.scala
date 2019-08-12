@@ -3,7 +3,7 @@ import sbt._
 object Dependencies {
 
   object DependencyVersion {
-    val breeze = "0.13.2"
+    val breeze = "1.0"
     val cats = "1.6.1"
     val scalaCSV = "1.3.6"
     val scalaTest = "3.0.8"
