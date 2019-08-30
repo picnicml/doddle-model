@@ -51,6 +51,13 @@ object CsvLoader {
     FeatureIndex(featureNames, featureTypes, featureNames.indices.toList)
   }
 
+  /** Creates a Label Encoder for a given data set
+    *
+    * @param datasetFile
+    * @param naString
+    * @param featureIndex
+    * @return LabelEncoder which can encode a given Categorical FeatureValue to a numerical value
+    */
   private def inferLabelEncoder(datasetFile: File, naString: String, featureIndex: FeatureIndex): LabelEncoder = {
     val reader = CSVReader.open(datasetFile)
     // skip the two header lines
@@ -74,6 +81,11 @@ object CsvLoader {
     new LabelEncoder(encoder)
   }
 
+
+  /**
+    * A way to encode FeatureValues with non-numerical types (Eg Categorical types) to a numerical value
+    * @param encoder A map containing mapping of a FeatureValue to a numerical value for a particular FeatureName
+    */
   private class LabelEncoder(private val encoder:  mutable.AnyRefMap[String, mutable.AnyRefMap[String, Double]]) {
     def encode(featureValue: String, featureName: String): Double = encoder(featureName)(featureValue)
   }
