@@ -9,8 +9,8 @@ lazy val root = (project in file("."))
       "https://github.com/picnicml/doddle-model.git")
     ),
     version := Version(),
-    scalaVersion := "2.13.0",
-    crossScalaVersions := Seq("2.11.12", "2.12.8", "2.13.0"),
+    crossScalaVersions := Seq("2.13.0", "2.12.9", "2.11.12"),
+    scalaVersion := crossScalaVersions.value.head,
     libraryDependencies ++= Dependencies.settings,
     developers := List(
       Developer("inejc", "Nejc Ilenic", "nejc.ilenic@gmail.com", url("https://github.com/inejc"))
@@ -37,7 +37,9 @@ lazy val root = (project in file("."))
       "-Ywarn-numeric-widen",
       "-Ywarn-value-discard"
     ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq.empty[String]
+      case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq(
+        "-Xsource:2.14"
+      )
       case _ => Seq(
         "-Yno-adapted-args",
         "-Xfuture"

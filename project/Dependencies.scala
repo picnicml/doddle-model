@@ -4,7 +4,7 @@ object Dependencies {
 
   object DependencyVersion {
     val breeze = "1.0"
-    val cats = "2.0.0-M4"
+    val cats = "2.0.0-RC2"
     val scalaCSV = "1.3.6"
     val scalaTest = "3.0.8"
   }
