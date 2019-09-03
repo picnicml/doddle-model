@@ -8,7 +8,7 @@ object DatasetUtils {
 
   /** Shuffles rows of the dataset. */
   def shuffleDataset(x: Features, y: Target)(implicit rand: Random = new Random()): Dataset = {
-    val shuffleIndices = rand.shuffle[Int, IndexedSeq](0 until y.length)
+    val shuffleIndices = rand.shuffle((0 until y.length).toIndexedSeq)
     (x(shuffleIndices, ::).toDenseMatrix, y(shuffleIndices).toDenseVector)
   }
 

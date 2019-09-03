@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.integration
 
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.loadHighSchoolTestDataset
 import io.picnicml.doddlemodel.linear.PoissonRegression
 import io.picnicml.doddlemodel.metrics.rmse

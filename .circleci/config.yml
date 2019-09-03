@@ -7,7 +7,7 @@ jobs:
     working_directory: ~/repo
 
     environment:
-      JVM_OPTS: -Xmx3200m
+      JAVA_TOOL_OPTIONS: -Xmx3200m
       TERM: dumb
 
     steps:

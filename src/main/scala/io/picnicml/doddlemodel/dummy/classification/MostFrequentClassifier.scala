@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.DenseVector
 import cats.syntax.option._
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.{Features, Simplex, Target}
 import io.picnicml.doddlemodel.typeclasses.Classifier
 

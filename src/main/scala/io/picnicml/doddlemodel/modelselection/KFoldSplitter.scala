@@ -1,4 +1,5 @@
 package io.picnicml.doddlemodel.modelselection
+import io.picnicml.doddlemodel.CrossScalaCompat.{LazyListCompat, lazyListCompatFromSeq}
 import io.picnicml.doddlemodel.data.{Features, IntVector, Target, TrainTestSplit}
 
 import scala.util.Random
@@ -14,16 +15,17 @@ import scala.util.Random
   */
 class KFoldSplitter private (val numFolds: Int, val shuffleRows: Boolean) extends DataSplitter {
 
-  override def splitData(x: Features, y: Target)(implicit rand: Random = new Random()): Stream[TrainTestSplit] = {
+  override def splitData(x: Features, y: Target)
+                        (implicit rand: Random = new Random()): LazyListCompat[TrainTestSplit] = {
     require(x.rows >= this.numFolds, "Number of examples must be at least the same as number of folds")
 
-    val shuffleIndices = if (this.shuffleRows) rand.shuffle[Int, IndexedSeq](0 until y.length) else 0 until y.length
+    val shuffleIndices = if (this.shuffleRows) rand.shuffle((0 until y.length).toIndexedSeq) else 0 until y.length
     val xShuffled = x(shuffleIndices, ::)
     val yShuffled = y(shuffleIndices)
 
     val splitIndices = this.calculateSplitIndices(x.rows)
 
-    (splitIndices zip splitIndices.tail).toStream map { case (indexStart, indexEnd) =>
+    lazyListCompatFromSeq(splitIndices zip splitIndices.tail) map { case (indexStart, indexEnd) =>
       val trIndices = (0 until indexStart) ++ (indexEnd until x.rows)
       val teIndices = indexStart until indexEnd
 
@@ -53,7 +55,8 @@ class KFoldSplitter private (val numFolds: Int, val shuffleRows: Boolean) extend
   }
 
 
-  override def splitData(x: Features, y: Target, groups: IntVector)(implicit rand: Random): Stream[TrainTestSplit] =
+  override def splitData(x: Features, y: Target, groups: IntVector)
+                        (implicit rand: Random): LazyListCompat[TrainTestSplit] =
     throw new NotImplementedError("KFoldSplitter doesn't split data based on groups")
 }
 

@@ -9,8 +9,8 @@ lazy val root = (project in file("."))
       "https://github.com/picnicml/doddle-model.git")
     ),
     version := Version(),
-    scalaVersion := "2.12.8",
-    crossScalaVersions := Seq("2.11.12", "2.12.8"),
+    crossScalaVersions := Seq("2.13.0", "2.12.9", "2.11.12"),
+    scalaVersion := crossScalaVersions.value.head,
     libraryDependencies ++= Dependencies.settings,
     developers := List(
       Developer("inejc", "Nejc Ilenic", "nejc.ilenic@gmail.com", url("https://github.com/inejc"))
@@ -23,7 +23,7 @@ lazy val root = (project in file("."))
       else
         Opts.resolver.sonatypeStaging
     ),
-    scalacOptions ++= Seq(
+    scalacOptions ++= (Seq(
       "-deprecation",
       "-encoding", "UTF-8",
       "-feature",
@@ -35,8 +35,19 @@ lazy val root = (project in file("."))
       "-Xlint",
       "-Ywarn-dead-code",
       "-Ywarn-numeric-widen",
-      "-Ywarn-value-discard",
-      "-Yno-adapted-args",
-      "-Xfuture"
-    )
+      "-Ywarn-value-discard"
+    ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
+      case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq.empty[String]
+      case _ => Seq(
+        "-Yno-adapted-args",
+        "-Xfuture"
+      )
+    })),
+    unmanagedSourceDirectories in Compile += {
+      val sourceDir = (sourceDirectory in Compile).value
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, scalaMajor)) if scalaMajor >= 13 => sourceDir / "scala-2.13+"
+        case _ => sourceDir / "scala-2.12-"
+      }
+    }
   )

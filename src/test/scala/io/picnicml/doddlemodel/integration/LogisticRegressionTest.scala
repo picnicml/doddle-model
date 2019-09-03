@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.integration
 
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.linear.LogisticRegression
 import io.picnicml.doddlemodel.metrics.accuracy

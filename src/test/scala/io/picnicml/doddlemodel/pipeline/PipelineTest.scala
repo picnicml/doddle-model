@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.pipeline
 
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.impute.MeanValueImputer
