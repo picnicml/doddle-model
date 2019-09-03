@@ -1,12 +1,12 @@
 package io.picnicml.doddlemodel.integration
 
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.loadIrisDataset
 import io.picnicml.doddlemodel.linear.SoftmaxClassifier
 import io.picnicml.doddlemodel.metrics.accuracy
 import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.math.Ordering.Double.TotalOrdering
 import scala.util.Random
 
 class SoftmaxClassifierTest extends FlatSpec with Matchers {

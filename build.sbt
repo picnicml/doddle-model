@@ -37,12 +37,17 @@ lazy val root = (project in file("."))
       "-Ywarn-numeric-widen",
       "-Ywarn-value-discard"
     ) ++ (CrossVersion.partialVersion(scalaVersion.value) match {
-      case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq(
-        "-Xsource:2.14"
-      )
+      case Some((2, scalaMajor)) if scalaMajor >= 13 => Seq.empty[String]
       case _ => Seq(
         "-Yno-adapted-args",
         "-Xfuture"
       )
-    }))
+    })),
+    unmanagedSourceDirectories in Compile += {
+      val sourceDir = (sourceDirectory in Compile).value
+      CrossVersion.partialVersion(scalaVersion.value) match {
+        case Some((2, scalaMajor)) if scalaMajor >= 13 => sourceDir / "scala-2.13+"
+        case _ => sourceDir / "scala-2.12-"
+      }
+    }
   )

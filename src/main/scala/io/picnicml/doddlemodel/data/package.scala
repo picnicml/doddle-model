@@ -1,9 +1,8 @@
 package io.picnicml.doddlemodel
 
 import breeze.linalg.{DenseMatrix, DenseVector, unique}
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
-
-import scala.math.Ordering.Double.TotalOrdering
 
 package object data {
 

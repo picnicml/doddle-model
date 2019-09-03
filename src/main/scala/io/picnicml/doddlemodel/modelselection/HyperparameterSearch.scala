@@ -1,10 +1,10 @@
 package io.picnicml.doddlemodel.modelselection
 
 import cats.syntax.option._
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
 import io.picnicml.doddlemodel.typeclasses.Predictor
 
-import scala.math.Ordering.Double.TotalOrdering
 import scala.util.Random
 
 

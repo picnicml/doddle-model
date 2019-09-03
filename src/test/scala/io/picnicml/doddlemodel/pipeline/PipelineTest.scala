@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.pipeline
 
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.impute.MeanValueImputer
@@ -8,8 +9,6 @@ import io.picnicml.doddlemodel.metrics.accuracy
 import io.picnicml.doddlemodel.pipeline.Pipeline.{ev, pipe}
 import io.picnicml.doddlemodel.preprocessing.StandardScaler
 import org.scalatest.{FlatSpec, Matchers}
-
-import scala.math.Ordering.Double.TotalOrdering
 
 class PipelineTest extends FlatSpec with Matchers {
 

@@ -3,7 +3,7 @@ package io.picnicml.doddlemodel.metrics
 import breeze.linalg.{DenseMatrix, linspace, max, min}
 import io.picnicml.doddlemodel.data.{RealVector, Target, numberOfTargetClasses}
 
-import scala.collection.immutable.ArraySeq
+import scala.collection.compat.immutable.ArraySeq
 
 object RankingMetrics {
 

@@ -1,12 +1,12 @@
 package io.picnicml.doddlemodel.integration
 
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.loadBostonDataset
 import io.picnicml.doddlemodel.linear.LinearRegression
 import io.picnicml.doddlemodel.metrics.rmse
 import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
 import org.scalatest.{FlatSpec, Matchers}
 
-import scala.math.Ordering.Double.TotalOrdering
 import scala.util.Random
 
 class LinearRegressionTest extends FlatSpec with Matchers {

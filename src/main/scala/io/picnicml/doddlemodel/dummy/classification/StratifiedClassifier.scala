@@ -3,12 +3,11 @@ package io.picnicml.doddlemodel.dummy.classification
 import breeze.linalg.DenseVector
 import breeze.stats.distributions.Multinomial
 import cats.syntax.option._
+import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.dummy.classification.StratifiedClassifier.ev
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Classifier
-
-import scala.math.Ordering.Double.TotalOrdering
 
 /** An immutable dummy classifier that samples predictions from a stratified categorical distribution.
   *
