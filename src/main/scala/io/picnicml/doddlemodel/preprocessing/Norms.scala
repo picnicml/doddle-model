@@ -18,7 +18,7 @@ object Norms {
     override def apply(x: Features): RealVector = sqrt(sum(pow(x, 2), Axis._1))
   }
 
-  case object MaxNorm extends Norm {
+  final case object MaxNorm extends Norm {
     override def apply(x: Features): RealVector = max(abs(x), Axis._1)
   }
 }

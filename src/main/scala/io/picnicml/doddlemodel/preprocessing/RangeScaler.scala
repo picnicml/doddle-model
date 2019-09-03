@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.preprocessing
 
-import breeze.linalg.{*, Axis, max, min}
+import breeze.linalg.{Axis, max, min}
 import cats.syntax.option._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.{Features, RealVector}
@@ -12,8 +12,33 @@ case class RangeScaler private (private val scale: Option[RealVector],
                                 private val range: (Double, Double),
                                 private val featureIndex: FeatureIndex)
 
+/** An immutable preprocessor that scales numerical features to a specified range.
+  * Non-numerical features are left untouched.
+  * */
 object RangeScaler {
 
+  /** Create a RangeScaler to scale numerical features to the range [0, 1] (i.e. both bounds included).
+    *
+    * @param range lower and upper bound of range
+    * @param featureIndex feature index associated with features - this is needed so that only numerical features are
+    *                     transformed by this preprocessor; could be a subset of columns to be transformed
+    *
+    * @example Scale a matrix with two features (one numerical and one categorical) to range [0.0, 1.0].
+    *   {{{
+    *     import io.picnicml.doddlemodel.preprocessing.RangeScaler.ev
+    *
+    *     val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature))
+    *     val x = DenseMatrix(
+    *       List(2.0, 1.0),
+    *       List(3.0, 0.0),
+    *       List(0.0, 0.0),
+    *       List(5.0, 1.0)
+    *     )
+    *     val rangeScaler = RangeScaler((0.0, 1.0), featureIndex)
+    *     val trainedRangeScaler = ev.fit(rangeScaler, x)
+    *     ev.transform(trainedRangeScaler, x)
+    *   }}}
+    */
   def apply(range: (Double, Double), featureIndex: FeatureIndex): RangeScaler = {
     val (lowerBound, upperBound) = range
     require(upperBound > lowerBound, "Upper bound of range must be greater than lower bound")
@@ -28,9 +53,8 @@ object RangeScaler {
     override def fit(model: RangeScaler, x: Features): RangeScaler = {
       val (lowerBound, upperBound) = model.range
       val numericColIndices = model.featureIndex.numerical.columnIndices
-      val numericColsOnly = x(::, numericColIndices).toDenseMatrix
       val (colMax: RealVector, colMin: RealVector) =
-        (max(numericColsOnly, Axis._0).inner, min(numericColsOnly, Axis._0).inner)
+        (max(x(::, numericColIndices), Axis._0).t, min(x(::, numericColIndices), Axis._0).t)
       val dataRange = colMax - colMin
       // avoid division by zero for constant features (max == min)
       dataRange(dataRange :== 0.0) := 1.0
@@ -43,13 +67,11 @@ object RangeScaler {
 
     override protected def transformSafe(model: RangeScaler, x: Features): Features = {
       val xCopy = x.copy
-      val numericColIndices = model.featureIndex.numerical.columnIndices
-      // only perform scaling if there are numerical columns, otherwise keep input
-      if(numericColIndices.nonEmpty) {
-        val numericColsOnly = x(::, numericColIndices).toDenseMatrix
-        numericColsOnly := numericColsOnly(*, ::) *:* model.scale.getOrBreak
-        numericColsOnly := numericColsOnly(*, ::) +:+ model.minAdjustment.getOrBreak
-        xCopy(::, numericColIndices) := numericColsOnly
+      val scale = model.scale.getOrBreak
+      val minAdjustment = model.minAdjustment.getOrBreak
+      model.featureIndex.numerical.columnIndices.zipWithIndex.foreach {
+        case (colIndex, idx) =>
+          xCopy(::, colIndex) := (xCopy(::, colIndex) *:* scale(idx)) +:+ minAdjustment(idx)
       }
 
       xCopy
