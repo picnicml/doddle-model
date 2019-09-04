@@ -12,7 +12,7 @@ jobs:
       - restore_cache:
           keys:
           - sbt-scala-cache-{{ checksum "build.sbt" }}
-      - run: cat /dev/null | sbt +clean +compile +test:compile
+      - run: cat /dev/null | sbt +clean +test:compile
       - save_cache:
           paths:
             - ~/.m2
