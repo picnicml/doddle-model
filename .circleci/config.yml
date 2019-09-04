@@ -3,22 +3,19 @@ jobs:
   build:
     docker:
       - image: circleci/openjdk:8-jdk
-
     working_directory: ~/repo
-
     environment:
       JAVA_TOOL_OPTIONS: -Xmx3200m
       TERM: dumb
-
     steps:
       - checkout
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "build.sbt" }}
-          - v1-dependencies-
-      - run: cat /dev/null | sbt +test:compile
+          - sbt-scala-cache-{{ checksum "build.sbt" }}
+      - run: cat /dev/null | sbt +clean +compile +test:compile
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies--{{ checksum "build.sbt" }}
-      - run: cat /dev/null | sbt clean coverage +test coverageReport coverageAggregate codacyCoverage
+            - ~/.ivy2
+          key: sbt-scala-cache-{{ checksum "build.sbt" }}
+      - run: cat /dev/null | sbt coverage +test coverageReport coverageAggregate codacyCoverage
