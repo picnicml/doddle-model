@@ -53,8 +53,8 @@ object RangeScaler {
     override def fit(model: RangeScaler, x: Features): RangeScaler = {
       val (lowerBound, upperBound) = model.range
       val numericColIndices = model.featureIndex.numerical.columnIndices
-      val (colMax: RealVector, colMin: RealVector) =
-        (max(x(::, numericColIndices), Axis._0).t, min(x(::, numericColIndices), Axis._0).t)
+      val colMax = max(x(::, numericColIndices), Axis._0).t.toDenseVector
+      val colMin = min(x(::, numericColIndices), Axis._0).t.toDenseVector
       val dataRange = colMax - colMin
       // avoid division by zero for constant features (max == min)
       dataRange(dataRange :== 0.0) := 1.0
