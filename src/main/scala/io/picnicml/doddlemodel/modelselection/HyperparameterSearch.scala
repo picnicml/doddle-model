@@ -52,8 +52,33 @@ class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossV
   }
 }
 
+/** A parallel hyperparameter search using k-fold cross validation. */
 object HyperparameterSearch {
 
+  /** Create a hyperparameter search instance.
+    * @param numIterations number of predictors for which the cross validation score is calculated
+    * @param crossValidation k-fold cross validation instance
+    * @param verbose flag that specifies whether validation score of the selected model is printed to standard output
+    *
+    * @example Search among 3 different regularization values (0.1, 0.2, 0.5) for logistic regression using
+    *          3-fold cross validation and store the (re-fitted on entire dataset) model that obtains highest accuracy.
+    * {{{
+    *   import io.picnicml.doddlemodel.metrics.accuracy
+    *   import io.picnicml.doddlemodel.linear.LogisticRegression
+    *
+    *   val x = DenseMatrix.rand(10, 3)
+    *   val y = DenseVector(0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 1.0)
+    *
+    *   val splitter = KFoldSplitter(numFolds = 3)
+    *   val cv = CrossValidation(metric = accuracy, dataSplitter = splitter)
+    *   val search = HyperparameterSearch(numIterations = 3, crossValidation = cv)
+    *   val lambdas = List(0.1, 0.2, 0.5).iterator
+    *
+    *   val modelBestParams = search.bestOf(x, y) {
+    *     LogisticRegression(lambda = lambdas.next)
+    *   }
+    * }}}
+    */
   def apply(numIterations: Int, crossValidation: CrossValidation, verbose: Boolean = true): HyperparameterSearch = {
     require(numIterations > 0, "Number of iterations must be positive")
     new HyperparameterSearch(numIterations, crossValidation, verbose)

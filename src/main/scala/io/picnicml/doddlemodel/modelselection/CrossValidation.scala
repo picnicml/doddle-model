@@ -9,21 +9,12 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.util.Random
 
-/** A parallel, n-fold cross validation technique.
-  *
-  * @param metric a function from io.picnicml.doddlemodel.metrics used to calculate each fold's score
-  * @param dataSplitter a strategy for splitting the dataset into multiple folds
-  *
-  * Examples:
-  * val splitter = KFoldSplitter(folds = 3)
-  * val cv = CrossValidation(metric = rmse, dataSplitter = splitter))
-  * cv.score(model, x, y)
-  */
 class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitter) {
 
   private implicit val ec: CVExecutionContext = new CVExecutionContext()
 
-  /**
+  /** Obtain the average score of all folds.
+    *
     * @param reusable indicates whether to shutdown the thread pool after the cv score is computed
     *  and by default it is, if the same CrossValidation instance is needed after the first call
     *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
@@ -57,8 +48,30 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
   def shutdownNow(): Unit = this.ec.shutdownNow()
  }
 
+/** A parallel, k-fold cross validation technique. */
 object CrossValidation {
 
+  /** Create a k-fold cross validation instance.
+    * @param metric a function from [[io.picnicml.doddlemodel.metrics]] used to calculate each fold's score
+    * @param dataSplitter a strategy for splitting the dataset into multiple folds
+    *
+    * @example Perform 2-fold cross validation using logistic regression and evaluate its performance
+    *          using root mean squared error.
+    *   {{{
+    *   import io.picnicml.doddlemodel.metrics.rmse
+    *   import io.picnicml.doddlemodel.linear.LogisticRegression
+    *
+    *   val X: Features = DenseMatrix(List(1.0, 2.0), List(3.0, 4.0), List(5.0, 6.0), List(7.0, 8.0))
+    *   val y: Target = DenseVector(0.0, 1.0, 0.0, 1.0)
+    *   val model = LogisticRegression(1.0)
+    *
+    *   val splitter = KFoldSplitter(numFolds = 2)
+    *   val cv = CrossValidation(metric = rmse, dataSplitter = splitter))
+    *   cv.score(model, X, y)
+    *   }}}
+    *
+    * @see [[io.picnicml.doddlemodel.metrics Metrics in doddle-model]]
+    */
   def apply(metric: Metric, dataSplitter: DataSplitter): CrossValidation =
     new CrossValidation(metric, dataSplitter)
 }

@@ -8,16 +8,6 @@ import io.picnicml.doddlemodel.modelselection.GroupKFoldSplitter.{TestFolds, Tra
 
 import scala.util.Random
 
-/** K-Folds strategy for splitting data that makes sure groups in each fold are non-overlapping,
-  * i.e no group is present in both training and testing splits. Folds try to be as balanced
-  * as possible, i.e. the number of test examples in each fold is approximately the same.
-  *
-  * @param numFolds number of folds
-  *
-  * Examples:
-  * val dataSplitter = GroupKFoldSplitter(folds = 3)
-  * datasplitter.splitData(x, y, groups)
-  */
 class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
 
   override def splitData(x: Features, y: Target, groups: IntVector)
@@ -61,9 +51,25 @@ class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
     throw new NotImplementedError("GroupKFoldSplitter only splits data based on groups")
 }
 
-
+/** A strategy for splitting data into k folds that makes sure groups in each fold are non-overlapping,
+  * i.e no group is present in both training and testing splits. */
 object GroupKFoldSplitter {
 
+  /** Create a group k-fold splitter.
+    * @param numFolds number of folds
+    *
+    * @example Split 10 examples, corresponding to data of 3 patients into 3 folds, making sure that data of a patient
+    *          never appears in both training and test set in the same fold.
+    * {{{
+    *   val patientFeatures = DenseMatrix.rand(10, 3)
+    *   val isSick = DenseVector(0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0)
+    *   val idPatient = DenseVector(1, 2, 2, 0, 0, 0, 2, 1, 1, 2)
+    *
+    *   val splitter = GroupKFoldSplitter(numFolds = 3)
+    *   // stream, containing 3 TrainTestSplits
+    *   val splits = splitter.splitData(patientFeatures, isSick, idPatient)
+    * }}}
+    */
   def apply(numFolds: Int): GroupKFoldSplitter = {
     require(numFolds > 0, "Number of folds must be positive")
     new GroupKFoldSplitter(numFolds)
