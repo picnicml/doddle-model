@@ -9,7 +9,7 @@ trait Clusterer[A] extends Estimator[A] {
     fitSafe(copy(model), x)
   }
 
-  def fit_predict(model: A, x: Features): Array[Int] = {
+  def fitPredict(model: A, x: Features): Array[Int] = {
     require(!isFitted(model), "Called fit on a model that is already fitted")
     fitPredictSafe(copy(model), x)
   }

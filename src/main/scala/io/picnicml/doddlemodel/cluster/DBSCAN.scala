@@ -8,35 +8,22 @@ import io.picnicml.doddlemodel.typeclasses.Clusterer
 /** An immutable DBSCAN model.
   *
   * @param eps: the maximum distance between points in a group
-  * @param min_samples: the minimum number of point in a core group
+  * @param minSamples: the minimum number of point in a core group
   *
   * Examples:
   * val model = DBSCAN()
   * val model = DBSCAN(eps = 1.5)
-  * val model = DBSCAN(min_samples = 3)
-  * val model = DBSCAN(eps = 2.0, min_samples = 3)
+  * val model = DBSCAN(minSamples = 3)
+  * val model = DBSCAN(eps = 2.0, minSamples = 3)
   */
-case class DBSCAN private(eps: Double, min_samples: Int,
-  private val label: Option[Array[Int]]) {}
+case class DBSCAN private(eps: Double, minSamples: Int, private val label: Option[Array[Int]])
 
 object DBSCAN {
 
-  def apply(): DBSCAN = DBSCAN(1.0, 1, none)
-
-  def apply(eps: Double): DBSCAN = {
-    require(eps > 0, "maximum distance need to be larger than 0")
-    DBSCAN(eps, 1, none)
-  }
-  def apply(min_samples: Int): DBSCAN = {
-    require(min_samples > 0,
-      "minimum number of points in a group need to be larger than 0")
-    DBSCAN(1.0, min_samples, none)
-  }
-  def apply(eps: Double, min_samples: Int): DBSCAN = {
-    require(eps > 0, "maximum distance need to be larger than 0")
-    require(min_samples > 0,
-      "minimum number of points in a group need to be larger than 0")
-    DBSCAN(eps, min_samples, none)
+  def apply(eps: Double = 1.0, minSamples: Int = 1): DBSCAN = {
+    require(eps > 0.0, "Maximum distance needs to be larger than 0")
+    require(minSamples > 0, "Minimum number of samples needs to be larger than 0")
+    DBSCAN(eps, minSamples, none)
   }
 
   implicit lazy val ev: Clusterer[DBSCAN] = new Clusterer[DBSCAN] {
@@ -65,13 +52,13 @@ object DBSCAN {
           groupQueue = Set[Int]()
           for (pointId <- tmpGroupQueue; i <- 0 until xSize
             if label(i) > groupId &&
-              euclideanDistance(x(i, ::).t, x(pointId, ::).t) < model.eps) {
+              euclideanDistance(x(i, ::).t, x(pointId, ::).t) <= model.eps) {
             label(i) = groupId
             groupQueue += i
             groupCount += 1
           }
         }
-        if (groupCount < model.min_samples) {
+        if (groupCount < model.minSamples) {
           for (i <- 0 until xSize if label(i) == groupId) {
             label(i) = -1
           }
