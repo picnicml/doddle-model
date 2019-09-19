@@ -69,9 +69,15 @@ object DBSCAN {
     override protected def fitPredictSafe(model: DBSCAN, x: Features): Array[Int] =
       labelSafe(fitSafe(model, x))
 
-    private def findNeighbors(pointId: Int, x: Features, eps: Double): Set[Int] =
+    private val distanceMap = scala.collection.mutable.Map[(Int, Int), Double]()
+    private def findNeighbors(pointId: Int, x: Features, eps: Double): Set[Int] = {
+      def findDistance(i1: Int, i2: Int): Double = distanceMap.getOrElseUpdate(
+        if (i1 < i2) (i1, i2) else (i2, i1),
+        euclideanDistance(x(i1, ::).t, x(i2, ::).t)
+      )
       (0 until x.rows).filter { i =>
-        i != pointId && euclideanDistance(x(i, ::).t, x(pointId, ::).t) <= eps
+        i != pointId && findDistance(i, pointId) <= eps
       }.toSet
+    }
   }
 }
