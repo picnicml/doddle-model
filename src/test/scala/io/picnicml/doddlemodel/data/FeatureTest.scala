@@ -61,14 +61,24 @@ class FeatureTest extends FlatSpec with Matchers {
       NumericalFeature
     )
     val featureIndex = FeatureIndex(types)
-    val subset = featureIndex.subset(1 to 3)
-    subset.names shouldBe IndexedSeq("f1", "f2", "f3")
-    subset.types shouldBe IndexedSeq(
+
+    val subset0 = featureIndex.subset(1 to 3)
+    subset0.names shouldBe IndexedSeq("f1", "f2", "f3")
+    subset0.types shouldBe IndexedSeq(
       NumericalFeature,
       CategoricalFeature,
       CategoricalFeature
     )
-    subset.columnIndices shouldBe IndexedSeq(1, 2, 3)
+    subset0.columnIndices shouldBe IndexedSeq(1, 2, 3)
+
+    val subset1 = featureIndex.subset(3, 4, 5)
+    subset1.names shouldBe IndexedSeq("f3", "f4", "f5")
+    subset1.types shouldBe IndexedSeq(
+      CategoricalFeature,
+      NumericalFeature,
+      CategoricalFeature
+    )
+    subset1.columnIndices shouldBe IndexedSeq(3, 4, 5)
   }
 
   it should "drop a column" in {
