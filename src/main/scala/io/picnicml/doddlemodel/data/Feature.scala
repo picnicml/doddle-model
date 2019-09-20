@@ -31,18 +31,21 @@ object Feature {
       val subsetIndices = this.types.zipWithIndex.flatMap {
         case (t, i) => if (cls.isInstance(t)) i.some else none[Int]
       }
-      subset(subsetIndices)
+      subset(subsetIndices:_*)
     }
 
     def subset(names: String*): FeatureIndex = {
       val nameToIndex = this.names.zipWithIndex.toMap
-      subset(names.map(n => nameToIndex(n)).toIndexedSeq)
+      subset(names.map(n => nameToIndex(n)):_*)
     }
 
-    def subset(indices: IndexedSeq[Int]): FeatureIndex = new FeatureIndex(
-      indices.map(i => this.names(i)),
-      indices.map(i => this.types(i)),
-      indices.map(i => this.columnIndices(i))
+    def subset(indices: IndexedSeq[Int]): FeatureIndex = subset(indices:_*)
+
+    // DummyImplicit is needed to avoid the same type as String* after erasure
+    def subset(indices: Int*)(implicit di: DummyImplicit): FeatureIndex = new FeatureIndex(
+      indices.toIndexedSeq.map(i => this.names(i)),
+      indices.toIndexedSeq.map(i => this.types(i)),
+      indices.toIndexedSeq.map(i => this.columnIndices(i))
     )
 
     def drop(index: Int): FeatureIndex = new FeatureIndex(
