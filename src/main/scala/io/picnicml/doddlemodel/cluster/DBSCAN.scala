@@ -20,6 +20,10 @@ case class DBSCAN private(eps: Double, minSamples: Int, private val label: Optio
 
 object DBSCAN {
 
+  val NOISE: Int = -1
+  val UNASSIGNED: Int = Int.MaxValue
+  val GROUPSTART: Int = 0
+
   def apply(eps: Double = 1.0, minSamples: Int = 1): DBSCAN = {
     require(eps > 0.0, "Maximum distance needs to be larger than 0")
     require(minSamples > 0, "Minimum number of samples needs to be larger than 0")
@@ -39,21 +43,20 @@ object DBSCAN {
       model.copy(label = label.some)
 
     override protected def fitSafe(model: DBSCAN, x: Features): DBSCAN = {
-      val label = Array.fill[Int](x.rows)(Int.MaxValue)
-      var groupId = -1
-      for (pointId <- 0 until x.rows if label(pointId) == Int.MaxValue) {
+      val label = Array.fill[Int](x.rows)(UNASSIGNED)
+      var groupId = GROUPSTART
+      for (pointId <- 0 until x.rows if label(pointId) == UNASSIGNED) {
         var groupQueue = findNeighbors(pointId, x, model.eps)
         if (groupQueue.size + 1 < model.minSamples) {
-          label(pointId) = -1
+          label(pointId) = NOISE
         } else {
-          groupId += 1
           label(pointId) = groupId
-          while (groupQueue.size > 0) {
+          while (groupQueue.nonEmpty) {
             val tmpGroupQueue = groupQueue
             groupQueue = Set[Int]()
             tmpGroupQueue.foreach { i =>
-              if (label(i) == -1) label(i) = groupId
-              else if (label(i) == Int.MaxValue) {
+              if (label(i) == NOISE) label(i) = groupId
+              else if (label(i) == UNASSIGNED) {
                 label(i) = groupId
                 val neighbors = findNeighbors(i, x, model.eps)
                 if (neighbors.size + 1 < model.minSamples)
@@ -61,6 +64,7 @@ object DBSCAN {
               }
             }
           }
+          groupId += 1
         }
       }
       copy(model, label)
