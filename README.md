@@ -53,7 +53,7 @@
 * it exposes its functionality through a [scikit-learn](https://github.com/scikit-learn/scikit-learn)-like API [2] in idiomatic Scala using [typeclasses](https://en.wikipedia.org/wiki/Type_class)
 
 ### Installation
-Add the dependency to your SBT project definition:
+The project is published for Scala versions 2.11, 2.12 and 2.13. Add the dependency to your SBT project definition:
 ```scala
 libraryDependencies  ++= Seq(
   "io.github.picnicml" %% "doddle-model" % "<latest_version>",
