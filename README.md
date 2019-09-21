@@ -67,7 +67,7 @@ Note that the latest version is displayed in the _Latest Release_ badge above an
 For a complete list of code examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples).
 
 ### Contributing
-Want to help us :raised_hands:? We have a [document](https://github.com/picnicml/doddle-model/blob/master/.github/CONTRIBUTING.md) that will make deciding how to do that much easier.
+Want to help us? :raised_hands: We have a [document](https://github.com/picnicml/doddle-model/blob/master/.github/CONTRIBUTING.md) that will make deciding how to do that much easier.
 
 ### Performance
 Performance of implementations is described [here](https://github.com/picnicml/doddle-model/wiki/Performance). Also, take a peek at what's written in that document if you encounter `java.lang.OutOfMemoryError: Java heap space`.
