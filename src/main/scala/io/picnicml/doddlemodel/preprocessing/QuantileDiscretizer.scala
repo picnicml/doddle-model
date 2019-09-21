@@ -92,8 +92,8 @@ object QuantileDiscretizer {
       case Seq(lowerBound, upperBound) =>
         (DescriptiveStats.percentileInPlace(targetArray, lowerBound), DescriptiveStats.percentileInPlace(targetArray, upperBound))
     }
-    val headUpdate = rangePairs.head.copy(_1 = MinValue)
-    val lastUpdate = rangePairs.last.copy(_2 = MaxValue)
+    val headUpdate = rangePairs.headOption.getOrElse((MinValue, MaxValue)).copy(_1 = MinValue)
+    val lastUpdate = rangePairs.lastOption.getOrElse((MinValue, MaxValue)).copy(_2 = MaxValue)
     rangePairs
       .updated(0, headUpdate)
       .updated(rangePairs.size-1, lastUpdate)
