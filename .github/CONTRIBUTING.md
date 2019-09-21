@@ -5,13 +5,13 @@ You've come to the right place :). There are many ways to contribute and writing
 Seriously, just by using the project your are helping a ton! If you encounter any problems, you can talk to us on [gitter](https://gitter.im/picnicml/doddle-model) or open a new issue [here](https://github.com/picnicml/doddle-model/issues).
 
 #### Write a blog post
-This is a big one. If you used doddle-model to develop a cool model, writing about it helps us enormously with the exposure. [Here](https://towardsdatascience.com/recognising-handwritten-digits-with-scala-9829d035f7bc)'s one example published on Medium.
+This is a big one. If you used `doddle-model` to develop a cool model, writing about it helps us enormously with the exposure. [Here](https://towardsdatascience.com/recognising-handwritten-digits-with-scala-9829d035f7bc)'s one example published on Medium.
 
 #### Write / improve the documentation
 There's never enough of documentation and we know that! If you think we are lacking in that regard (and we are) feel free to open a PR that adds or improves the documentation.
 
 #### Write examples / tutorials
-We have a repository full of [examples](https://github.com/picnicml/doddle-model-examples) on how to use doddle-model. And with examples... well it's similar as with documentation: we need moar! Some other ideas / projects are available below:
+We have a repository full of [examples](https://github.com/picnicml/doddle-model-examples) on how to use `doddle-model`. And with examples... well it's similar as with documentation: we need moar! Some other ideas / projects are available below:
 - [SMS spam classification](https://github.com/picnicml/sms-spam-ham)
 - [serving a model in an Apache Beam pipeline](https://github.com/picnicml/doddle-beam-example)
 - [serving system for pre-trained models](https://github.com/picnicml/doddle-serving)
