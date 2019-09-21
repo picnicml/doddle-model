@@ -40,6 +40,12 @@ class DBSCANTest extends FlatSpec with Matchers with TestingUtils {
     ev.fitPredict(model, smallX) shouldEqual Array(0, 0)
   }
 
+  it should "cluster all data points to one group in an 1D array of points that match min sample size" in {
+    val d1X = DenseMatrix((0.0, 12.0), (0.0, 9.0), (0.0, 6.0), (0.0, 3.0), (0.0, 0.0))
+    val model = DBSCAN(eps = 3.0, minSamples = 3)
+    ev.fitPredict(model, d1X) shouldEqual Array(0, 0, 0, 0, 0)
+  }
+
   it should "prevent the usage of negative eps" in {
     an [IllegalArgumentException] shouldBe thrownBy(DBSCAN(eps = -0.5))
   }

@@ -22,7 +22,6 @@ object DBSCAN {
 
   val NOISE: Int = -1
   val UNASSIGNED: Int = Int.MaxValue
-  val GROUPSTART: Int = 0
 
   def apply(eps: Double = 1.0, minSamples: Int = 1): DBSCAN = {
     require(eps > 0.0, "Maximum distance needs to be larger than 0")
@@ -43,8 +42,9 @@ object DBSCAN {
       model.copy(label = label.some)
 
     override protected def fitSafe(model: DBSCAN, x: Features): DBSCAN = {
+      distanceMap.clear
       val label = Array.fill[Int](x.rows)(UNASSIGNED)
-      var groupId = GROUPSTART
+      var groupId = 0
       for (pointId <- 0 until x.rows if label(pointId) == UNASSIGNED) {
         var groupQueue = findNeighbors(pointId, x, model.eps)
         if (groupQueue.size + 1 < model.minSamples) {
@@ -59,7 +59,7 @@ object DBSCAN {
               else if (label(i) == UNASSIGNED) {
                 label(i) = groupId
                 val neighbors = findNeighbors(i, x, model.eps)
-                if (neighbors.size + 1 < model.minSamples)
+                if (neighbors.size + 1 >= model.minSamples)
                   groupQueue ++= neighbors
               }
             }
