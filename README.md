@@ -64,13 +64,13 @@ libraryDependencies  ++= Seq(
 Note that the latest version is displayed in the _Latest Release_ badge above and that the _v_ prefix should be removed from the SBT definition.
 
 ### Getting Started
-For a complete list of code examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples). For an example of how to serve a trained `doddle-model` in a pipeline implemented with Apache Beam see [doddle-beam-example](https://github.com/picnicml/doddle-beam-example).
+For a complete list of code examples see [doddle-model-examples](https://github.com/picnicml/doddle-model-examples).
 
 ### Contributing
-Want to help us :raised_hands:? We have a [document](https://github.com/picnicml/doddle-model/blob/master/.github/CONTRIBUTING.md) that will make deciding how to do so much easier.
+Want to help us :raised_hands:? We have a [document](https://github.com/picnicml/doddle-model/blob/master/.github/CONTRIBUTING.md) that will make deciding how to do that much easier.
 
 ### Performance
-Performance of implementations is described [here](https://github.com/picnicml/doddle-model/wiki/Performance). Also, take a peek at what's written there if you encounter `java.lang.OutOfMemoryError: Java heap space`.
+Performance of implementations is described [here](https://github.com/picnicml/doddle-model/wiki/Performance). Also, take a peek at what's written in that document if you encounter `java.lang.OutOfMemoryError: Java heap space`.
 
 ### Core Maintainers
 This is a collaborative project which wouldn't be possible without all the [awesome contributors](https://github.com/picnicml/doddle-model/graphs/contributors). The core team currently consists of the following developers:
