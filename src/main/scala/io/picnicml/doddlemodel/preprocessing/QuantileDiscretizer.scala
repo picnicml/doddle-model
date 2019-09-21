@@ -4,13 +4,13 @@ import breeze.linalg.DenseVector
 import breeze.stats.DescriptiveStats
 import io.picnicml.doddlemodel.CrossScalaCompat._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
-import io.picnicml.doddlemodel.data.{Features}
+import io.picnicml.doddlemodel.data.Features
+import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Transformer
 import scala.Double.{MinValue, MaxValue}
 
-case class QuantileDiscretizer(private val bucketCounts: DenseVector[Double], private val featureIndex: FeatureIndex) {
+case class QuantileDiscretizer(private val bucketCounts: DenseVector[Double], private val featureIndex: FeatureIndex, private val quantiles: Option[Seq[Seq[(Double, Double)]]] = None) {
   private val numNumeric = featureIndex.numerical.columnIndices.length
-  var splitPointCache = Option.empty
   require(numNumeric == 0 || numNumeric == bucketCounts.length, "A quantile should be given for every numerical column")
 }
 
@@ -53,7 +53,7 @@ object QuantileDiscretizer {
 
 
 
-    override def isFitted(model: QuantileDiscretizer): Boolean = true
+    @inline override def isFitted(model: QuantileDiscretizer): Boolean = model.quantiles.isDefined
 
     override def fit(model: QuantileDiscretizer, x: Features): QuantileDiscretizer = {
       val xCopy = x.copy
@@ -62,16 +62,14 @@ object QuantileDiscretizer {
           val colArray = xCopy(::, colIndex).toScalaVector.sorted
           computeQuantiles(colArray, model.bucketCounts, bucketCountsIndex)
       }
-      println(discreteRangeArrays)
-      model
+      model.copy(quantiles = Some(discreteRangeArrays))
     }
 
     override protected def transformSafe(model: QuantileDiscretizer, x: Features): Features = {
       val xCopy = x.copy
       model.featureIndex.numerical.columnIndices.zipWithIndex.foreach {
-        case (colIndex, bucketCountsIndex) =>
-          val colArray = xCopy(::, colIndex).toScalaVector.sorted
-          val buckets = computeQuantiles(colArray, model.bucketCounts, bucketCountsIndex)
+        case (colIndex, bucketsIndex) =>
+          val buckets = model.quantiles.getOrBreak(bucketsIndex)
           (0 until xCopy.rows).foreach {
             rowIndex => xCopy(rowIndex, colIndex) = buckets
               .indexWhere({

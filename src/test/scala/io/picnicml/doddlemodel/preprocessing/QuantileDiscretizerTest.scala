@@ -3,7 +3,7 @@ package io.picnicml.doddlemodel.preprocessing
 import breeze.linalg.{DenseMatrix, DenseVector}
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
-import io.picnicml.doddlemodel.preprocessing.QuantileDiscretizer.ev
+import io.picnicml.doddlemodel.syntax.TransformerSyntax._
 import org.scalatest.{FlatSpec, Matchers}
 
 class QuantileDiscretizerTest extends FlatSpec with Matchers with TestingUtils {
@@ -19,7 +19,7 @@ class QuantileDiscretizerTest extends FlatSpec with Matchers with TestingUtils {
     val featureIndex = FeatureIndex(List(NumericalFeature, NumericalFeature, CategoricalFeature))
     val bucketCounts: DenseVector[Double] = DenseVector(3, 4)
 
-    val quantileDiscretizer = QuantileDiscretizer(bucketCounts, featureIndex)
+    val quantileDiscretizer = QuantileDiscretizer(bucketCounts, featureIndex).fit(x)
     val xQuantizedExpected = DenseMatrix(
       List(0.0, 0.0, 0.0),
       List(1.0, 1.0, 1.0),
@@ -27,14 +27,14 @@ class QuantileDiscretizerTest extends FlatSpec with Matchers with TestingUtils {
       List(2.0, 2.0, 0.0)
     )
 
-    breezeEqual(ev.transform(quantileDiscretizer, x), xQuantizedExpected) shouldBe true
+    breezeEqual(quantileDiscretizer.transform(x), xQuantizedExpected) shouldBe true
   }
 
   it should "process all the numerical columns by a single bucketCounts" in {
     val featureIndex = FeatureIndex(List(NumericalFeature, NumericalFeature, NumericalFeature))
     val bucketCount: Int = 2
 
-    val quantileDiscretizer = QuantileDiscretizer(bucketCount, featureIndex)
+    val quantileDiscretizer = QuantileDiscretizer(bucketCount, featureIndex).fit(x)
     val xQuantizedExpected = DenseMatrix(
       List(0.0, 0.0, 0.0),
       List(0.0, 0.0, 1.0),
@@ -42,7 +42,7 @@ class QuantileDiscretizerTest extends FlatSpec with Matchers with TestingUtils {
       List(1.0, 1.0, 0.0)
     )
 
-    breezeEqual(ev.transform(quantileDiscretizer, x), xQuantizedExpected) shouldBe true
+    breezeEqual(quantileDiscretizer.transform(x), xQuantizedExpected) shouldBe true
   }
 
   it should "amount to no-op if there are no numerical features in data" in {
@@ -50,11 +50,13 @@ class QuantileDiscretizerTest extends FlatSpec with Matchers with TestingUtils {
     val bucketCounts: DenseVector[Double] = DenseVector(2, 3)
     val bucketCount: Int = 3
 
-    val quantileDiscretizer1 = QuantileDiscretizer(bucketCounts, featureIndex)
-    val quantileDiscretizer2 = QuantileDiscretizer(bucketCount, featureIndex)
+    val quantileDiscretizer1 = QuantileDiscretizer(bucketCounts, featureIndex).fit(x)
+    val quantileDiscretizer2 = QuantileDiscretizer(bucketCount, featureIndex).fit(x)
 
-    breezeEqual(ev.transform(quantileDiscretizer1, x), x) shouldBe true
-    breezeEqual(ev.transform(quantileDiscretizer2, x), x) shouldBe true
+
+
+    breezeEqual(quantileDiscretizer1.transform(x), x) shouldBe true
+    breezeEqual(quantileDiscretizer2.transform(x), x) shouldBe true
   }
 
   it should "fail when the amount of passed bucketCounts is different to number of numerical features in data" in {
