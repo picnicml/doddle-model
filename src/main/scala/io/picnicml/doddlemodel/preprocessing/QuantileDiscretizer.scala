@@ -1,10 +1,10 @@
 package io.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.DenseVector
+import io.picnicml.doddlemodel.CrossScalaCompat._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.{Features, RealVector}
 import io.picnicml.doddlemodel.typeclasses.Transformer
-import scala.math.Ordering.Double.IeeeOrdering
 
 case class QuantileDiscretizer(private val numQuantiles: RealVector, private val featureIndex: FeatureIndex) {
   private val numNumeric = featureIndex.numerical.columnIndices.length
