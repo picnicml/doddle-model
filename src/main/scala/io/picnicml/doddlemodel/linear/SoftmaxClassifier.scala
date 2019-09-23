@@ -15,7 +15,7 @@ import io.picnicml.doddlemodel.syntax.OptionSyntax._
   * val model = SoftmaxClassifier()
   * val model = SoftmaxClassifier(lambda = 1.5)
   */
-case class SoftmaxClassifier private(lambda: Double, numClasses: Option[Int], private val w: Option[RealVector]) {
+case class SoftmaxClassifier private (lambda: Double, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: Simplex = _
 }
 

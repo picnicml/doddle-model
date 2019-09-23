@@ -14,7 +14,7 @@ import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
   * val model = LogisticRegression()
   * val model = LogisticRegression(lambda = 1.5)
   */
-case class LogisticRegression private(lambda: Double, numClasses: Option[Int], private val w: Option[RealVector]) {
+case class LogisticRegression private (lambda: Double, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: RealVector = _
 }
 
