@@ -4,6 +4,7 @@ import breeze.linalg.functions.euclideanDistance
 import cats.syntax.option._
 import io.picnicml.doddlemodel.data.Features
 import io.picnicml.doddlemodel.typeclasses.Clusterer
+import io.picnicml.doddlemodel.syntax.OptionSyntax._
 
 /** An immutable DBSCAN model.
   *
@@ -16,7 +17,7 @@ import io.picnicml.doddlemodel.typeclasses.Clusterer
   * val model = DBSCAN(minSamples = 3)
   * val model = DBSCAN(eps = 2.0, minSamples = 3)
   */
-case class DBSCAN private(eps: Double, minSamples: Int, private val labels: Option[Array[Int]])
+case class DBSCAN private (eps: Double, minSamples: Int, private val labels: Option[Array[Int]])
 
 object DBSCAN {
 
@@ -33,7 +34,7 @@ object DBSCAN {
 
     override def isFitted(model: DBSCAN): Boolean = model.labels.isDefined
 
-    override protected def labelSafe(model: DBSCAN): Array[Int] = model.labels.get
+    override protected def labelsSafe(model: DBSCAN): Array[Int] = model.labels.getOrBreak
 
     override protected def copy(model: DBSCAN): DBSCAN =
       model.copy()
