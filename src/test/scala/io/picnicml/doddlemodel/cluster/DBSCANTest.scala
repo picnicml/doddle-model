@@ -21,22 +21,22 @@ class DBSCANTest extends FlatSpec with Matchers with TestingUtils {
 
   "DBSCAN" should "cluster the datapoints" in {
     val model = DBSCAN(eps = 3.0, minSamples = 1)
-    breezeEqual(ev.fitPredict(model, x), DenseVector(0.0, 0.0, 0.0, 1.0, 1.0, 1.0))
+    breezeEqual(ev.fitPredict(model, x), DenseVector(0.0, 0.0, 0.0, 1.0, 1.0, 1.0)) shouldEqual true
   }
 
   it should "cluster each datapoint into it's own group when eps is too small" in {
     val model = DBSCAN()
-    breezeEqual(ev.fitPredict(model, x), DenseVector(0.0, 1.0, 2.0, 3.0, 4.0, 5.0))
+    breezeEqual(ev.fitPredict(model, x), DenseVector(0.0, 1.0, 2.0, 3.0, 4.0, 5.0)) shouldEqual true
   }
 
   it should "cluster all data points into a single group when eps is too large" in {
     val model = DBSCAN(eps = 10.0)
-    breezeEqual(ev.fitPredict(model, x), DenseVector(0.0, 0.0, 0.0, 0.0, 0.0, 0.0))
+    breezeEqual(ev.fitPredict(model, x), DenseVector(0.0, 0.0, 0.0, 0.0, 0.0, 0.0)) shouldEqual true
   }
 
   it should "label all points as outliers when min samples is too large" in {
     val model = DBSCAN(minSamples = 7)
-    breezeEqual(ev.fitPredict(model, x), DenseVector(-1.0, -1.0, -1.0, -1.0, -1.0, -1.0))
+    breezeEqual(ev.fitPredict(model, x), DenseVector(-1.0, -1.0, -1.0, -1.0, -1.0, -1.0)) shouldEqual true
   }
 
   it should "cluster all datapoints into a single group when eps equals the distance between points" in {
@@ -45,7 +45,7 @@ class DBSCANTest extends FlatSpec with Matchers with TestingUtils {
       List(3.0, 0.0)
     )
     val model = DBSCAN(eps = 3.0)
-    breezeEqual(ev.fitPredict(model, smallX), DenseVector(0.0, 0.0))
+    breezeEqual(ev.fitPredict(model, smallX), DenseVector(0.0, 0.0)) shouldEqual true
   }
 
   it should "cluster all datapoints into a single group" in {
@@ -57,7 +57,7 @@ class DBSCANTest extends FlatSpec with Matchers with TestingUtils {
       List(0.0, 0.0)
     )
     val model = DBSCAN(eps = 3.0, minSamples = 3)
-    breezeEqual(ev.fitPredict(model, d1X), DenseVector(0.0, 0.0, 0.0, 0.0, 0.0))
+    breezeEqual(ev.fitPredict(model, d1X), DenseVector(0.0, 0.0, 0.0, 0.0, 0.0)) shouldEqual true
   }
 
   it should "prevent the usage of negative eps" in {
