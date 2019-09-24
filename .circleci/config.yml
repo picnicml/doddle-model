@@ -18,4 +18,6 @@ jobs:
             - ~/.m2
             - ~/.ivy2
           key: sbt-scala-cache-{{ checksum "build.sbt" }}
-      - run: cat /dev/null | sbt coverage +test coverageReport coverageAggregate codacyCoverage
+      - run: (test -n "$CODACY_PROJECT_TOKEN" &&
+          cat /dev/null | sbt coverage +test coverageReport coverageAggregate codacyCoverage) ||
+          cat /dev/null | sbt coverage +test coverageReport coverageAggregate
