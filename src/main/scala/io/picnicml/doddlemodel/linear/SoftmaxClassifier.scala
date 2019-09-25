@@ -21,10 +21,8 @@ case class SoftmaxClassifier private (lambda: Double, numClasses: Option[Int], p
 
 object SoftmaxClassifier {
 
-  def apply(): SoftmaxClassifier = SoftmaxClassifier(0, none, none)
-
-  def apply(lambda: Double): SoftmaxClassifier = {
-    require(lambda > 0, "L2 regularization strength must be positive")
+  def apply(lambda: Double = 0.0): SoftmaxClassifier = {
+    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
     SoftmaxClassifier(lambda, none, none)
   }
 

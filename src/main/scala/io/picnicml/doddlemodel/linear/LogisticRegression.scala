@@ -20,10 +20,8 @@ case class LogisticRegression private (lambda: Double, numClasses: Option[Int], 
 
 object LogisticRegression {
 
-  def apply(): LogisticRegression = LogisticRegression(0, none, none)
-
-  def apply(lambda: Double): LogisticRegression = {
-    require(lambda >= 0, "L2 regularization strength must be positive")
+  def apply(lambda: Double = 0.0): LogisticRegression = {
+    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
     LogisticRegression(lambda, none, none)
   }
 

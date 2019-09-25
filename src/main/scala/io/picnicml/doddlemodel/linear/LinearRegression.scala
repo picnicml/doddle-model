@@ -18,10 +18,8 @@ case class LinearRegression private (lambda: Double, private val w: Option[RealV
 
 object LinearRegression {
 
-  def apply(): LinearRegression = LinearRegression(0, none)
-
-  def apply(lambda: Double): LinearRegression = {
-    require(lambda >= 0, "L2 regularization strength must be positive")
+  def apply(lambda: Double = 0.0): LinearRegression = {
+    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
     LinearRegression(lambda, none)
   }
 
