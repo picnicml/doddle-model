@@ -20,10 +20,8 @@ case class PoissonRegression private (lambda: Double, private val w: Option[Real
 
 object PoissonRegression {
 
-  def apply(): PoissonRegression = PoissonRegression(0, none)
-
-  def apply(lambda: Double): PoissonRegression = {
-    require(lambda >= 0, "L2 regularization strength must be positive")
+  def apply(lambda: Double = 0.0): PoissonRegression = {
+    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
     PoissonRegression(lambda, none)
   }
 
