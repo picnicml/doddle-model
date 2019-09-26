@@ -48,7 +48,7 @@ object DBSCAN {
 
     private def handleUnassignedPoint(model: DBSCAN, rowIdx: Int, nn: NearestNeighbors, s: State): State = {
       val neighbors = nn.getNeighbors(rowIdx, model.eps)
-      if (neighbors.length < model.minSamples) {
+      if (neighbors.length + 1 < model.minSamples) {
         s.labels(rowIdx) = NOISE
         s
       }
@@ -71,7 +71,7 @@ object DBSCAN {
     private def processUnassignedNeighbor(model: DBSCAN, neighbor: Int, nn: NearestNeighbors, s: State): Neighbors = {
       s.labels(neighbor) = s.clusterId.toDouble
       val neighborNeighbors = nn.getNeighbors(neighbor, model.eps)
-      if (neighborNeighbors.length >= model.minSamples)
+      if (neighborNeighbors.length + 1 >= model.minSamples)
         mutable.Queue(neighborNeighbors:_*)
       else
         mutable.Queue.empty
