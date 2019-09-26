@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.DenseVector
 import breeze.stats.DescriptiveStats
+import cats.syntax.option._
 import io.picnicml.doddlemodel.CrossScalaCompat._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.Features
@@ -58,13 +59,12 @@ object QuantileDiscretizer {
     @inline override def isFitted(model: QuantileDiscretizer): Boolean = model.quantiles.isDefined
 
     override def fit(model: QuantileDiscretizer, x: Features): QuantileDiscretizer = {
-      val xCopy = x.copy
-      val discreteRangeArrays: Seq[Seq[(Double, Double)]] = model.featureIndex.numerical.columnIndices.zipWithIndex.map {
+      val discreteRangeArrays = model.featureIndex.numerical.columnIndices.zipWithIndex.map {
         case (colIndex, bucketCountsIndex) =>
-          val colArray = xCopy(::, colIndex).toScalaVector.sorted
-          computeQuantiles(colArray, model.bucketCounts, bucketCountsIndex)
+          val colArray = x(::, colIndex).toScalaVector.sorted
+          computeQuantiles(colArray, model.bucketCounts(bucketCountsIndex).toInt)
       }
-      model.copy(quantiles = Some(discreteRangeArrays))
+      model.copy(quantiles = discreteRangeArrays.some)
     }
 
     override protected def transformSafe(model: QuantileDiscretizer, x: Features): Features = {
@@ -85,17 +85,18 @@ object QuantileDiscretizer {
     }
   }
 
-  private def computeQuantiles(target: Seq[Double], bucketCounts: DenseVector[Double], index: Int): Seq[(Double, Double)] = {
-    val bucketCount = bucketCounts(index).toInt
+  private def computeQuantiles(target: Seq[Double], bucketCount: Int): Seq[(Double, Double)] = {
     val binPercentileWidth = 1.0 / bucketCount
     val targetArray = target.toArray
     // NOTE: Adds binPercentileWidth to make the range inclusive of 1
-    val percentileRangePairs =
-      Range.BigDecimal(0, 1.0 + (binPercentileWidth / 2), binPercentileWidth).map(_.toDouble).sliding(2).toSeq
-    val rangePairs = percentileRangePairs.map {
-      case Seq(lowerBound, upperBound) =>
-        (DescriptiveStats.percentileInPlace(targetArray, lowerBound), DescriptiveStats.percentileInPlace(targetArray, upperBound))
-    }
+    val rangePairs =
+      Range
+        .BigDecimal(0, 1.0 + (binPercentileWidth / 2), binPercentileWidth)
+        .map(_.toDouble)
+        .map(DescriptiveStats.percentileInPlace(targetArray, _))
+        .sliding(2)
+        .map({case Seq(lowerBound, upperBound) => (lowerBound, upperBound)})
+        .toSeq
     val headUpdate = rangePairs.headOption.getOrElse((MinValue, MaxValue)).copy(_1 = MinValue)
     val lastUpdate = rangePairs.lastOption.getOrElse((MinValue, MaxValue)).copy(_2 = MaxValue)
     rangePairs
