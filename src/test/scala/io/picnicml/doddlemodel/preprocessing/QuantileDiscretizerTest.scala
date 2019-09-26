@@ -53,8 +53,6 @@ class QuantileDiscretizerTest extends FlatSpec with Matchers with TestingUtils {
     val quantileDiscretizer1 = QuantileDiscretizer(bucketCounts, featureIndex).fit(x)
     val quantileDiscretizer2 = QuantileDiscretizer(bucketCount, featureIndex).fit(x)
 
-
-
     breezeEqual(quantileDiscretizer1.transform(x), x) shouldBe true
     breezeEqual(quantileDiscretizer2.transform(x), x) shouldBe true
   }
@@ -64,6 +62,6 @@ class QuantileDiscretizerTest extends FlatSpec with Matchers with TestingUtils {
     val bucketCounts: DenseVector[Double] = DenseVector(2, 3)
 
     // 3 numeric columns vs 2 thresholds
-    an [IllegalArgumentException] should be thrownBy QuantileDiscretizer(bucketCounts, featureIndex)
+    an[IllegalArgumentException] should be thrownBy QuantileDiscretizer(bucketCounts, featureIndex)
   }
 }
