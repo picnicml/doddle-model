@@ -25,13 +25,14 @@ object QuantileDiscretizer {
 
   /** Create a quantile discretizer which splits data into discrete evenly sized buckets.
     *
-    * @param bucketCounts The number of quantiles desired
+    * @param bucketCount The number of quantiles desired
     * @param featureIndex feature index associated with features - this is needed so that only numerical features are
     *                     transformed by this preprocessor; could be a subset of columns to be transformed
     *
     * @example Discretize a matrix into quartiles with two features: one numerical and one categorical.
     *   {{{
     *     import io.picnicml.doddlemodel.preprocessing.QuantileDiscretizer.ev
+    *     import io.picnicml.doddlemodel.syntax.TransformerSyntax._
     *
     *     val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature))
     *     val x = DenseMatrix(
@@ -42,9 +43,8 @@ object QuantileDiscretizer {
     *     )
     *     // equivalently, DenseVector(4) could be used
     *     val bucketCounts = 4
-    *     val discretizer = QuantileDiscretizer(bucketCounts, featureIndex)
-    *     // Note: no fitting required
-    *     val xTransformed = ev.transform(discretizer, x)
+    *     val discretizer = QuantileDiscretizer(bucketCounts, featureIndex).fit(x)
+    *     val xTransformed = discretizer.transform(x)
     *   }}}
     */
   def apply(bucketCount: Int, featureIndex: FeatureIndex): QuantileDiscretizer = {
