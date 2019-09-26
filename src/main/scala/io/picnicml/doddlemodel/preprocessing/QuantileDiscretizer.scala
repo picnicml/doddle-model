@@ -7,9 +7,13 @@ import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.Features
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Transformer
-import scala.Double.{MinValue, MaxValue}
+import scala.Double.{MaxValue, MinValue}
 
-case class QuantileDiscretizer(private val bucketCounts: DenseVector[Double], private val featureIndex: FeatureIndex, private val quantiles: Option[Seq[Seq[(Double, Double)]]] = None) {
+case class QuantileDiscretizer(
+  private val bucketCounts: DenseVector[Double],
+  private val featureIndex: FeatureIndex,
+  private val quantiles: Option[Seq[Seq[(Double, Double)]]] = None
+) {
   private val numNumeric = featureIndex.numerical.columnIndices.length
   require(numNumeric == 0 || numNumeric == bucketCounts.length, "A quantile should be given for every numerical column")
 }
@@ -51,8 +55,6 @@ object QuantileDiscretizer {
 
   implicit lazy val ev: Transformer[QuantileDiscretizer] = new Transformer[QuantileDiscretizer] {
 
-
-
     @inline override def isFitted(model: QuantileDiscretizer): Boolean = model.quantiles.isDefined
 
     override def fit(model: QuantileDiscretizer, x: Features): QuantileDiscretizer = {
@@ -70,10 +72,11 @@ object QuantileDiscretizer {
       model.featureIndex.numerical.columnIndices.zipWithIndex.foreach {
         case (colIndex, bucketsIndex) =>
           val buckets = model.quantiles.getOrBreak(bucketsIndex)
-          (0 until xCopy.rows).foreach {
-            rowIndex => xCopy(rowIndex, colIndex) = buckets
+          (0 until xCopy.rows).foreach { rowIndex =>
+            xCopy(rowIndex, colIndex) = buckets
               .indexWhere({
-                case (lowerBound, upperBound) => lowerBound <= xCopy(rowIndex, colIndex) && xCopy(rowIndex, colIndex) <= upperBound
+                case (lowerBound, upperBound) =>
+                  lowerBound <= xCopy(rowIndex, colIndex) && xCopy(rowIndex, colIndex) <= upperBound
               })
               .toDouble
           }
@@ -87,7 +90,8 @@ object QuantileDiscretizer {
     val binPercentileWidth = 1.0 / bucketCount
     val targetArray = target.toArray
     // NOTE: Adds binPercentileWidth to make the range inclusive of 1
-    val percentileRangePairs = Range.BigDecimal(0, 1.0+(binPercentileWidth/2), binPercentileWidth).map(_.toDouble).sliding(2).toSeq
+    val percentileRangePairs =
+      Range.BigDecimal(0, 1.0 + (binPercentileWidth / 2), binPercentileWidth).map(_.toDouble).sliding(2).toSeq
     val rangePairs = percentileRangePairs.map {
       case Seq(lowerBound, upperBound) =>
         (DescriptiveStats.percentileInPlace(targetArray, lowerBound), DescriptiveStats.percentileInPlace(targetArray, upperBound))
@@ -96,6 +100,6 @@ object QuantileDiscretizer {
     val lastUpdate = rangePairs.lastOption.getOrElse((MinValue, MaxValue)).copy(_2 = MaxValue)
     rangePairs
       .updated(0, headUpdate)
-      .updated(rangePairs.size-1, lastUpdate)
+      .updated(rangePairs.size - 1, lastUpdate)
   }
 }
