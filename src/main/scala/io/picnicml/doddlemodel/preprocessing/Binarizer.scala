@@ -45,6 +45,7 @@ object Binarizer {
     Binarizer(thresholdsExtended, featureIndex)
   }
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Transformer[Binarizer] = new Transformer[Binarizer] {
 
     override def isFitted(model: Binarizer): Boolean = true

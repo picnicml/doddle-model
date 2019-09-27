@@ -16,6 +16,7 @@ object Pipeline {
   def apply(transformers: List[Transformable[_]])(predictor: Predictable[_]): Pipeline =
     Pipeline(predictor, transformers)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Predictor[Pipeline] = new Predictor[Pipeline] {
 
     override def isFitted(model: Pipeline): Boolean =

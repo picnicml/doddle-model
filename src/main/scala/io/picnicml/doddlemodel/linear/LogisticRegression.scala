@@ -27,6 +27,7 @@ object LogisticRegression {
 
   private val wSlice: Range.Inclusive = 1 to -1
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: LinearClassifier[LogisticRegression] = new LinearClassifier[LogisticRegression] {
 
     override def numClasses(model: LogisticRegression): Option[Int] = model.numClasses

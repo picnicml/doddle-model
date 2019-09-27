@@ -2,7 +2,9 @@ package io.picnicml.doddlemodel.typeclasses
 
 import java.io.{FileOutputStream, ObjectOutputStream}
 
-trait Estimator[A] {
+// evidence needs to be serializable because it is persisted along with the actual
+// estimators within the io.picnicml.doddlemodel.pipeline.Pipeline
+trait Estimator[A] extends Serializable {
 
   def isFitted(model: A): Boolean
 

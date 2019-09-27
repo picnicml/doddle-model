@@ -25,6 +25,7 @@ object LinearRegression {
 
   private val wSlice: Range.Inclusive = 1 to -1
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: LinearRegressor[LinearRegression] = new LinearRegressor[LinearRegression] {
 
     override protected def w(model: LinearRegression): Option[RealVector] = model.w
