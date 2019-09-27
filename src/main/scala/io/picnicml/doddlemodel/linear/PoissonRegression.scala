@@ -14,7 +14,7 @@ import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
   * val model = PoissonRegression()
   * val model = PoissonRegression(lambda = 1.5)
   */
-case class PoissonRegression private(lambda: Double, private val w: Option[RealVector]) {
+case class PoissonRegression private (lambda: Double, private val w: Option[RealVector]) {
   private var yPredMeanCache: Target = _
 }
 

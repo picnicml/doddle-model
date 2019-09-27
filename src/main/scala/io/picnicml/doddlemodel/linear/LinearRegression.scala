@@ -12,7 +12,7 @@ import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
   * val model = LinearRegression()
   * val model = LinearRegression(lambda = 1.5)
   */
-case class LinearRegression private(lambda: Double, private val w: Option[RealVector]) {
+case class LinearRegression private (lambda: Double, private val w: Option[RealVector]) {
   private var yPredCache: Target = _
 }
 
