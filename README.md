@@ -52,6 +52,9 @@
 * it provides [immutable estimators](https://en.wikipedia.org/wiki/Immutable_object) that are a _doddle_ to use in parallel code
 * it exposes its functionality through a [scikit-learn](https://github.com/scikit-learn/scikit-learn)-like API [2] in idiomatic Scala using [typeclasses](https://en.wikipedia.org/wiki/Type_class)
 
+#### How does it compare to existing solutions?
+`doddle-model` takes the position of scikit-learn in Scala and as a consequence, it's much more lightweight than e.g. Spark ML. Fitted models can be deployed anywhere, from simple applications to concurrent, distributed systems built with Akka, Apache Beam or a framework of your choice. Training of estimators happens in-memory, which is advantageous unless you are dealing with enormous datasets that absolutely cannot fit into RAM.
+
 ### Installation
 The project is published for Scala versions 2.11, 2.12 and 2.13. Add the dependency to your SBT project definition:
 ```scala
