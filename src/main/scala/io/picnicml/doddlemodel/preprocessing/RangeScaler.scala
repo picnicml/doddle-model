@@ -45,6 +45,7 @@ object RangeScaler {
     RangeScaler(none, none, range, featureIndex)
   }
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Transformer[RangeScaler] = new Transformer[RangeScaler] {
 
     override def isFitted(model: RangeScaler): Boolean =

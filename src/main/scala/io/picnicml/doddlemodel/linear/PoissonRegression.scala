@@ -27,6 +27,7 @@ object PoissonRegression {
 
   private val wSlice: Range.Inclusive = 1 to -1
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: LinearRegressor[PoissonRegression] = new LinearRegressor[PoissonRegression] {
 
     override protected def w(model: PoissonRegression): Option[RealVector] = model.w

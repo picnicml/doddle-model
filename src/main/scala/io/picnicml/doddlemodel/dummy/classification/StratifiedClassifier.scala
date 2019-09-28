@@ -26,6 +26,7 @@ object StratifiedClassifier {
 
   def apply(): StratifiedClassifier = StratifiedClassifier(none, none)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Classifier[StratifiedClassifier] = new Classifier[StratifiedClassifier] {
 
     override def numClasses(model: StratifiedClassifier): Option[Int] = model.numClasses

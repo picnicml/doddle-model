@@ -28,6 +28,7 @@ object SoftmaxClassifier {
 
   private val wSlice: Range.Inclusive = 1 to -1
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: LinearClassifier[SoftmaxClassifier] = new LinearClassifier[SoftmaxClassifier] {
 
     override def numClasses(model: SoftmaxClassifier): Option[Int] = model.numClasses

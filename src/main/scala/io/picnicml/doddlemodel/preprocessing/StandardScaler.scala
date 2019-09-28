@@ -25,6 +25,7 @@ object StandardScaler {
 
   def apply(featureIndex: FeatureIndex): StandardScaler = StandardScaler(none, none, featureIndex)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Transformer[StandardScaler] = new Transformer[StandardScaler] {
 
     override def isFitted(model: StandardScaler): Boolean =

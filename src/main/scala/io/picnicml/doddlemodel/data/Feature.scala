@@ -6,7 +6,7 @@ import scala.reflect.ClassTag
 
 object Feature {
 
-  sealed trait FeatureType extends Product with Serializable {
+  sealed trait FeatureType {
     val headerLineString: String
   }
 
@@ -18,9 +18,10 @@ object Feature {
     override val headerLineString = "c"
   }
 
+  @SerialVersionUID(0L)
   class FeatureIndex(val names: IndexedSeq[String],
                      val types: IndexedSeq[FeatureType],
-                     val columnIndices: IndexedSeq[Int]) {
+                     val columnIndices: IndexedSeq[Int]) extends Serializable {
 
     def categorical: FeatureIndex = onlyFeaturesOfType[CategoricalFeature.type]
 

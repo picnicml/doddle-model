@@ -24,6 +24,7 @@ object MostFrequentValueImputer {
   def apply(featureIndex: FeatureIndex): MostFrequentValueImputer =
     MostFrequentValueImputer(None, featureIndex)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Transformer[MostFrequentValueImputer] = new Transformer[MostFrequentValueImputer] {
 
     override def isFitted(model: MostFrequentValueImputer): Boolean = model.mostFrequent.isDefined

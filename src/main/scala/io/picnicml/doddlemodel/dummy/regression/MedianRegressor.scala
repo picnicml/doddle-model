@@ -17,6 +17,7 @@ object MedianRegressor {
 
   def apply(): MedianRegressor = MedianRegressor(none)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Regressor[MedianRegressor] = new Regressor[MedianRegressor] {
 
     override protected def copy(model: MedianRegressor): MedianRegressor = model.copy()

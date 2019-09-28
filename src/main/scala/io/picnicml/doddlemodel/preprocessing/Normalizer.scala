@@ -26,6 +26,7 @@ case class Normalizer(normFunction: Norm = L2Norm)
   * */
 object Normalizer {
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Transformer[Normalizer] = new Transformer[Normalizer] {
 
     override def isFitted(model: Normalizer): Boolean = true

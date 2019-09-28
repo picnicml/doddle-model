@@ -27,6 +27,7 @@ object OneHotEncoder {
 
   def apply(featureIndex: FeatureIndex): OneHotEncoder = OneHotEncoder(none, featureIndex)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Transformer[OneHotEncoder] = new Transformer[OneHotEncoder] {
 
     @inline override def isFitted(model: OneHotEncoder): Boolean = model.numBinaryColumns.isDefined

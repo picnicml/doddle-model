@@ -24,6 +24,7 @@ object MeanValueImputer {
 
   def apply(featureIndex: FeatureIndex): MeanValueImputer = MeanValueImputer(none, featureIndex)
 
+  @SerialVersionUID(0L)
   implicit val ev: Transformer[MeanValueImputer] = new Transformer[MeanValueImputer] {
 
     override def isFitted(model: MeanValueImputer): Boolean = model.means.isDefined

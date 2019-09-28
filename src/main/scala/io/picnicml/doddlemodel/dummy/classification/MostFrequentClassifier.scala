@@ -17,6 +17,7 @@ object MostFrequentClassifier {
 
   def apply(): MostFrequentClassifier = MostFrequentClassifier(none, none)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Classifier[MostFrequentClassifier] = new Classifier[MostFrequentClassifier] {
 
     override def numClasses(model: MostFrequentClassifier): Option[Int] = model.numClasses

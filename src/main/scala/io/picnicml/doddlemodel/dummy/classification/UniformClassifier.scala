@@ -17,6 +17,7 @@ object UniformClassifier {
 
   def apply(): UniformClassifier = UniformClassifier(none)
 
+  @SerialVersionUID(0L)
   implicit lazy val ev: Classifier[UniformClassifier] = new Classifier[UniformClassifier] {
 
     override def numClasses(model: UniformClassifier): Option[Int] = model.numClasses
