@@ -2,6 +2,7 @@ package io.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.DenseMatrix
 import io.picnicml.doddlemodel.TestingUtils
+import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 import io.picnicml.doddlemodel.preprocessing.Normalizer.ev
 import io.picnicml.doddlemodel.preprocessing.Norms.{L1Norm, MaxNorm}
 import org.scalactic.{Equality, TolerantNumerics}
@@ -12,14 +13,15 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
   implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
 
   "Normalizer" should "scale rows to unit norm using various norms" in {
+    val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature, NumericalFeature))
     val x = DenseMatrix(
       List(1.0, 2.0, 2.0),
       List(-1.0, 1.0, 0.5),
       List(-2.0, 0.0, 0.0)
     )
-    val l2Normalizer = Normalizer()
-    val l1Normalizer = Normalizer(L1Norm)
-    val maxNormalizer = Normalizer(MaxNorm)
+    val l2Normalizer = Normalizer(featureIndex = featureIndex)
+    val l1Normalizer = Normalizer(L1Norm, featureIndex)
+    val maxNormalizer = Normalizer(MaxNorm, featureIndex)
 
     breezeEqual(ev.transform(l2Normalizer, x),
       DenseMatrix(
@@ -47,7 +49,8 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
   }
 
   it should "handle rows with zero norm" in {
-    val l2Normalizer = Normalizer()
+    val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature, NumericalFeature))
+    val l2Normalizer = Normalizer(featureIndex = featureIndex)
     val x = DenseMatrix(
       List(0.0, 0.0, 0.0),
       List(0.0, 3.0, 4.0)

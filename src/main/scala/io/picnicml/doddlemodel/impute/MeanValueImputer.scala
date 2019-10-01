@@ -37,6 +37,8 @@ object MeanValueImputer {
       model.copy(means.some)
     }
 
+    override protected def featureIndexSafe(model: MeanValueImputer): FeatureIndex = model.featureIndex
+
     override protected def transformSafe(model: MeanValueImputer, x: Features): Features = {
       val xCopy = x.copy
       model.featureIndex.numerical.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>

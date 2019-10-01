@@ -2,7 +2,7 @@ package io.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.{*, Axis, DenseMatrix, Vector, convert, max}
 import cats.syntax.option._
-import io.picnicml.doddlemodel.data.Feature.FeatureIndex
+import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, FeatureType, NumericalFeature}
 import io.picnicml.doddlemodel.data.Features
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Transformer
@@ -21,20 +21,36 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
   * val encoderSubsetOfColumns = OneHotEncoder(featureIndex.subset("f0", "f2"))
   */
 case class OneHotEncoder private (private val numBinaryColumns: Option[Vector[Int]],
-                                  private val featureIndex: FeatureIndex)
+                                  private val featureIndex: FeatureIndex,
+                                  private val modifiedFeatureIndex: Option[FeatureIndex])
 
 object OneHotEncoder {
 
-  def apply(featureIndex: FeatureIndex): OneHotEncoder = OneHotEncoder(none, featureIndex)
+  def apply(featureIndex: FeatureIndex): OneHotEncoder = OneHotEncoder(none, featureIndex, none)
 
   implicit lazy val ev: Transformer[OneHotEncoder] = new Transformer[OneHotEncoder] {
 
     @inline override def isFitted(model: OneHotEncoder): Boolean = model.numBinaryColumns.isDefined
 
     override def fit(model: OneHotEncoder, x: Features): OneHotEncoder = {
-      val numBinaryColumns = convert(max(x(::, model.featureIndex.categorical.columnIndices).apply(::, *)).t, Int) + 1
-      model.copy(numBinaryColumns = numBinaryColumns.some)
+      val numBinColumns = convert(max(x(::, model.featureIndex.categorical.columnIndices).apply(::, *)).t, Int) + 1
+      // copy numerical feature names and append new categorical feature names (derived from original)
+      val numericalNames = model.featureIndex.numerical.names.toList
+      val numericalTypes: List[FeatureType] = List.fill(numericalNames.size) { NumericalFeature }
+      val (newNames, newTypes) = (0 until numBinColumns.size).foldLeft((numericalNames, numericalTypes)) {
+        case ((names, types), idx) =>
+          val currFeatName = model.featureIndex.categorical.names(idx)
+          val derivedFeatNames = (0 to numBinColumns(idx)).map(i => s"${currFeatName}_$i")
+          val newTypes = List.fill(numBinColumns(idx)) { CategoricalFeature }
+          (names ++ derivedFeatNames, types ++ newTypes)
+      }
+      val newIndices = (0 until newNames.size).toList
+      val newFeatureIndex = FeatureIndex(newNames, newTypes, newIndices)
+
+      model.copy(numBinaryColumns = numBinColumns.some, modifiedFeatureIndex = newFeatureIndex.some)
     }
+
+    override protected def featureIndexSafe(model: OneHotEncoder): FeatureIndex = model.modifiedFeatureIndex.getOrBreak
 
     override protected def transformSafe(model: OneHotEncoder, x: Features): Features = {
       val xTransformed = model.featureIndex.categorical.columnIndices.zipWithIndex.foldLeft(x) {

@@ -1,7 +1,7 @@
 package io.picnicml.doddlemodel.preprocessing
 
 import breeze.linalg.DenseVector
-import io.picnicml.doddlemodel.data.Feature.FeatureIndex
+import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex}
 import io.picnicml.doddlemodel.data.{Features, RealVector}
 import io.picnicml.doddlemodel.typeclasses.Transformer
 
@@ -50,6 +50,15 @@ object Binarizer {
     override def isFitted(model: Binarizer): Boolean = true
 
     override def fit(model: Binarizer, x: Features): Binarizer = model
+
+    override protected def featureIndexSafe(model: Binarizer): FeatureIndex = {
+      // on-the-fly generation of modified feature index so that fitting is not required
+      val numFeatures = model.featureIndex.columnIndices.size
+      val types = List.fill(numFeatures) { CategoricalFeature }
+      val names = model.featureIndex.names.toList
+      val indices = (0 until numFeatures).toList
+      FeatureIndex(names, types, indices)
+    }
 
     override protected def transformSafe(model: Binarizer, x: Features): Features = {
       val xCopy = x.copy

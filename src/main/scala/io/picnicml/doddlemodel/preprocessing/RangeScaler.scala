@@ -65,6 +65,8 @@ object RangeScaler {
       model.copy(scale.some, minAdjustment.some)
     }
 
+    override protected def featureIndexSafe(model: RangeScaler): FeatureIndex = model.featureIndex
+
     override protected def transformSafe(model: RangeScaler, x: Features): Features = {
       val xCopy = x.copy
       val scale = model.scale.getOrBreak

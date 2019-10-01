@@ -37,6 +37,8 @@ object StandardScaler {
       model.copy(mean(xToPreprocess(::, *)).t.toDenseVector.some, sampleStdDev.some)
     }
 
+    override protected def featureIndexSafe(model: StandardScaler): FeatureIndex = model.featureIndex
+
     override protected def transformSafe(model: StandardScaler, x: Features): Features = {
       val xCopy = x.copy
       model.featureIndex.numerical.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>

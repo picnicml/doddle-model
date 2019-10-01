@@ -37,6 +37,8 @@ object MostFrequentValueImputer {
       model.copy(mostFrequent.some)
     }
 
+    override protected def featureIndexSafe(model: MostFrequentValueImputer): FeatureIndex = model.featureIndex
+
     private def getMostFrequent(column: SliceVector[(Int, Int), Double]): Double = {
       val counts = scala.collection.mutable.Map.empty[Double, Int].withDefaultValue(0)
       column.foreachValue(value => counts(value) = counts(value) + 1)
