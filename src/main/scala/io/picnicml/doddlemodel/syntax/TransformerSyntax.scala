@@ -1,5 +1,6 @@
 package io.picnicml.doddlemodel.syntax
 
+import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.Features
 import io.picnicml.doddlemodel.typeclasses.Transformer
 
@@ -10,6 +11,8 @@ object TransformerSyntax {
     def isFitted(implicit ev: Transformer[A]): Boolean = ev.isFitted(model)
 
     def fit(x: Features)(implicit ev: Transformer[A]): A = ev.fit(model, x)
+
+    def featureIndex(implicit ev: Transformer[A]): FeatureIndex = ev.featureIndex(model)
 
     def transform(x: Features)(implicit ev: Transformer[A]): Features = ev.transform(model, x)
 
