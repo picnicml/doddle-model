@@ -81,4 +81,12 @@ class RangeScalerTest extends FlatSpec with Matchers with TestingUtils {
 
     breezeEqual(ev.transform(trainedRangeScaler, x), x) shouldBe true
   }
+
+  it should "not modify the domain of the data" in {
+    val featureIndex = FeatureIndex(List(CategoricalFeature, NumericalFeature))
+    val rangeScaler = RangeScaler((0.0, 1.0), featureIndex)
+    val trainedRangeScaler = ev.fit(rangeScaler, x)
+
+    assert(ev.featureIndex(trainedRangeScaler) == featureIndex)
+  }
 }

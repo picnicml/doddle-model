@@ -67,4 +67,13 @@ class StandardScalerTest extends FlatSpec with Matchers with TestingUtils {
     assert(mean(xTransformed(::, 4)) === 0.0 +- 1e-4)
     assert(stddev(xTransformed(::, 4)) === 1.0 +- 1e-4)
   }
+
+  it should "not modify the domain of the data" in {
+    val x = DenseMatrix.rand[Double](10, 2)
+    val featureIndex = FeatureIndex(List(CategoricalFeature, NumericalFeature))
+    val scaler = StandardScaler(featureIndex)
+    val trainedScaler = ev.fit(scaler, x)
+
+    assert(ev.featureIndex(trainedScaler) == featureIndex)
+  }
 }

@@ -62,4 +62,10 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
 
     breezeEqual(ev.transform(l2Normalizer, x), xNormalizedExpected) shouldBe true
   }
+
+  it should "not modify the domain of the data" in {
+    val featureIndex = FeatureIndex(List(CategoricalFeature, NumericalFeature))
+    val l2Normalizer = Normalizer(featureIndex = featureIndex)
+    assert(ev.featureIndex(l2Normalizer) == featureIndex)
+  }
 }

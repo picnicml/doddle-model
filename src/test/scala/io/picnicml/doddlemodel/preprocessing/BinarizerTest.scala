@@ -61,4 +61,12 @@ class BinarizerTest extends FlatSpec with Matchers with TestingUtils {
     // 3 numeric columns vs 2 thresholds
     an [IllegalArgumentException] should be thrownBy Binarizer(thresholds, featureIndex)
   }
+
+  it should "convert numerical features to categorical features" in {
+    val featureIndex = FeatureIndex(List(NumericalFeature, NumericalFeature, CategoricalFeature))
+    val thresholds: DenseVector[Double] = DenseVector(0.0, -1.5)
+    val binarizer = Binarizer(thresholds, featureIndex)
+
+    assert(ev.featureIndex(binarizer).types == List(CategoricalFeature, CategoricalFeature, CategoricalFeature))
+  }
 }
