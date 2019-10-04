@@ -67,7 +67,7 @@ object CsvLoader {
     }.toArray
   }
 
-  /** Creates a label encoder for the given dataset. **/
+  /** Constructs a label encoder for the given dataset. **/
   private def inferLabelEncoder(lines: List[String], na: String, featureIndex: FeatureIndex): LabelEncoder = {
     val encoder = mutable.AnyRefMap[String, mutable.AnyRefMap[String, Double]]()
     val categoricalFeatures = featureIndex.categorical
@@ -86,9 +86,9 @@ object CsvLoader {
   }
 
   /**
-    * A mechanism to encode non-numerical feature values as  numerical values.
+    * A mechanism to encode non-numerical feature values (categorical) to numerical values.
     *
-    * @param encoder a map containing mapping of feature values to numerical values for a particular feature
+    * @param encoder a map containing mapping of categorical values to numerical values for all categorical features
     */
   private class LabelEncoder(private val encoder:  mutable.AnyRefMap[String, mutable.AnyRefMap[String, Double]]) {
     def encode(featureValue: String, featureName: String): Double = encoder(featureName)(featureValue)
