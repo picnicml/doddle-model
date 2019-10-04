@@ -4,6 +4,8 @@ import java.io.{File, FileOutputStream}
 
 import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
 
+import scala.io.{BufferedSource, Source}
+
 object ResourceDatasetLoaders {
 
   def loadBostonDataset: DatasetWithIndex = {
@@ -33,9 +35,9 @@ object ResourceDatasetLoaders {
   }
 
   private def loadDatasetFromResources(datasetName: String): FeaturesWithIndex =
-    loadCsvDataset(getResourceFile(s"/datasets/$datasetName.csv"))
+    loadCsvDataset(getBufferedSourceFromResource(s"/datasets/$datasetName.csv"), na = "NA")
 
-  private def getResourceFile(path: String): File = {
+  private def getBufferedSourceFromResource(path: String): BufferedSource = {
     val resourceUrl = getClass.getResource(path)
     val file = if (resourceUrl.toString.startsWith("jar:"))
       // reads file from JAR
@@ -45,7 +47,7 @@ object ResourceDatasetLoaders {
       new File(resourceUrl.getFile)
     if (file != null && !file.exists)
       throw new RuntimeException(s"Error: File $file not found!")
-    file
+    Source.fromFile(file)
   }
 
   private def readResourceFileWithinJar(path: String): File = {
