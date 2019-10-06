@@ -44,23 +44,23 @@ object CsvLoader {
 
   private def loadWithNumericalFeatures(lines: Iterator[String],
                                         na: String,
-                                        featureIndex: FeatureIndex): Array[Array[Double]] = {
+                                        featureIndex: FeatureIndex): Array[Array[Float]] = {
     lines.map(_.split(",").map { featureValue =>
       val trimmedValue = removeQuotes(featureValue)
-      if (trimmedValue == na) Double.NaN else parseDouble(trimmedValue)
+      if (trimmedValue == na) Float.NaN else parseFloat(trimmedValue)
     }).toArray
   }
 
   private def loadWithMixedFeatures(lines: List[String],
                                     na: String,
-                                    featureIndex: FeatureIndex): Array[Array[Double]] = {
+                                    featureIndex: FeatureIndex): Array[Array[Float]] = {
     val labelEncoder = inferLabelEncoder(lines, na, featureIndex)
     lines.map { rowValues =>
       rowValues.split(",").zipWithIndex.map { case (featureValue, columnIndex) =>
         val trimmedValue = removeQuotes(featureValue)
         featureIndex.types(columnIndex) match {
-          case _ if trimmedValue == na => Double.NaN
-          case NumericalFeature => parseDouble(trimmedValue)
+          case _ if trimmedValue == na => Float.NaN
+          case NumericalFeature => parseFloat(trimmedValue)
           case CategoricalFeature => labelEncoder.encode(trimmedValue, featureIndex.names(columnIndex))
         }
       }
@@ -69,16 +69,16 @@ object CsvLoader {
 
   /** Constructs a label encoder for the given dataset. **/
   private def inferLabelEncoder(lines: List[String], na: String, featureIndex: FeatureIndex): LabelEncoder = {
-    val encoder = mutable.AnyRefMap[String, mutable.AnyRefMap[String, Double]]()
+    val encoder = mutable.AnyRefMap[String, mutable.AnyRefMap[String, Float]]()
     val categoricalFeatures = featureIndex.categorical
-    categoricalFeatures.names.foreach { name => encoder(name) = mutable.AnyRefMap[String, Double]() }
+    categoricalFeatures.names.foreach { name => encoder(name) = mutable.AnyRefMap[String, Float]() }
 
     lines.foreach { rowValues =>
       val rowValuesArray = rowValues.split(",").map(x => removeQuotes(x))
       categoricalFeatures.columnIndices.zip(categoricalFeatures.names).foreach { case (columnIndex, name) =>
         val featureValue = rowValuesArray(columnIndex)
         if (featureValue != na && !encoder(name).contains(featureValue))
-          encoder(name)(featureValue) = encoder(name).size.toDouble
+          encoder(name)(featureValue) = encoder(name).size.toFloat
       }
     }
 
@@ -90,16 +90,16 @@ object CsvLoader {
     *
     * @param encoder a map containing mapping of categorical values to numerical values for all categorical features
     */
-  private class LabelEncoder(private val encoder:  mutable.AnyRefMap[String, mutable.AnyRefMap[String, Double]]) {
-    def encode(featureValue: String, featureName: String): Double = encoder(featureName)(featureValue)
+  private class LabelEncoder(private val encoder:  mutable.AnyRefMap[String, mutable.AnyRefMap[String, Float]]) {
+    def encode(featureValue: String, featureName: String): Float = encoder(featureName)(featureValue)
   }
 
   private def removeQuotes(s: String): String =
     s.replaceAll("\"", "").replaceAll("'", "")
 
-  private def parseDouble(featureValue: String): Double = {
+  private def parseFloat(featureValue: String): Float = {
     try
-      featureValue.toDouble
+      featureValue.toFloat
     catch {
       case _: NumberFormatException =>
         throw new IllegalArgumentException(

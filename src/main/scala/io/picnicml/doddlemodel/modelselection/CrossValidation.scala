@@ -32,7 +32,7 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
   def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = none)
               (implicit ev: Predictor[A],
                reusable: CrossValReusable = CrossValReusable(false),
-               rand: Random = new Random()): Double = {
+               rand: Random = new Random()): Float = {
 
     val dataSplits =
       groups.fold(this.dataSplitter.splitData(x, y))(groups => this.dataSplitter.splitData(x, y, groups))
@@ -46,7 +46,7 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
     completedFoldsScores.sum / completedFoldsScores.length
   }
 
-  private def foldScore[A](model: A, split: TrainTestSplit)(implicit ev: Predictor[A]): Future[Double] = Future {
+  private def foldScore[A](model: A, split: TrainTestSplit)(implicit ev: Predictor[A]): Future[Float] = Future {
     this.metric(split.yTe, ev.predict(ev.fit(model, split.xTr, split.yTr), split.xTe))
   }
 

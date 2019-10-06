@@ -10,9 +10,9 @@ trait Metric {
     require(y.length == yPred.length, "Target vectors need to be of equal length")
   }
 
-  def calculateValueSafe(y: Target, yPred: Target): Double
+  def calculateValueSafe(y: Target, yPred: Target): Float
 
-  def apply(y: Target, yPred: Target): Double = {
+  def apply(y: Target, yPred: Target): Float = {
     checkInput(y, yPred)
     calculateValueSafe(y, yPred)
   }

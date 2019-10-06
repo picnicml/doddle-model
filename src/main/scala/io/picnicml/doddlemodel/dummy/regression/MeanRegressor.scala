@@ -11,7 +11,7 @@ import io.picnicml.doddlemodel.typeclasses.Regressor
   * Examples:
   * val model = MeanRegressor()
   */
-case class MeanRegressor private (mean: Option[Double])
+case class MeanRegressor private (mean: Option[Float])
 
 object MeanRegressor {
 

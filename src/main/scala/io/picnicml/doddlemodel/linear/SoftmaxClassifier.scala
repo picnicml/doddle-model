@@ -13,16 +13,16 @@ import io.picnicml.doddlemodel.syntax.OptionSyntax._
   *
   * Examples:
   * val model = SoftmaxClassifier()
-  * val model = SoftmaxClassifier(lambda = 1.5)
+  * val model = SoftmaxClassifier(lambda = 1.5f)
   */
-case class SoftmaxClassifier private (lambda: Double, numClasses: Option[Int], private val w: Option[RealVector]) {
+case class SoftmaxClassifier private (lambda: Float, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: Simplex = _
 }
 
 object SoftmaxClassifier {
 
-  def apply(lambda: Double = 0.0): SoftmaxClassifier = {
-    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
+  def apply(lambda: Float = 0.0f): SoftmaxClassifier = {
+    require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     SoftmaxClassifier(lambda, none, none)
   }
 
@@ -42,17 +42,17 @@ object SoftmaxClassifier {
       model.copy(w = w.some)
 
     override protected def predictStateless(model: SoftmaxClassifier, w: RealVector, x: Features): Target =
-      convert(argmax(predictProbaStateless(model, w, x)(*, ::)), Double)
+      convert(argmax(predictProbaStateless(model, w, x)(*, ::)), Float)
 
     override protected def predictProbaStateless(model: SoftmaxClassifier, w: RealVector, x: Features): Simplex = {
       val z = x * w.asDenseMatrix.reshape(x.cols, model.numClasses.getOrBreak - 1, View.Require)
       val maxZ = max(z)
-      val zExpPivot = DenseMatrix.horzcat(exp(z - maxZ), DenseMatrix.fill[Double](x.rows, 1)(exp(-maxZ)))
+      val zExpPivot = DenseMatrix.horzcat(exp(z - maxZ), DenseMatrix.fill[Float](x.rows, 1)(exp(-maxZ)))
       zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))
     }
 
     override protected[linear] def lossStateless(model: SoftmaxClassifier,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+                                                 w: RealVector, x: Features, y: Target): Float = {
       model.yPredProbaCache = predictProbaStateless(model, w, x)
       val yPredProbaOfTrueClass = 0 until x.rows map { rowIndex =>
         val targetClass = y(rowIndex).toInt
@@ -60,21 +60,21 @@ object SoftmaxClassifier {
       }
 
       val wMatrix = w.asDenseMatrix.reshape(x.cols, model.numClasses.getOrBreak - 1, View.Require)
-      sum(log(DenseMatrix(yPredProbaOfTrueClass))) / (-x.rows.toDouble) +
-        .5 * model.lambda * sum(pow(wMatrix(wSlice, ::), 2))
+      sum(log(DenseMatrix(yPredProbaOfTrueClass))) / (-x.rows.toFloat) +
+        .5f * model.lambda * sum(pow(wMatrix(wSlice, ::), 2))
     }
 
     override protected[linear] def lossGradStateless(model: SoftmaxClassifier,
                                                      w: RealVector, x: Features, y: Target): RealVector = {
       val yPredProba = model.yPredProbaCache(::, 0 to -2)
 
-      val indicator = DenseMatrix.zeros[Double](yPredProba.rows, yPredProba.cols)
+      val indicator = DenseMatrix.zeros[Float](yPredProba.rows, yPredProba.cols)
       0 until indicator.rows foreach { rowIndex =>
         val targetClass = y(rowIndex).toInt
-        if (targetClass < model.numClasses.getOrBreak - 1) indicator(rowIndex, targetClass) = 1.0
+        if (targetClass < model.numClasses.getOrBreak - 1) indicator(rowIndex, targetClass) = 1.0f
       }
 
-      val grad = (x.t * (indicator - yPredProba)) / (-x.rows.toDouble)
+      val grad = (x.t * (indicator - yPredProba)) / (-x.rows.toFloat)
       val wMatrix = w.asDenseMatrix.reshape(x.cols, model.numClasses.getOrBreak - 1, View.Require)
       grad(wSlice, ::) += model.lambda * wMatrix(wSlice, ::)
       grad.toDenseVector

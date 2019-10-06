@@ -12,7 +12,7 @@ trait LinearClassifier[A] extends LinearModel[A] with Classifier[A] {
 
   override protected def fitSafe(model: A, x: Features, y: Target): A = {
     val wLength = (x.cols + 1) * (numClasses(model).getOrBreak - 1)
-    val wInitial = DenseVector.zeros[Double](wLength)
+    val wInitial = DenseVector.zeros[Float](wLength)
     copy(model, w = maximumLikelihood(model, xWithBiasTerm(x), y, wInitial))
   }
 

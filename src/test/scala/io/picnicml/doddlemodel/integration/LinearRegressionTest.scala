@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.integration
 
-import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
+import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.loadBostonDataset
 import io.picnicml.doddlemodel.linear.LinearRegression
 import io.picnicml.doddlemodel.metrics.rmse
@@ -17,6 +17,6 @@ class LinearRegressionTest extends FlatSpec with Matchers {
     val cv = CrossValidation(rmse, KFoldSplitter(numFolds = 10))
     implicit val rand: Random = new Random(42)
 
-    cv.score(model, x, y) should be < 6.0
+    cv.score(model, x, y) should be < 6.0f
   }
 }

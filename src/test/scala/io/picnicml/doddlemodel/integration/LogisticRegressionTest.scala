@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.integration
 
-import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
+import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.linear.LogisticRegression
 import io.picnicml.doddlemodel.metrics.accuracy
@@ -17,6 +17,6 @@ class LogisticRegressionTest extends FlatSpec with Matchers {
     val cv = CrossValidation(accuracy, KFoldSplitter(numFolds = 10))
     implicit val rand: Random = new Random(42)
 
-    cv.score(model, x, y) should be > 0.93
+    cv.score(model, x, y) should be > 0.92f
   }
 }

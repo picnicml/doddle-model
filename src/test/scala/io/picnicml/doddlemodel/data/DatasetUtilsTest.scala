@@ -11,7 +11,7 @@ import scala.util.Random
 class DatasetUtilsTest extends FlatSpec with Matchers with TestingUtils {
 
   implicit val rand: Random = new Random(0)
-  implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1.0)
+  implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1.0f)
 
   val (x, y, _) = loadIrisDataset
 
@@ -28,7 +28,7 @@ class DatasetUtilsTest extends FlatSpec with Matchers with TestingUtils {
 
   they should "split the dataset with groups" in {
     val groups = DenseVector((0 until x.rows).map(x => x % 4):_*)
-    val split = splitDatasetWithGroups(x, y, groups, proportionTrain = 0.8)
+    val split = splitDatasetWithGroups(x, y, groups, proportionTrain = 0.8f)
     val groupsTe = split.groupsTe.toArray
     split.groupsTr.forall(trGroup => !groupsTe.contains(trGroup)) shouldBe true
   }

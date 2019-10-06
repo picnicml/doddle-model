@@ -31,7 +31,7 @@ object UniformClassifier {
       model.copy()
 
     override protected def predictSafe(model: UniformClassifier, x: Features): Target =
-      convert(DenseVector.rand(x.rows, Rand.randInt(model.numClasses.get)), Double)
+      convert(DenseVector.rand(x.rows, Rand.randInt(model.numClasses.get)), Float)
 
     override protected def predictProbaSafe(model: UniformClassifier, x: Features): Simplex =
       throw new NotImplementedError("Method predictProbaSafe is not defined for UniformClassifier")

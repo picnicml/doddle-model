@@ -18,7 +18,7 @@ trait LinearModel[A] {
   protected def predictStateless(model: A, w: RealVector, x: Features): Target
 
   /** A stateless function that calculates the value of the loss function. */
-  protected[linear] def lossStateless(model: A, w: RealVector, x: Features, y: Target): Double
+  protected[linear] def lossStateless(model: A, w: RealVector, x: Features, y: Target): Float
 
   /** A stateless function that calculates the gradient of the loss function wrt. model parameters. */
   protected[linear] def lossGradStateless(model: A, w: RealVector, x: Features, y: Target): RealVector
@@ -31,12 +31,12 @@ trait LinearModel[A] {
   protected def maximumLikelihood(model: A, x: Features, y: Target, init: RealVector): RealVector = {
     val diffFunction = new DiffFunction[RealVector] {
       override def calculate(w: RealVector): (Double, RealVector) =
-        (lossStateless(model, w, x, y), lossGradStateless(model, w, x, y))
+        (lossStateless(model, w, x, y).toDouble, lossGradStateless(model, w, x, y))
     }
-    val lbfgs = new LBFGS[DenseVector[Double]](tolerance = 1e-4)
+    val lbfgs = new LBFGS[DenseVector[Float]](tolerance = 1e-4)
     lbfgs.minimize(diffFunction, init)
   }
 
   protected def xWithBiasTerm(x: Features): Features =
-    DenseMatrix.horzcat(DenseMatrix.ones[Double](x.rows, 1), x)
+    DenseMatrix.horzcat(DenseMatrix.ones[Float](x.rows, 1), x)
 }

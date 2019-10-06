@@ -11,7 +11,7 @@ import io.picnicml.doddlemodel.typeclasses.Regressor
   * Examples:
   * val model = MedianRegressor()
   */
-case class MedianRegressor private (median: Option[Double])
+case class MedianRegressor private (median: Option[Float])
 
 object MedianRegressor {
 

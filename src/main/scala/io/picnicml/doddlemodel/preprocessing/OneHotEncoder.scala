@@ -46,11 +46,11 @@ object OneHotEncoder {
     }
 
     private def appendEncodedColumns(x: Features, columnIndex: Int, numEncodedColumns: Int): Features = {
-      val encoded = DenseMatrix.zeros[Double](x.rows, numEncodedColumns)
+      val encoded = DenseMatrix.zeros[Float](x.rows, numEncodedColumns)
       convert(x(::, columnIndex), Int).iterator.foreach { case (rowIndex, colIndex) =>
         // if value is larger than the maximum value encountered during training it is ignored,
         // i.e. no value is set in the binary encoded matrix
-        if (colIndex < numEncodedColumns) encoded(rowIndex, colIndex) = 1.0
+        if (colIndex < numEncodedColumns) encoded(rowIndex, colIndex) = 1.0f
       }
       DenseMatrix.horzcat(x, encoded)
     }

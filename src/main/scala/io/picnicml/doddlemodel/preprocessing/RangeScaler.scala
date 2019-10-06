@@ -9,7 +9,7 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
 
 case class RangeScaler private (private val scale: Option[RealVector],
                                 private val minAdjustment: Option[RealVector],
-                                private val range: (Double, Double),
+                                private val range: (Float, Float),
                                 private val featureIndex: FeatureIndex)
 
 /** An immutable preprocessor that scales numerical features to a specified range.
@@ -29,17 +29,17 @@ object RangeScaler {
     *
     *     val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature))
     *     val x = DenseMatrix(
-    *       List(2.0, 1.0),
-    *       List(3.0, 0.0),
-    *       List(0.0, 0.0),
-    *       List(5.0, 1.0)
+    *       List(2.0f, 1.0f),
+    *       List(3.0f, 0.0f),
+    *       List(0.0f, 0.0f),
+    *       List(5.0f, 1.0f)
     *     )
-    *     val rangeScaler = RangeScaler((0.0, 1.0), featureIndex)
+    *     val rangeScaler = RangeScaler((0.0f, 1.0f), featureIndex)
     *     val trainedRangeScaler = ev.fit(rangeScaler, x)
     *     ev.transform(trainedRangeScaler, x)
     *   }}}
     */
-  def apply(range: (Double, Double), featureIndex: FeatureIndex): RangeScaler = {
+  def apply(range: (Float, Float), featureIndex: FeatureIndex): RangeScaler = {
     val (lowerBound, upperBound) = range
     require(upperBound > lowerBound, "Upper bound of range must be greater than lower bound")
     RangeScaler(none, none, range, featureIndex)
@@ -58,7 +58,7 @@ object RangeScaler {
       val colMin = min(x(::, numericColIndices), Axis._0).t.toDenseVector
       val dataRange = colMax - colMin
       // avoid division by zero for constant features (max == min)
-      dataRange(dataRange :== 0.0) := 1.0
+      dataRange(dataRange :== 0.0f) := 1.0f
 
       val scale = (upperBound - lowerBound) / dataRange
       val minAdjustment = lowerBound - (colMin *:* scale)

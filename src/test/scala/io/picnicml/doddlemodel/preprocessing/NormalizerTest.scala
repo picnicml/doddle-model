@@ -9,13 +9,13 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
 
-  implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
+  implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-4f)
 
   "Normalizer" should "scale rows to unit norm using various norms" in {
     val x = DenseMatrix(
-      List(1.0, 2.0, 2.0),
-      List(-1.0, 1.0, 0.5),
-      List(-2.0, 0.0, 0.0)
+      List(1.0f, 2.0f, 2.0f),
+      List(-1.0f, 1.0f, 0.5f),
+      List(-2.0f, 0.0f, 0.0f)
     )
     val l2Normalizer = Normalizer()
     val l1Normalizer = Normalizer(L1Norm)
@@ -23,25 +23,25 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
 
     breezeEqual(ev.transform(l2Normalizer, x),
       DenseMatrix(
-        List(0.3333, 0.6666, 0.6666),
-        List(-0.6666, 0.6666, 0.3333),
-        List(-1.0, 0.0, 0.0)
+        List(0.3333f, 0.6666f, 0.6666f),
+        List(-0.6666f, 0.6666f, 0.3333f),
+        List(-1.0f, 0.0f, 0.0f)
       )
     ) shouldBe true
 
     breezeEqual(ev.transform(l1Normalizer, x),
       DenseMatrix(
-        List(0.2, 0.4, 0.4),
-        List(-0.4, 0.4, 0.2),
-        List(-1.0, 0.0, 0.0)
+        List(0.2f, 0.4f, 0.4f),
+        List(-0.4f, 0.4f, 0.2f),
+        List(-1.0f, 0.0f, 0.0f)
       )
     ) shouldBe true
 
     breezeEqual(ev.transform(maxNormalizer, x),
       DenseMatrix(
-        List(0.5, 1.0, 1.0),
-        List(-1.0, 1.0, 0.5),
-        List(-1.0, 0.0, 0.0)
+        List(0.5f, 1.0f, 1.0f),
+        List(-1.0f, 1.0f, 0.5f),
+        List(-1.0f, 0.0f, 0.0f)
       )
     ) shouldBe true
   }
@@ -49,12 +49,12 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
   it should "handle rows with zero norm" in {
     val l2Normalizer = Normalizer()
     val x = DenseMatrix(
-      List(0.0, 0.0, 0.0),
-      List(0.0, 3.0, 4.0)
+      List(0.0f, 0.0f, 0.0f),
+      List(0.0f, 3.0f, 4.0f)
     )
     val xNormalizedExpected = DenseMatrix(
-      List(0.0, 0.0, 0.0),
-      List(0.0, 0.6, 0.8)
+      List(0.0f, 0.0f, 0.0f),
+      List(0.0f, 0.6f, 0.8f)
     )
 
     breezeEqual(ev.transform(l2Normalizer, x), xNormalizedExpected) shouldBe true

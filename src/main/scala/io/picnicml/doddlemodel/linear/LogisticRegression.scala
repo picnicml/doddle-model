@@ -12,16 +12,16 @@ import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
   *
   * Examples:
   * val model = LogisticRegression()
-  * val model = LogisticRegression(lambda = 1.5)
+  * val model = LogisticRegression(lambda = 1.5f)
   */
-case class LogisticRegression private (lambda: Double, numClasses: Option[Int], private val w: Option[RealVector]) {
+case class LogisticRegression private (lambda: Float, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: RealVector = _
 }
 
 object LogisticRegression {
 
-  def apply(lambda: Double = 0.0): LogisticRegression = {
-    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
+  def apply(lambda: Float = 0.0f): LogisticRegression = {
+    require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     LogisticRegression(lambda, none, none)
   }
 
@@ -41,21 +41,21 @@ object LogisticRegression {
       model.copy(w = w.some)
 
     override protected def predictStateless(model: LogisticRegression, w: RealVector, x: Features): Target =
-      (predictProbaStateless(model, w, x)(::, 0) >:> 0.5).map(x => if (x) 1.0 else 0.0)
+      (predictProbaStateless(model, w, x)(::, 0) >:> 0.5f).map(x => if (x) 1.0f else 0.0f)
 
     override protected def predictProbaStateless(model: LogisticRegression, w: RealVector, x: Features): Simplex =
       sigmoid(x * w).asDenseMatrix.t
 
     override protected[linear] def lossStateless(model: LogisticRegression,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+                                                 w: RealVector, x: Features, y: Target): Float = {
       model.yPredProbaCache = predictProbaStateless(model, w, x)(::, 0)
-      sum(y * log(model.yPredProbaCache) + (1.0 - y) * log(1.0 - model.yPredProbaCache)) / (-x.rows.toDouble) +
-        .5 * model.lambda * (w(wSlice).t * w(wSlice))
+      sum(y * log(model.yPredProbaCache) + (1.0f - y) * log(1.0f - model.yPredProbaCache)) / (-x.rows.toFloat) +
+        .5f * model.lambda * (w(wSlice).t * w(wSlice))
     }
 
     override protected[linear] def lossGradStateless(model: LogisticRegression,
                                                      w: RealVector, x: Features, y: Target): RealVector = {
-      val grad = ((y - model.yPredProbaCache).t * x).t / (-x.rows.toDouble)
+      val grad = ((y - model.yPredProbaCache).t * x).t / (-x.rows.toFloat)
       grad(wSlice) += model.lambda * w(wSlice)
       grad
     }
