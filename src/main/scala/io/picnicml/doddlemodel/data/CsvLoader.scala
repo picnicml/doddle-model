@@ -1,98 +1,110 @@
 package io.picnicml.doddlemodel.data
 
-import java.io.File
-
 import breeze.linalg.DenseMatrix
-import com.github.tototoshi.csv.CSVReader
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 
+import scala.collection.compat.immutable.ArraySeq
 import scala.collection.mutable
-import scala.util.control.Exception.nonFatalCatch
+import scala.io.{BufferedSource, Source}
 
 object CsvLoader {
 
   /** Loads a csv dataset with 2 header lines (1st line for feature names and 2nd for types). */
-  def loadCsvDataset(datasetFile: File, naString: String = "NA"): FeaturesWithIndex = {
-    val reader = CSVReader.open(datasetFile)
+  def loadCsvDataset(datasetFilePath: String, na: String = "NA"): FeaturesWithIndex =
+    loadCsvDataset(Source.fromFile(datasetFilePath), na)
 
-    val featureIndex = inferFeatureIndex(reader)
-    val labelEncoder = inferLabelEncoder(datasetFile, naString, featureIndex)
+  private[doddlemodel] def loadCsvDataset(bufferedSource: BufferedSource, na: String): FeaturesWithIndex = {
+    val lines = bufferedSource.getLines()
+    val featureIndex = inferFeatureIndex(lines)
 
-    val data = reader.toStream.map { rowValues =>
-      rowValues.zipWithIndex.map { case (featureValue, columnIndex) =>
-        featureIndex.types(columnIndex) match {
-          case _ if featureValue == naString => Double.NaN
-          case NumericalFeature => parseDouble(featureValue, featureIndex.names(columnIndex))
-          case CategoricalFeature => labelEncoder.encode(featureValue, featureIndex.names(columnIndex))
-        }
-      }.toArray
-    }
+    val data = if (featureIndex.types.contains(CategoricalFeature))
+      loadWithMixedFeatures(lines.toList, na, featureIndex)
+    else
+      loadWithNumericalFeatures(lines, na, featureIndex)
 
-    val dataset = DenseMatrix(data:_*)
-    reader.close()
-
-    (dataset, featureIndex)
+    bufferedSource.close()
+    (DenseMatrix(ArraySeq.unsafeWrapArray(data):_*), featureIndex)
   }
 
-  private def inferFeatureIndex(reader: CSVReader): FeatureIndex = {
-    val featureNames = reader.readNext
-      .fold(throw new IllegalArgumentException("File has a missing header line: feature names"))(identity)
+  private def inferFeatureIndex(lines: Iterator[String]): FeatureIndex = {
+    if (!lines.hasNext)
+      throw new IllegalArgumentException("File has a missing header line: feature names")
+    val featureNames = lines.next().split(",").map(x => removeQuotes(x)).toList
 
-    val featureTypes = reader.readNext.fold {
+    if (!lines.hasNext)
       throw new IllegalArgumentException("File has a missing header line: feature types")
-    } {
-      typeStrings => typeStrings.map {
-        case x if x == NumericalFeature.headerLineString => NumericalFeature
-        case x if x == CategoricalFeature.headerLineString => CategoricalFeature
-        case _ => throw new IllegalArgumentException("File contains invalid feature type encoding (second header line)")
-      }
-    }
+    val featureTypes = lines.next().split(",").map(x => removeQuotes(x)).map {
+      case x if x == NumericalFeature.headerLineString => NumericalFeature
+      case x if x == CategoricalFeature.headerLineString => CategoricalFeature
+      case _ => throw new IllegalArgumentException("File contains invalid feature type encoding (header line)")
+    }.toList
 
     FeatureIndex(featureNames, featureTypes, featureNames.indices.toList)
   }
 
-  /** Creates a Label Encoder for a given data set
-    *
-    * @param datasetFile
-    * @param naString
-    * @param featureIndex
-    * @return LabelEncoder which can encode a given Categorical FeatureValue to a numerical value
-    */
-  private def inferLabelEncoder(datasetFile: File, naString: String, featureIndex: FeatureIndex): LabelEncoder = {
-    val reader = CSVReader.open(datasetFile)
-    // skip the two header lines
-    reader.readNext
-    reader.readNext
+  private def loadWithNumericalFeatures(lines: Iterator[String],
+                                        na: String,
+                                        featureIndex: FeatureIndex): Array[Array[Double]] = {
+    lines.map(_.split(",").map { featureValue =>
+      val trimmedValue = removeQuotes(featureValue)
+      if (trimmedValue == na) Double.NaN else parseDouble(trimmedValue)
+    }).toArray
+  }
 
+  private def loadWithMixedFeatures(lines: List[String],
+                                    na: String,
+                                    featureIndex: FeatureIndex): Array[Array[Double]] = {
+    val labelEncoder = inferLabelEncoder(lines, na, featureIndex)
+    lines.map { rowValues =>
+      rowValues.split(",").zipWithIndex.map { case (featureValue, columnIndex) =>
+        val trimmedValue = removeQuotes(featureValue)
+        featureIndex.types(columnIndex) match {
+          case _ if trimmedValue == na => Double.NaN
+          case NumericalFeature => parseDouble(trimmedValue)
+          case CategoricalFeature => labelEncoder.encode(trimmedValue, featureIndex.names(columnIndex))
+        }
+      }
+    }.toArray
+  }
+
+  /** Constructs a label encoder for the given dataset. **/
+  private def inferLabelEncoder(lines: List[String], na: String, featureIndex: FeatureIndex): LabelEncoder = {
     val encoder = mutable.AnyRefMap[String, mutable.AnyRefMap[String, Double]]()
     val categoricalFeatures = featureIndex.categorical
     categoricalFeatures.names.foreach { name => encoder(name) = mutable.AnyRefMap[String, Double]() }
 
-    reader.toStream.foreach { rowValues =>
-      val rowValuesArray = rowValues.toArray
+    lines.foreach { rowValues =>
+      val rowValuesArray = rowValues.split(",").map(x => removeQuotes(x))
       categoricalFeatures.columnIndices.zip(categoricalFeatures.names).foreach { case (columnIndex, name) =>
         val featureValue = rowValuesArray(columnIndex)
-        if (featureValue != naString && !encoder(name).contains(featureValue))
+        if (featureValue != na && !encoder(name).contains(featureValue))
           encoder(name)(featureValue) = encoder(name).size.toDouble
       }
     }
 
-    reader.close()
     new LabelEncoder(encoder)
   }
 
-
   /**
-    * A way to encode FeatureValues with non-numerical types (Eg Categorical types) to a numerical value
-    * @param encoder A map containing mapping of a FeatureValue to a numerical value for a particular FeatureName
+    * A mechanism to encode non-numerical feature values (categorical) to numerical values.
+    *
+    * @param encoder a map containing mapping of categorical values to numerical values for all categorical features
     */
   private class LabelEncoder(private val encoder:  mutable.AnyRefMap[String, mutable.AnyRefMap[String, Double]]) {
     def encode(featureValue: String, featureName: String): Double = encoder(featureName)(featureValue)
   }
 
-  private def parseDouble(featureValue: String, featureName: String): Double = {
-    val parsed = nonFatalCatch opt featureValue.toDouble
-    parsed.fold(
-      throw new IllegalArgumentException(s"Numerical feature $featureName contains non-numerical values"))(identity)
+  private def removeQuotes(s: String): String =
+    s.replaceAll("\"", "").replaceAll("'", "")
+
+  private def parseDouble(featureValue: String): Double = {
+    try
+      featureValue.toDouble
+    catch {
+      case _: NumberFormatException =>
+        throw new IllegalArgumentException(
+          "Numerical feature contains non-numerical values, perhaps type should be 'c'?"
+        )
+    }
   }
 }
