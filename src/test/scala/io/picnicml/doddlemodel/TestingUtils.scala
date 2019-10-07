@@ -7,7 +7,9 @@ import org.scalactic.Equality
 
 trait TestingUtils {
 
-  implicit lazy val randomUniform: Rand[Float] = () => Rand.uniform.draw().toFloat
+  implicit lazy val randomUniform: Rand[Float] = new Rand[Float] {
+    override def draw(): Float = Rand.uniform.draw().toFloat
+  }
 
   def breezeEqual(x0: DenseMatrix[Float], x1: DenseMatrix[Float])(implicit tol: Equality[Float]): Boolean =
     breezeEqual(x0.toDenseVector, x1.toDenseVector)
