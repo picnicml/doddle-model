@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.linear
 
-import breeze.linalg.{DenseMatrix, DenseVector, convert}
+import breeze.linalg.{DenseMatrix, DenseVector}
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.LinearRegression.ev
@@ -9,7 +9,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class LinearRegressionTest extends FlatSpec with Matchers with TestingUtils {
 
-  implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-4f)
+  implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-3f)
 
   "Linear regression" should "calculate the value of the loss function" in {
     val w = DenseVector(1.0f, 2.0f, 3.0f)
@@ -34,7 +34,7 @@ class LinearRegressionTest extends FlatSpec with Matchers with TestingUtils {
     def testGrad(w: RealVector, x: Features, y: Target) = {
       val model = LinearRegression(lambda = 0.5f)
       breezeEqual(
-        gradApprox(w => ev.lossStateless(model, convert(w, Float), x, y).toDouble, w),
+        gradApprox(w => ev.lossStateless(model, w, x, y), w),
         ev.lossGradStateless(model, w, x, y)
       ) shouldEqual true
     }
