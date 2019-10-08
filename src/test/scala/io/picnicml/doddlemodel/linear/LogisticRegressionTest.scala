@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.linear
 
-import breeze.linalg.{DenseMatrix, DenseVector, convert}
+import breeze.linalg.{convert, DenseMatrix, DenseVector}
 import breeze.numerics.round
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
@@ -31,15 +31,12 @@ class LogisticRegressionTest extends FlatSpec with Matchers with TestingUtils {
 
     def testGrad(w: RealVector, x: Features, y: Target) = {
       val model = LogisticRegression(lambda = 0.5)
-      breezeEqual(
-        gradApprox(w => ev.lossStateless(model, w, x, y), w),
-        ev.lossGradStateless(model, w, x, y)) shouldEqual true
+      breezeEqual(gradApprox(w => ev.lossStateless(model, w, x, y), w), ev.lossGradStateless(model, w, x, y)) shouldEqual true
     }
   }
 
-
   it should "prevent the usage of negative L2 regularization strength" in {
-    an [IllegalArgumentException] shouldBe thrownBy(LogisticRegression(lambda = -0.5))
+    an[IllegalArgumentException] shouldBe thrownBy(LogisticRegression(lambda = -0.5))
   }
 
   it should "throw an exception if fitting a model on a dataset with more than two classes" in {
@@ -47,6 +44,6 @@ class LogisticRegressionTest extends FlatSpec with Matchers with TestingUtils {
     val y = DenseVector(1.0, 0.0, 2.0)
     val model = LogisticRegression()
 
-    an [IllegalArgumentException] shouldBe thrownBy(ev.fit(model, x, y))
+    an[IllegalArgumentException] shouldBe thrownBy(ev.fit(model, x, y))
   }
 }

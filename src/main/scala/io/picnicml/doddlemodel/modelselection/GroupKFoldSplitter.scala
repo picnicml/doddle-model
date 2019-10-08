@@ -2,7 +2,7 @@ package io.picnicml.doddlemodel.modelselection
 
 import breeze.linalg.argmin
 import breeze.stats.hist
-import io.picnicml.doddlemodel.CrossScalaCompat.{LazyListCompat, lazyListCompatFromSeq}
+import io.picnicml.doddlemodel.CrossScalaCompat.{lazyListCompatFromSeq, LazyListCompat}
 import io.picnicml.doddlemodel.data._
 import io.picnicml.doddlemodel.modelselection.GroupKFoldSplitter.{TestFolds, TrainTestIndices}
 
@@ -20,16 +20,18 @@ import scala.util.Random
   */
 class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
 
-  override def splitData(x: Features, y: Target, groups: IntVector)
-                        (implicit rand: Random = new Random()): LazyListCompat[TrainTestSplit] = {
+  override def splitData(x: Features, y: Target, groups: IntVector)(
+    implicit rand: Random = new Random()
+  ): LazyListCompat[TrainTestSplit] = {
     val testFolds = calculateTestFolds(groups)
 
     lazyListCompatFromSeq(0 until numFolds).map { foldIndex =>
-      val indices = groups.iterator.foldLeft(TrainTestIndices()) { case (acc, (exampleIndex, group)) =>
-        if (testFolds.groupToTestFoldIndex(group) == foldIndex)
-          acc.addToTestIndex(exampleIndex)
-        else
-          acc.addToTrainIndex(exampleIndex)
+      val indices = groups.iterator.foldLeft(TrainTestIndices()) {
+        case (acc, (exampleIndex, group)) =>
+          if (testFolds.groupToTestFoldIndex(group) == foldIndex)
+            acc.addToTestIndex(exampleIndex)
+          else
+            acc.addToTrainIndex(exampleIndex)
       }
 
       TrainTestSplit(
@@ -61,7 +63,6 @@ class GroupKFoldSplitter private (val numFolds: Int) extends DataSplitter {
     throw new NotImplementedError("GroupKFoldSplitter only splits data based on groups")
 }
 
-
 object GroupKFoldSplitter {
 
   def apply(numFolds: Int): GroupKFoldSplitter = {
@@ -69,8 +70,10 @@ object GroupKFoldSplitter {
     new GroupKFoldSplitter(numFolds)
   }
 
-  private case class TrainTestIndices(trIndices: IndexedSeq[Int] = IndexedSeq(),
-                                      teIndices: IndexedSeq[Int] = IndexedSeq()) {
+  private case class TrainTestIndices(
+    trIndices: IndexedSeq[Int] = IndexedSeq(),
+    teIndices: IndexedSeq[Int] = IndexedSeq()
+  ) {
     def addToTrainIndex(x: Int): TrainTestIndices = this.copy(trIndices = this.trIndices :+ x)
     def addToTestIndex(x: Int): TrainTestIndices = this.copy(teIndices = this.teIndices :+ x)
   }

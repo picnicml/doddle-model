@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel
 
-import breeze.linalg.{DenseMatrix, DenseVector, convert, zipValues}
+import breeze.linalg.{convert, zipValues, DenseMatrix, DenseVector}
 import breeze.optimize.ApproximateGradientFunction
 import io.picnicml.doddlemodel.data.{Dataset, RealVector}
 import org.scalactic.Equality

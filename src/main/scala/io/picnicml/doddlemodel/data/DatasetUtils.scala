@@ -21,16 +21,20 @@ object DatasetUtils {
   }
 
   /** Splits the dataset into two subsets for training and testing and makes sure groups in each are non-overlapping. */
-  def splitDatasetWithGroups(x: Features,
-                             y: Target,
-                             groups: IntVector,
-                             proportionTrain: Double = 0.5): GroupTrainTestSplit = {
+  def splitDatasetWithGroups(
+    x: Features,
+    y: Target,
+    groups: IntVector,
+    proportionTrain: Double = 0.5
+  ): GroupTrainTestSplit = {
     val numTrain = numberOfTrainExamplesBasedOnProportion(x.rows, proportionTrain)
     val numSamplesPerGroup = hist(groups, numberOfUniqueGroups(groups)).hist.toArray
     val (sortedNumSamplesPerGroup, toOriginalGroupIndex) = numSamplesPerGroup.zipWithIndex.sorted.unzip
 
     val numGroupsInTrain = sortedNumSamplesPerGroup
-      .foldLeft(List(0)) { case (acc, currGroupSize) => (acc(0) + currGroupSize) :: acc }.reverse.drop(1)
+      .foldLeft(List(0)) { case (acc, currGroupSize) => (acc(0) + currGroupSize) :: acc }
+      .reverse
+      .drop(1)
       .takeWhile(cumulativeNumSamples => cumulativeNumSamples <= numTrain)
       .length
 

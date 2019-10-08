@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.dummy.classification
 
-import breeze.linalg.{DenseVector, convert}
+import breeze.linalg.{convert, DenseVector}
 import breeze.stats.distributions.Rand
 import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Simplex, Target}

@@ -59,6 +59,6 @@ class BinarizerTest extends FlatSpec with Matchers with TestingUtils {
     val thresholds: DenseVector[Double] = DenseVector(0.0, -1.5)
 
     // 3 numeric columns vs 2 thresholds
-    an [IllegalArgumentException] should be thrownBy Binarizer(thresholds, featureIndex)
+    an[IllegalArgumentException] should be thrownBy Binarizer(thresholds, featureIndex)
   }
 }

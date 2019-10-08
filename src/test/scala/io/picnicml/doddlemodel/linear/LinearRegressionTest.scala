@@ -30,13 +30,11 @@ class LinearRegressionTest extends FlatSpec with Matchers with TestingUtils {
 
     def testGrad(w: RealVector, x: Features, y: Target) = {
       val model = LinearRegression(lambda = 0.5)
-      breezeEqual(
-        gradApprox(w => ev.lossStateless(model, w, x, y), w),
-        ev.lossGradStateless(model, w, x, y)) shouldEqual true
+      breezeEqual(gradApprox(w => ev.lossStateless(model, w, x, y), w), ev.lossGradStateless(model, w, x, y)) shouldEqual true
     }
   }
 
   it should "prevent the usage of negative L2 regularization strength" in {
-    an [IllegalArgumentException] shouldBe thrownBy(LinearRegression(lambda = -0.5))
+    an[IllegalArgumentException] shouldBe thrownBy(LinearRegression(lambda = -0.5))
   }
 }

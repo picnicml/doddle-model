@@ -21,7 +21,7 @@ import scala.util.Random
   */
 class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitter) {
 
-  private implicit val ec: CVExecutionContext = new CVExecutionContext()
+  implicit private val ec: CVExecutionContext = new CVExecutionContext()
 
   /**
     * @param reusable indicates whether to shutdown the thread pool after the cv score is computed
@@ -29,10 +29,11 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
     *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
     *  after the instance is not needed anymore
     */
-  def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = none)
-              (implicit ev: Predictor[A],
-               reusable: CrossValReusable = CrossValReusable(false),
-               rand: Random = new Random()): Double = {
+  def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = none)(
+    implicit ev: Predictor[A],
+    reusable: CrossValReusable = CrossValReusable(false),
+    rand: Random = new Random()
+  ): Double = {
 
     val dataSplits =
       groups.fold(this.dataSplitter.splitData(x, y))(groups => this.dataSplitter.splitData(x, y, groups))
@@ -55,7 +56,7 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
     * anymore and CrossValReusable(true) is in scope.
     */
   def shutdownNow(): Unit = this.ec.shutdownNow()
- }
+}
 
 object CrossValidation {
 

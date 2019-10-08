@@ -7,7 +7,6 @@ import io.picnicml.doddlemodel.typeclasses.Predictor
 
 import scala.util.Random
 
-
 /** A parallel hyperparameter search using n-fold cross validation.
   *
   * @param numIterations number of predictors for which the cross validation score is calculated
@@ -26,8 +25,9 @@ class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossV
 
   implicit val cvReusable: CrossValReusable = CrossValReusable(true)
 
-  def bestOf[A](x: Features, y: Target, groups: Option[IntVector] = none)(generatePredictor: => A)
-               (implicit ev: Predictor[A], rand: Random = new Random()): A = {
+  def bestOf[A](x: Features, y: Target, groups: Option[IntVector] = none)(
+    generatePredictor: => A
+  )(implicit ev: Predictor[A], rand: Random = new Random()): A = {
 
     case class PredictorWithScore(predictor: A, score: Double)
 
@@ -40,10 +40,11 @@ class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossV
     // io.picnicml.doddlemodel.modelselection.CrossValidation for details
     this.crossVal.shutdownNow()
 
-    val bestScorePredictor = if (this.crossVal.metric.higherValueIsBetter)
-      scoresPredictors.maxBy(_.score)
-    else
-      scoresPredictors.minBy(_.score)
+    val bestScorePredictor =
+      if (this.crossVal.metric.higherValueIsBetter)
+        scoresPredictors.maxBy(_.score)
+      else
+        scoresPredictors.minBy(_.score)
 
     if (verbose)
       println(f"Validation ${this.crossVal.metric} of the selected model: ${bestScorePredictor.score}%1.4f")

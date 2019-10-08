@@ -37,9 +37,13 @@ object StratifiedClassifier {
       model.copy(numClasses = numClasses.some)
 
     override protected def fitSafe(model: StratifiedClassifier, x: Features, y: Target): StratifiedClassifier = {
-      val probs = y.activeValuesIterator.foldLeft(Map[Double, Int]()) { (acc, x) =>
-        if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
-      }.toArray.sortBy(_._1).map(_._2 / y.length.toDouble)
+      val probs = y.activeValuesIterator
+        .foldLeft(Map[Double, Int]()) { (acc, x) =>
+          if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
+        }
+        .toArray
+        .sortBy(_._1)
+        .map(_._2 / y.length.toDouble)
 
       model.copy(targetDistr = Multinomial[RealVector, Int](DenseVector(probs)).some)
     }

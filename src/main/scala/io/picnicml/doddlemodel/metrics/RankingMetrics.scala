@@ -1,7 +1,7 @@
 package io.picnicml.doddlemodel.metrics
 
-import breeze.linalg.{DenseMatrix, linspace, max, min}
-import io.picnicml.doddlemodel.data.{RealVector, Target, numberOfTargetClasses}
+import breeze.linalg.{linspace, max, min, DenseMatrix}
+import io.picnicml.doddlemodel.data.{numberOfTargetClasses, RealVector, Target}
 
 import scala.collection.compat.immutable.ArraySeq
 
@@ -15,8 +15,9 @@ object RankingMetrics {
     override def calculateValueSafe(y: Target, yPredProba: Target): Double = {
       val roc = rocCurve(y, yPredProba)
       // integrate with the trapezoid rule
-      (1 until roc.thresholds.length).foldLeft(0.0) { case (integral, index) =>
-        integral + ((roc.tpr(index - 1) + roc.tpr(index)) * 0.5 * (roc.fpr(index) - roc.fpr(index - 1)))
+      (1 until roc.thresholds.length).foldLeft(0.0) {
+        case (integral, index) =>
+          integral + ((roc.tpr(index - 1) + roc.tpr(index)) * 0.5 * (roc.fpr(index) - roc.fpr(index - 1)))
       }
     }
 
@@ -42,8 +43,7 @@ object RankingMetrics {
         if (threshold == 0.0) {
           // predict 1.0 if predicted probability is 0.0 to obtain coordinate (1, 1)
           (yPredProba >:> threshold) |:| (yPredProba :== threshold)
-        }
-        else {
+        } else {
           yPredProba >:> threshold
         }
 
@@ -53,7 +53,7 @@ object RankingMetrics {
     }
 
     val thresholds = linspace(1.0, 0.0, length)
-    val coordinates = DenseMatrix(ArraySeq.unsafeWrapArray(thresholds.toArray.map(threshold => fprTpr(threshold))):_*)
+    val coordinates = DenseMatrix(ArraySeq.unsafeWrapArray(thresholds.toArray.map(threshold => fprTpr(threshold))): _*)
     RocCurve(coordinates(::, 0), coordinates(::, 1), thresholds)
   }
 }

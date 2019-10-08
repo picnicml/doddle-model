@@ -19,9 +19,11 @@ object Feature {
   }
 
   @SerialVersionUID(0L)
-  class FeatureIndex(val names: IndexedSeq[String],
-                     val types: IndexedSeq[FeatureType],
-                     val columnIndices: IndexedSeq[Int]) extends Serializable {
+  class FeatureIndex(
+    val names: IndexedSeq[String],
+    val types: IndexedSeq[FeatureType],
+    val columnIndices: IndexedSeq[Int]
+  ) extends Serializable {
 
     def categorical: FeatureIndex = onlyFeaturesOfType[CategoricalFeature.type]
 
@@ -32,15 +34,15 @@ object Feature {
       val subsetIndices = this.types.zipWithIndex.flatMap {
         case (t, i) => if (cls.isInstance(t)) i.some else none[Int]
       }
-      subset(subsetIndices:_*)
+      subset(subsetIndices: _*)
     }
 
     def subset(names: String*): FeatureIndex = {
       val nameToIndex = this.names.zipWithIndex.toMap
-      subset(names.map(n => nameToIndex(n)):_*)
+      subset(names.map(n => nameToIndex(n)): _*)
     }
 
-    def subset(indices: IndexedSeq[Int]): FeatureIndex = subset(indices:_*)
+    def subset(indices: IndexedSeq[Int]): FeatureIndex = subset(indices: _*)
 
     // DummyImplicit is needed to avoid the same type as String* after erasure
     def subset(indices: Int*)(implicit di: DummyImplicit): FeatureIndex = new FeatureIndex(
@@ -52,8 +54,9 @@ object Feature {
     def drop(index: Int): FeatureIndex = new FeatureIndex(
       this.names.zipWithIndex.flatMap { case (n, i) => if (i != index) n.some else none[String] },
       this.types.zipWithIndex.flatMap { case (t, i) => if (i != index) t.some else none[FeatureType] },
-      this.columnIndices.zipWithIndex.flatMap { case (ci, i) =>
-        if (i == index) none[Int] else if (i > index) (ci - 1).some else ci.some
+      this.columnIndices.zipWithIndex.flatMap {
+        case (ci, i) =>
+          if (i == index) none[Int] else if (i > index) (ci - 1).some else ci.some
       }
     )
 

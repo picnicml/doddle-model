@@ -6,9 +6,8 @@ trait Metric {
 
   val higherValueIsBetter: Boolean
 
-  def checkInput(y: Target, yPred: Target): Unit = {
+  def checkInput(y: Target, yPred: Target): Unit =
     require(y.length == yPred.length, "Target vectors need to be of equal length")
-  }
 
   def calculateValueSafe(y: Target, yPred: Target): Double
 

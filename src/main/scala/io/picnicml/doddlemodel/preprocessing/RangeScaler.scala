@@ -1,16 +1,18 @@
 package io.picnicml.doddlemodel.preprocessing
 
-import breeze.linalg.{Axis, max, min}
+import breeze.linalg.{max, min, Axis}
 import cats.syntax.option._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.{Features, RealVector}
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 import io.picnicml.doddlemodel.typeclasses.Transformer
 
-case class RangeScaler private (private val scale: Option[RealVector],
-                                private val minAdjustment: Option[RealVector],
-                                private val range: (Double, Double),
-                                private val featureIndex: FeatureIndex)
+case class RangeScaler private (
+  private val scale: Option[RealVector],
+  private val minAdjustment: Option[RealVector],
+  private val range: (Double, Double),
+  private val featureIndex: FeatureIndex
+)
 
 /** An immutable preprocessor that scales numerical features to a specified range.
   * Non-numerical features are left untouched.

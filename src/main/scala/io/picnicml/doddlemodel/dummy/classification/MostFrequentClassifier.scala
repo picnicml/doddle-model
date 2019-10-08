@@ -28,9 +28,14 @@ object MostFrequentClassifier {
       model.copy(numClasses = numClasses.some)
 
     override protected def fitSafe(model: MostFrequentClassifier, x: Features, y: Target): MostFrequentClassifier = {
-      val mostFrequentClass = y.activeValuesIterator.foldLeft(Map[Double, Int]()) { (acc, x) =>
-        if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
-      }.toArray.sortBy(_._1).maxBy(_._2)._1
+      val mostFrequentClass = y.activeValuesIterator
+        .foldLeft(Map[Double, Int]()) { (acc, x) =>
+          if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
+        }
+        .toArray
+        .sortBy(_._1)
+        .maxBy(_._2)
+        ._1
 
       model.copy(mostFrequentClass = mostFrequentClass.some)
     }

@@ -17,9 +17,11 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
   * val preprocessor = StandardScaler(featureIndex)
   * val preprocessorSubsetOfColumns = StandardScaler(featureIndex.subset("f0", "f2"))
   */
-case class StandardScaler private (private val sampleMean: Option[RealVector],
-                                   private val sampleStdDev: Option[RealVector],
-                                   private val featureIndex: FeatureIndex)
+case class StandardScaler private (
+  private val sampleMean: Option[RealVector],
+  private val sampleStdDev: Option[RealVector],
+  private val featureIndex: FeatureIndex
+)
 
 object StandardScaler {
 
@@ -40,11 +42,12 @@ object StandardScaler {
 
     override protected def transformSafe(model: StandardScaler, x: Features): Features = {
       val xCopy = x.copy
-      model.featureIndex.numerical.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
-        (0 until xCopy.rows).foreach { rowIndex =>
-          xCopy(rowIndex, colIndex) = (xCopy(rowIndex, colIndex) - model.sampleMean.getOrBreak(statisticIndex)) /
-            model.sampleStdDev.getOrBreak(statisticIndex)
-        }
+      model.featureIndex.numerical.columnIndices.zipWithIndex.foreach {
+        case (colIndex, statisticIndex) =>
+          (0 until xCopy.rows).foreach { rowIndex =>
+            xCopy(rowIndex, colIndex) = (xCopy(rowIndex, colIndex) - model.sampleMean.getOrBreak(statisticIndex)) /
+              model.sampleStdDev.getOrBreak(statisticIndex)
+          }
       }
       xCopy
     }
