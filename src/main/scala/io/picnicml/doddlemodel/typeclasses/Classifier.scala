@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.typeclasses
 
-import io.picnicml.doddlemodel.data.{Features, Simplex, Target, numberOfTargetClasses}
+import io.picnicml.doddlemodel.data.{numberOfTargetClasses, Features, Simplex, Target}
 
 trait Classifier[A] extends Predictor[A] {
 

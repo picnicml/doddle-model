@@ -40,7 +40,6 @@ object RegressionMetrics {
     override def toString: String = "MAE"
   }
 
-
   /** Explained variance. */
   object ExplainedVariance extends Metric {
 

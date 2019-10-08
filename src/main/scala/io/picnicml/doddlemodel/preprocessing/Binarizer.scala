@@ -55,10 +55,10 @@ object Binarizer {
     override protected def transformSafe(model: Binarizer, x: Features): Features = {
       val xCopy = x.copy
       model.featureIndex.numerical.columnIndices.zipWithIndex.foreach {
-        case (colIndex, thresholdIndex) => (0 until xCopy.rows).foreach {
-          rowIndex =>
+        case (colIndex, thresholdIndex) =>
+          (0 until xCopy.rows).foreach { rowIndex =>
             xCopy(rowIndex, colIndex) = if (xCopy(rowIndex, colIndex) > model.thresholds(thresholdIndex)) 1.0 else 0.0
-        }
+          }
       }
 
       xCopy

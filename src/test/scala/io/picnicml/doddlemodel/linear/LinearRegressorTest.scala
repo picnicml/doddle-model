@@ -24,11 +24,19 @@ class LinearRegressorTest extends FlatSpec with Matchers {
     override protected def predictStateless(model: DummyLinearRegressor, w: RealVector, x: Features): Target =
       x * w
 
-    override protected[linear] def lossStateless(model: DummyLinearRegressor,
-                                                 w: RealVector, x: Features, y: Target): Double = 0
+    override protected[linear] def lossStateless(
+      model: DummyLinearRegressor,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): Double = 0
 
-    override protected[linear] def lossGradStateless(model: DummyLinearRegressor,
-                                                     w: RealVector, x: Features, y: Target): RealVector = w
+    override protected[linear] def lossGradStateless(
+      model: DummyLinearRegressor,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): RealVector = w
   }
 
   private val x = DenseMatrix.rand[Double](10, 5)
@@ -36,9 +44,9 @@ class LinearRegressorTest extends FlatSpec with Matchers {
   private val model = DummyLinearRegressor(none)
 
   "Linear regressor" should "throw an exception when using fit, predict on trained, untrained models" in {
-    an [IllegalArgumentException] should be thrownBy ev.predict(model, x)
+    an[IllegalArgumentException] should be thrownBy ev.predict(model, x)
     val trainedModel = ev.fit(model, x, y)
-    an [IllegalArgumentException] should be thrownBy ev.fit(trainedModel, x, y)
+    an[IllegalArgumentException] should be thrownBy ev.fit(trainedModel, x, y)
   }
 
   it should "implement predictor functions" in {

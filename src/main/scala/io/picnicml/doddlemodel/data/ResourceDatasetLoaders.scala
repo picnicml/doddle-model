@@ -39,12 +39,13 @@ object ResourceDatasetLoaders {
 
   private def getBufferedSourceFromResource(path: String): BufferedSource = {
     val resourceUrl = getClass.getResource(path)
-    val file = if (resourceUrl.toString.startsWith("jar:"))
-      // reads file from JAR
-      readResourceFileWithinJar(path)
-    else
-      // reads file when using IDE
-      new File(resourceUrl.getFile)
+    val file =
+      if (resourceUrl.toString.startsWith("jar:"))
+        // reads file from JAR
+        readResourceFileWithinJar(path)
+      else
+        // reads file when using IDE
+        new File(resourceUrl.getFile)
     if (file != null && !file.exists)
       throw new RuntimeException(s"Error: File $file not found!")
     Source.fromFile(file)

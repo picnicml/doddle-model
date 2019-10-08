@@ -16,8 +16,10 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
   * val imputer = MostFrequentValueImputer(featureIndex)
   * val imputerSubsetOfColumns = MostFrequentValueImputer(featureIndex.subset("f0", "f2"))
   */
-case class MostFrequentValueImputer private (private[impute] val mostFrequent: Option[RealVector],
-                                             private val featureIndex: FeatureIndex)
+case class MostFrequentValueImputer private (
+  private[impute] val mostFrequent: Option[RealVector],
+  private val featureIndex: FeatureIndex
+)
 
 object MostFrequentValueImputer {
 
@@ -46,10 +48,11 @@ object MostFrequentValueImputer {
 
     override protected def transformSafe(model: MostFrequentValueImputer, x: Features): Features = {
       val xCopy = x.copy
-      model.featureIndex.categorical.columnIndices.zipWithIndex.foreach { case (colIndex, statisticIndex) =>
-        xCopy(::, colIndex).findAll(_.isNaN).iterator.foreach { rowIndex =>
-          xCopy(rowIndex, colIndex) = model.mostFrequent.getOrBreak(statisticIndex)
-        }
+      model.featureIndex.categorical.columnIndices.zipWithIndex.foreach {
+        case (colIndex, statisticIndex) =>
+          xCopy(::, colIndex).findAll(_.isNaN).iterator.foreach { rowIndex =>
+            xCopy(rowIndex, colIndex) = model.mostFrequent.getOrBreak(statisticIndex)
+          }
       }
       xCopy
     }

@@ -46,15 +46,23 @@ object LogisticRegression {
     override protected def predictProbaStateless(model: LogisticRegression, w: RealVector, x: Features): Simplex =
       sigmoid(x * w).asDenseMatrix.t
 
-    override protected[linear] def lossStateless(model: LogisticRegression,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+    override protected[linear] def lossStateless(
+      model: LogisticRegression,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): Double = {
       model.yPredProbaCache = predictProbaStateless(model, w, x)(::, 0)
       sum(y * log(model.yPredProbaCache) + (1.0 - y) * log(1.0 - model.yPredProbaCache)) / (-x.rows.toDouble) +
         .5 * model.lambda * (w(wSlice).t * w(wSlice))
     }
 
-    override protected[linear] def lossGradStateless(model: LogisticRegression,
-                                                     w: RealVector, x: Features, y: Target): RealVector = {
+    override protected[linear] def lossGradStateless(
+      model: LogisticRegression,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): RealVector = {
       val grad = ((y - model.yPredProbaCache).t * x).t / (-x.rows.toDouble)
       grad(wSlice) += model.lambda * w(wSlice)
       grad

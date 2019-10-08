@@ -21,7 +21,8 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
     val l1Normalizer = Normalizer(L1Norm)
     val maxNormalizer = Normalizer(MaxNorm)
 
-    breezeEqual(ev.transform(l2Normalizer, x),
+    breezeEqual(
+      ev.transform(l2Normalizer, x),
       DenseMatrix(
         List(0.3333, 0.6666, 0.6666),
         List(-0.6666, 0.6666, 0.3333),
@@ -29,7 +30,8 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
       )
     ) shouldBe true
 
-    breezeEqual(ev.transform(l1Normalizer, x),
+    breezeEqual(
+      ev.transform(l1Normalizer, x),
       DenseMatrix(
         List(0.2, 0.4, 0.4),
         List(-0.4, 0.4, 0.2),
@@ -37,7 +39,8 @@ class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
       )
     ) shouldBe true
 
-    breezeEqual(ev.transform(maxNormalizer, x),
+    breezeEqual(
+      ev.transform(maxNormalizer, x),
       DenseMatrix(
         List(0.5, 1.0, 1.0),
         List(-1.0, 1.0, 0.5),

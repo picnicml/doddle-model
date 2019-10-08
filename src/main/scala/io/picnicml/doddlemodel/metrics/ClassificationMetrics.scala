@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.metrics
 
-import io.picnicml.doddlemodel.data.{Target, numberOfTargetClasses}
+import io.picnicml.doddlemodel.data.{numberOfTargetClasses, Target}
 
 object ClassificationMetrics {
 

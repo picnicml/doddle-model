@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.preprocessing
 
-import breeze.linalg.{Axis, max, sum}
+import breeze.linalg.{max, sum, Axis}
 import breeze.numerics.{abs, pow, sqrt}
 import io.picnicml.doddlemodel.data.{Features, RealVector}
 

@@ -40,15 +40,23 @@ object LinearRegression {
 
     override protected def predictStateless(model: LinearRegression, w: RealVector, x: Features): Target = x * w
 
-    override protected[linear] def lossStateless(model: LinearRegression,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+    override protected[linear] def lossStateless(
+      model: LinearRegression,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): Double = {
       model.yPredCache = predictStateless(model, w, x)
       val d = y - model.yPredCache
       .5 * (((d.t * d) / x.rows.toDouble) + model.lambda * (w(wSlice).t * w(wSlice)))
     }
 
-    override protected[linear] def lossGradStateless(model: LinearRegression,
-                                                     w: RealVector, x: Features, y: Target): RealVector = {
+    override protected[linear] def lossGradStateless(
+      model: LinearRegression,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): RealVector = {
       val grad = ((y - model.yPredCache).t * x).t / (-x.rows.toDouble)
       grad(wSlice) += model.lambda * w(wSlice)
       grad

@@ -27,7 +27,7 @@ class DatasetUtilsTest extends FlatSpec with Matchers with TestingUtils {
   }
 
   they should "split the dataset with groups" in {
-    val groups = DenseVector((0 until x.rows).map(x => x % 4):_*)
+    val groups = DenseVector((0 until x.rows).map(x => x % 4): _*)
     val split = splitDatasetWithGroups(x, y, groups, proportionTrain = 0.8)
     val groupsTe = split.groupsTe.toArray
     split.groupsTr.forall(trGroup => !groupsTe.contains(trGroup)) shouldBe true

@@ -29,11 +29,19 @@ class LinearClassifierTest extends FlatSpec with Matchers with OptionValues {
     override protected def predictProbaStateless(model: DummyLinearClassifier, w: RealVector, x: Features): Simplex =
       sigmoid(x * w).asDenseMatrix.t
 
-    override protected[linear] def lossStateless(model: DummyLinearClassifier,
-                                                 w: RealVector, x: Features, y: Target): Double = 0
+    override protected[linear] def lossStateless(
+      model: DummyLinearClassifier,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): Double = 0
 
-    override protected[linear] def lossGradStateless(model: DummyLinearClassifier,
-                                                     w: RealVector, x: Features, y: Target): RealVector = w
+    override protected[linear] def lossGradStateless(
+      model: DummyLinearClassifier,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): RealVector = w
   }
 
   private val x = DenseMatrix.rand[Double](10, 5)
@@ -41,9 +49,9 @@ class LinearClassifierTest extends FlatSpec with Matchers with OptionValues {
   private val model = DummyLinearClassifier(none, none)
 
   "Linear classifier" should "throw an exception when using fit, predict on trained, untrained models" in {
-    an [IllegalArgumentException] should be thrownBy ev.predict(model, x)
+    an[IllegalArgumentException] should be thrownBy ev.predict(model, x)
     val trainedModel = ev.fit(model, x, y)
-    an [IllegalArgumentException] should be thrownBy ev.fit(trainedModel, x, y)
+    an[IllegalArgumentException] should be thrownBy ev.fit(trainedModel, x, y)
   }
 
   it should "implement predictor functions" in {
@@ -62,8 +70,8 @@ class LinearClassifierTest extends FlatSpec with Matchers with OptionValues {
 
   it should "throw an exception if fitting a model with an invalid target variable" in {
     val invalidCategoricalY = DenseVector.zeros[Double](10)
-    an [IllegalArgumentException] should be thrownBy ev.fit(model, x, invalidCategoricalY)
+    an[IllegalArgumentException] should be thrownBy ev.fit(model, x, invalidCategoricalY)
     val invalidRealY = DenseVector.rand[Double](10)
-    an [IllegalArgumentException] should be thrownBy ev.fit(model, x, invalidRealY)
+    an[IllegalArgumentException] should be thrownBy ev.fit(model, x, invalidRealY)
   }
 }

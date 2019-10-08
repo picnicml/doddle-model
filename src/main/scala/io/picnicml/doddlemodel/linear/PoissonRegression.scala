@@ -45,15 +45,23 @@ object PoissonRegression {
 
     private def predictMean(w: RealVector, x: Features): Target = exp(x * w)
 
-    override protected[linear] def lossStateless(model: PoissonRegression,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+    override protected[linear] def lossStateless(
+      model: PoissonRegression,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): Double = {
       model.yPredMeanCache = predictMean(w, x)
       sum(y * log(model.yPredMeanCache) - model.yPredMeanCache) / (-x.rows.toDouble) +
         .5 * model.lambda * (w(wSlice).t * w(wSlice))
     }
 
-    override protected[linear] def lossGradStateless(model: PoissonRegression,
-                                                     w: RealVector, x: Features, y: Target): RealVector = {
+    override protected[linear] def lossGradStateless(
+      model: PoissonRegression,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): RealVector = {
       val grad = ((model.yPredMeanCache - y).t * x).t / x.rows.toDouble
       grad(wSlice) += model.lambda * w(wSlice)
       grad

@@ -51,8 +51,12 @@ object SoftmaxClassifier {
       zExpPivot(::, *) /:/ sum(zExpPivot(*, ::))
     }
 
-    override protected[linear] def lossStateless(model: SoftmaxClassifier,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+    override protected[linear] def lossStateless(
+      model: SoftmaxClassifier,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): Double = {
       model.yPredProbaCache = predictProbaStateless(model, w, x)
       val yPredProbaOfTrueClass = 0 until x.rows map { rowIndex =>
         val targetClass = y(rowIndex).toInt
@@ -64,8 +68,12 @@ object SoftmaxClassifier {
         .5 * model.lambda * sum(pow(wMatrix(wSlice, ::), 2))
     }
 
-    override protected[linear] def lossGradStateless(model: SoftmaxClassifier,
-                                                     w: RealVector, x: Features, y: Target): RealVector = {
+    override protected[linear] def lossGradStateless(
+      model: SoftmaxClassifier,
+      w: RealVector,
+      x: Features,
+      y: Target
+    ): RealVector = {
       val yPredProba = model.yPredProbaCache(::, 0 to -2)
 
       val indicator = DenseMatrix.zeros[Double](yPredProba.rows, yPredProba.cols)
