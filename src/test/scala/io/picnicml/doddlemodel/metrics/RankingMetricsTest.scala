@@ -6,10 +6,12 @@ import org.scalatest.{FlatSpec, Matchers}
 class RankingMetricsTest extends FlatSpec with Matchers {
 
   "Ranking metrics" should "calculate the AUC value" in {
-    val y = DenseVector(1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0)
-    val yPredProba = DenseVector(0.6346, 0.0742, 0.4324, 0.9911, 0.7245, 0.4751, 0.5112, 0.0311, 0.7641, 0.6612, 0.0134)
+    val y = DenseVector(1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f)
+    val yPredProba = DenseVector(
+      0.6346f, 0.0742f, 0.4324f, 0.9911f, 0.7245f, 0.4751f, 0.5112f, 0.0311f, 0.7641f, 0.6612f, 0.0134f
+    )
 
     val aucScore = auc(y, yPredProba)
-    aucScore shouldBe 0.733333333333333 +- 1e-15
+    aucScore shouldBe 0.733333333333333f +- 1e-15f
   }
 }

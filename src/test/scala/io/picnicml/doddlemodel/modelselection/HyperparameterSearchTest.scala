@@ -23,9 +23,9 @@ class HyperparameterSearchTest extends FlatSpec with Matchers {
 
     val cv: CrossValidation = CrossValidation(metric = accuracy, dataSplitter = KFoldSplitter(numFolds = 5))
     val search = HyperparameterSearch(numIterations = 100, crossValidation = cv, verbose = false)
-    val grid = (0 until 100).iterator.map(_.toDouble)
+    val grid = (0 until 100).iterator.map(_.toFloat)
 
-    val underfittedModel = ev.fit(LogisticRegression(lambda = 99.0), xTr, yTr)
+    val underfittedModel = ev.fit(LogisticRegression(lambda = 99.0f), xTr, yTr)
     val bestModel = search.bestOf(xTr, yTr) {
       LogisticRegression(lambda = grid.next)
     }

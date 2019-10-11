@@ -1,17 +1,17 @@
 package io.picnicml.doddlemodel
 
 import breeze.linalg.{DenseMatrix, DenseVector, unique}
-import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
+import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 
 package object data {
 
-  type RealVector = DenseVector[Double]
+  type RealVector = DenseVector[Float]
   type IntVector = DenseVector[Int]
-  type Simplex = DenseMatrix[Double]
+  type Simplex = DenseMatrix[Float]
 
-  type Features = DenseMatrix[Double]
-  type Target = DenseVector[Double]
+  type Features = DenseMatrix[Float]
+  type Target = DenseVector[Float]
 
   type FeaturesWithIndex = (Features, FeatureIndex)
   type Dataset = (Features, Target)

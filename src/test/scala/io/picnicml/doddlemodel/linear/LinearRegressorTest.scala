@@ -2,13 +2,14 @@ package io.picnicml.doddlemodel.linear
 
 import breeze.linalg.{DenseMatrix, DenseVector}
 import cats.syntax.option._
+import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 import org.scalatest.{FlatSpec, Matchers}
 
 case class DummyLinearRegressor(w: Option[RealVector])
 
-class LinearRegressorTest extends FlatSpec with Matchers {
+class LinearRegressorTest extends FlatSpec with Matchers with TestingUtils {
 
   val ev: LinearRegressor[DummyLinearRegressor] = new LinearRegressor[DummyLinearRegressor] {
 
@@ -25,14 +26,14 @@ class LinearRegressorTest extends FlatSpec with Matchers {
       x * w
 
     override protected[linear] def lossStateless(model: DummyLinearRegressor,
-                                                 w: RealVector, x: Features, y: Target): Double = 0
+                                                 w: RealVector, x: Features, y: Target): Float = 0.0f
 
     override protected[linear] def lossGradStateless(model: DummyLinearRegressor,
                                                      w: RealVector, x: Features, y: Target): RealVector = w
   }
 
-  private val x = DenseMatrix.rand[Double](10, 5)
-  private val y = DenseVector.rand[Double](10)
+  private val x = DenseMatrix.rand[Float](10, 5, rand = randomUniform)
+  private val y = DenseVector.rand[Float](10, rand = randomUniform)
   private val model = DummyLinearRegressor(none)
 
   "Linear regressor" should "throw an exception when using fit, predict on trained, untrained models" in {

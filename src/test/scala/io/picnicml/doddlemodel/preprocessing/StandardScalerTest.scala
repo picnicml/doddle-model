@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.preprocessing
 
-import breeze.linalg.{*, DenseMatrix, DenseVector}
+import breeze.linalg.{*, DenseMatrix, DenseVector, convert}
 import breeze.stats.{mean, stddev}
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
@@ -10,10 +10,10 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class StandardScalerTest extends FlatSpec with Matchers with TestingUtils {
 
-  implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-4)
+  implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-4f)
 
   "Standard scaler" should "preprocess the numerical features" in {
-    val x = DenseMatrix.rand[Double](10, 5)
+    val x = DenseMatrix.rand[Float](10, 5, rand = randomUniform)
     val featureIndex = FeatureIndex(
       List(
         NumericalFeature,
@@ -27,20 +27,20 @@ class StandardScalerTest extends FlatSpec with Matchers with TestingUtils {
     val trainedScaler = ev.fit(scaler, x)
     val xTransformed = ev.transform(trainedScaler, x)
 
-    breezeEqual(mean(x(::, *)).t, DenseVector.zeros[Double](5)) shouldBe false
-    breezeEqual(stddev(x(::, *)).t, DenseVector.ones[Double](5)) shouldBe false
+    breezeEqual(mean(x(::, *)).t, DenseVector.zeros[Float](5)) shouldBe false
+    breezeEqual(convert(stddev(x(::, *)).t, Float), DenseVector.ones[Float](5)) shouldBe false
 
-    val expectedMeans = DenseVector.zeros[Double](5)
+    val expectedMeans = DenseVector.zeros[Float](5)
     expectedMeans(-1) = mean(x(::, -1))
     breezeEqual(mean(xTransformed(::, *)).t, expectedMeans) shouldBe true
 
-    val expectedStdDevs = DenseVector.ones[Double](5)
-    expectedStdDevs(-1) = stddev(x(::, -1))
-    breezeEqual(stddev(xTransformed(::, *)).t, expectedStdDevs) shouldBe true
+    val expectedStdDevs = DenseVector.ones[Float](5)
+    expectedStdDevs(-1) = stddev(x(::, -1)).toFloat
+    breezeEqual(convert(stddev(xTransformed(::, *)).t, Float), expectedStdDevs) shouldBe true
   }
 
   it should "handle the zero variance case" in {
-    val x = DenseMatrix.ones[Double](10, 5)
+    val x = DenseMatrix.ones[Float](10, 5)
     val scaler = StandardScaler(FeatureIndex.numerical(5))
     val trainedScaler = ev.fit(scaler, x)
     val xTransformed = ev.transform(trainedScaler, x)
@@ -49,22 +49,23 @@ class StandardScalerTest extends FlatSpec with Matchers with TestingUtils {
   }
 
   it should "preprocess a subset of numerical features" in {
-    val x = DenseMatrix.rand[Double](10, 5)
+    val x = DenseMatrix.rand[Float](10, 5, rand = randomUniform)
     val scaler = StandardScaler(FeatureIndex.numerical(5).subset("f0", "f2", "f4"))
     val trainedScaler = ev.fit(scaler, x)
     val xTransformed = ev.transform(trainedScaler, x)
 
-    breezeEqual(mean(x(::, *)).t, DenseVector.zeros[Double](5)) shouldBe false
-    breezeEqual(stddev(x(::, *)).t, DenseVector.ones[Double](5)) shouldBe false
-    assert(mean(xTransformed(::, 0)) === 0.0 +- 1e-4)
-    assert(stddev(xTransformed(::, 0)) === 1.0 +- 1e-4)
-    assert(mean(xTransformed(::, 1)) !== 0.0 +- 1e-4)
-    assert(stddev(xTransformed(::, 1)) !== 1.0 +- 1e-4)
-    assert(mean(xTransformed(::, 2)) === 0.0 +- 1e-4)
-    assert(stddev(xTransformed(::, 2)) === 1.0 +- 1e-4)
-    assert(mean(xTransformed(::, 3)) !== 0.0 +- 1e-4)
-    assert(stddev(xTransformed(::, 3)) !== 1.0 +- 1e-4)
-    assert(mean(xTransformed(::, 4)) === 0.0 +- 1e-4)
-    assert(stddev(xTransformed(::, 4)) === 1.0 +- 1e-4)
+    breezeEqual(mean(x(::, *)).t, DenseVector.zeros[Float](5)) shouldBe false
+    breezeEqual(convert(stddev(x(::, *)).t, Float), DenseVector.ones[Float](5)) shouldBe false
+
+    assert(tolerance.areEqual(mean(xTransformed(::, 0)), 0.0f))
+    assert(tolerance.areEqual(convert(stddev(xTransformed(::, 0)), Float), 1.0f))
+    assert(!tolerance.areEqual(mean(xTransformed(::, 1)), 0.0f))
+    assert(!tolerance.areEqual(convert(stddev(xTransformed(::, 1)), Float), 1.0f))
+    assert(tolerance.areEqual(mean(xTransformed(::, 2)), 0.0f))
+    assert(tolerance.areEqual(convert(stddev(xTransformed(::, 2)), Float), 1.0f))
+    assert(!tolerance.areEqual(mean(xTransformed(::, 3)), 0.0f))
+    assert(!tolerance.areEqual(convert(stddev(xTransformed(::, 3)), Float), 1.0f))
+    assert(tolerance.areEqual(mean(xTransformed(::, 4)), 0.0f))
+    assert(tolerance.areEqual(convert(stddev(xTransformed(::, 4)), Float), 1.0f))
   }
 }

@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.pipeline
 
-import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
+import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.impute.MeanValueImputer
@@ -23,7 +23,7 @@ class PipelineTest extends FlatSpec with Matchers {
   it should "apply the transformation steps" in {
     val (x, y, featureIndex) = loadBreastCancerDataset
     val trainedPipeline = ev.fit(initializePipeline(featureIndex), x, y)
-    accuracy(y, ev.predict(trainedPipeline, x)) should be > 0.98
+    accuracy(y, ev.predict(trainedPipeline, x)) should be > 0.98f
   }
 
   private def initializePipeline(featureIndex: FeatureIndex): Pipeline = {

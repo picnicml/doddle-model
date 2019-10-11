@@ -10,16 +10,16 @@ import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
   *
   * Examples:
   * val model = LinearRegression()
-  * val model = LinearRegression(lambda = 1.5)
+  * val model = LinearRegression(lambda = 1.5f)
   */
-case class LinearRegression private (lambda: Double, private val w: Option[RealVector]) {
+case class LinearRegression private (lambda: Float, private val w: Option[RealVector]) {
   private var yPredCache: Target = _
 }
 
 object LinearRegression {
 
-  def apply(lambda: Double = 0.0): LinearRegression = {
-    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
+  def apply(lambda: Float = 0.0f): LinearRegression = {
+    require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     LinearRegression(lambda, none)
   }
 
@@ -41,15 +41,15 @@ object LinearRegression {
     override protected def predictStateless(model: LinearRegression, w: RealVector, x: Features): Target = x * w
 
     override protected[linear] def lossStateless(model: LinearRegression,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+                                                 w: RealVector, x: Features, y: Target): Float = {
       model.yPredCache = predictStateless(model, w, x)
       val d = y - model.yPredCache
-      .5 * (((d.t * d) / x.rows.toDouble) + model.lambda * (w(wSlice).t * w(wSlice)))
+      .5f * (((d.t * d) / x.rows.toFloat) + model.lambda * (w(wSlice).t * w(wSlice)))
     }
 
     override protected[linear] def lossGradStateless(model: LinearRegression,
                                                      w: RealVector, x: Features, y: Target): RealVector = {
-      val grad = ((y - model.yPredCache).t * x).t / (-x.rows.toDouble)
+      val grad = ((y - model.yPredCache).t * x).t / (-x.rows.toFloat)
       grad(wSlice) += model.lambda * w(wSlice)
       grad
     }

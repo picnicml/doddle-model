@@ -10,7 +10,7 @@ class MedianRegressorTest extends FlatSpec with Matchers with OptionValues {
     val (x, y, _) = loadBostonDataset
     val model = MedianRegressor()
     val trainedModel = ev.fit(model, x, y)
-    trainedModel.median.value shouldBe 21.199999999999999
-    ev.predict(trainedModel, x).toArray.forall(_ == 21.199999999999999) shouldBe true
+    trainedModel.median.value shouldBe 21.2f
+    ev.predict(trainedModel, x).toArray.forall(_ == 21.2f) shouldBe true
   }
 }

@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.dummy.classification
 
-import breeze.linalg.DenseVector
+import breeze.linalg.{DenseVector, convert}
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{loadBreastCancerDataset, loadIrisDataset}
 import io.picnicml.doddlemodel.dummy.classification.StratifiedClassifier.ev
@@ -9,19 +9,25 @@ import org.scalatest.{FlatSpec, Matchers}
 
 class StratifiedClassifierTest extends FlatSpec with Matchers with TestingUtils {
 
-  implicit val doubleTolerance: Equality[Double] = TolerantNumerics.tolerantDoubleEquality(1e-3)
+  implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-3f)
 
   "Stratified classifier" should "infer a categorical distribution from the iris dataset" in {
     val (x, y, _) = loadIrisDataset
     val model = StratifiedClassifier()
     val trainedModel = ev.fit(model, x, y)
-    breezeEqual(trainedModel.getTargetDistributionParams, DenseVector(0.333, 0.333, 0.333)) shouldBe true
+    breezeEqual(
+      convert(trainedModel.getTargetDistributionParams, Float),
+      DenseVector(0.333f, 0.333f, 0.333f)
+    ) shouldBe true
   }
 
   it should "infer a categorical distribution from the breast cancer dataset" in {
     val (x, y, _) = loadBreastCancerDataset
     val model = StratifiedClassifier()
     val trainedModel = ev.fit(model, x, y)
-    breezeEqual(trainedModel.getTargetDistributionParams, DenseVector(0.372, 0.627)) shouldBe true
+    breezeEqual(
+      convert(trainedModel.getTargetDistributionParams, Float),
+      DenseVector(0.372f, 0.627f)
+    ) shouldBe true
   }
 }

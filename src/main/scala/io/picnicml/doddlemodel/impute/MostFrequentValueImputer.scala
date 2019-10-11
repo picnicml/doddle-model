@@ -31,15 +31,15 @@ object MostFrequentValueImputer {
 
     override def fit(model: MostFrequentValueImputer, x: Features): MostFrequentValueImputer = {
       val xToPreprocess = x(::, model.featureIndex.categorical.columnIndices)
-      val mostFrequent = DenseVector.zeros[Double](xToPreprocess.cols)
+      val mostFrequent = DenseVector.zeros[Float](xToPreprocess.cols)
       0 until xToPreprocess.cols foreach { colIndex =>
         mostFrequent(colIndex) = getMostFrequent(xToPreprocess(xToPreprocess(::, colIndex).findAll(!_.isNaN), colIndex))
       }
       model.copy(mostFrequent.some)
     }
 
-    private def getMostFrequent(column: SliceVector[(Int, Int), Double]): Double = {
-      val counts = scala.collection.mutable.Map.empty[Double, Int].withDefaultValue(0)
+    private def getMostFrequent(column: SliceVector[(Int, Int), Float]): Float = {
+      val counts = scala.collection.mutable.Map.empty[Float, Int].withDefaultValue(0)
       column.foreachValue(value => counts(value) = counts(value) + 1)
       counts.maxBy(_._2)._1
     }

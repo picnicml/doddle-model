@@ -12,16 +12,16 @@ import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
   *
   * Examples:
   * val model = PoissonRegression()
-  * val model = PoissonRegression(lambda = 1.5)
+  * val model = PoissonRegression(lambda = 1.5f)
   */
-case class PoissonRegression private (lambda: Double, private val w: Option[RealVector]) {
+case class PoissonRegression private (lambda: Float, private val w: Option[RealVector]) {
   private var yPredMeanCache: Target = _
 }
 
 object PoissonRegression {
 
-  def apply(lambda: Double = 0.0): PoissonRegression = {
-    require(lambda >= 0.0, "L2 regularization strength must be non-negative")
+  def apply(lambda: Float = 0.0f): PoissonRegression = {
+    require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     PoissonRegression(lambda, none)
   }
 
@@ -46,15 +46,15 @@ object PoissonRegression {
     private def predictMean(w: RealVector, x: Features): Target = exp(x * w)
 
     override protected[linear] def lossStateless(model: PoissonRegression,
-                                                 w: RealVector, x: Features, y: Target): Double = {
+                                                 w: RealVector, x: Features, y: Target): Float = {
       model.yPredMeanCache = predictMean(w, x)
-      sum(y * log(model.yPredMeanCache) - model.yPredMeanCache) / (-x.rows.toDouble) +
-        .5 * model.lambda * (w(wSlice).t * w(wSlice))
+      sum(y * log(model.yPredMeanCache) - model.yPredMeanCache) / (-x.rows.toFloat) +
+        .5f * model.lambda * (w(wSlice).t * w(wSlice))
     }
 
     override protected[linear] def lossGradStateless(model: PoissonRegression,
                                                      w: RealVector, x: Features, y: Target): RealVector = {
-      val grad = ((model.yPredMeanCache - y).t * x).t / x.rows.toDouble
+      val grad = ((model.yPredMeanCache - y).t * x).t / x.rows.toFloat
       grad(wSlice) += model.lambda * w(wSlice)
       grad
     }

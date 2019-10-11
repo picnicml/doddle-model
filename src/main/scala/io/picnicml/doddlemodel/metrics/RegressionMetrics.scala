@@ -12,7 +12,7 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = false
 
-    override def calculateValueSafe(y: Target, yPred: Target): Double = sqrt(mse(y, yPred))
+    override def calculateValueSafe(y: Target, yPred: Target): Float = sqrt(mse(y, yPred))
 
     override def toString: String = "RMSE"
   }
@@ -22,9 +22,9 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = false
 
-    override def calculateValueSafe(y: Target, yPred: Target): Double = {
+    override def calculateValueSafe(y: Target, yPred: Target): Float = {
       val diff = y - yPred
-      (diff.t * diff) / y.length.toDouble
+      (diff.t * diff) / y.length.toFloat
     }
 
     override def toString: String = "MSE"
@@ -35,7 +35,7 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = false
 
-    override def calculateValueSafe(y: Target, yPred: Target): Double = sum(abs(y - yPred)) / y.length.toDouble
+    override def calculateValueSafe(y: Target, yPred: Target): Float = sum(abs(y - yPred)) / y.length.toFloat
 
     override def toString: String = "MAE"
   }
@@ -46,7 +46,8 @@ object RegressionMetrics {
 
     override lazy val higherValueIsBetter: Boolean = true
 
-    override def calculateValueSafe(y: Target, yPred: Target): Double = 1.0 - variance(y - yPred) / variance(y)
+    override def calculateValueSafe(y: Target, yPred: Target): Float =
+      1.0f - variance(y - yPred).toFloat / variance(y).toFloat
 
     override def toString: String = "explained variance"
   }

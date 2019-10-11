@@ -10,7 +10,7 @@ class MeanRegressorTest extends FlatSpec with Matchers with OptionValues {
     val (x, y, _) = loadBostonDataset
     val model = MeanRegressor()
     val trainedModel = ev.fit(model, x, y)
-    trainedModel.mean.value shouldBe 22.532806324110666
-    ev.predict(trainedModel, x).toArray.forall(_ == 22.532806324110666) shouldBe true
+    trainedModel.mean.value shouldBe 22.532804f
+    ev.predict(trainedModel, x).toArray.forall(_ == 22.532804f) shouldBe true
   }
 }

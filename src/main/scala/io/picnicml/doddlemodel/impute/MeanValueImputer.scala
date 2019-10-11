@@ -31,7 +31,7 @@ object MeanValueImputer {
 
     override def fit(model: MeanValueImputer, x: Features): MeanValueImputer = {
       val xToPreprocess = x(::, model.featureIndex.numerical.columnIndices)
-      val means = DenseVector.zeros[Double](xToPreprocess.cols)
+      val means = DenseVector.zeros[Float](xToPreprocess.cols)
       0 until xToPreprocess.cols foreach { colIndex =>
         means(colIndex) = mean(xToPreprocess(xToPreprocess(::, colIndex).findAll(!_.isNaN), colIndex))
       }

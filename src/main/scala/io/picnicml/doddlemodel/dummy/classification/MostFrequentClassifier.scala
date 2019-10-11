@@ -2,7 +2,7 @@ package io.picnicml.doddlemodel.dummy.classification
 
 import breeze.linalg.DenseVector
 import cats.syntax.option._
-import io.picnicml.doddlemodel.CrossScalaCompat.doubleOrdering
+import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.{Features, Simplex, Target}
 import io.picnicml.doddlemodel.typeclasses.Classifier
 
@@ -11,7 +11,7 @@ import io.picnicml.doddlemodel.typeclasses.Classifier
   * Examples:
   * val model = MostFrequentClassifier()
   */
-case class MostFrequentClassifier private (numClasses: Option[Int], mostFrequentClass: Option[Double])
+case class MostFrequentClassifier private (numClasses: Option[Int], mostFrequentClass: Option[Float])
 
 object MostFrequentClassifier {
 
@@ -28,7 +28,7 @@ object MostFrequentClassifier {
       model.copy(numClasses = numClasses.some)
 
     override protected def fitSafe(model: MostFrequentClassifier, x: Features, y: Target): MostFrequentClassifier = {
-      val mostFrequentClass = y.activeValuesIterator.foldLeft(Map[Double, Int]()) { (acc, x) =>
+      val mostFrequentClass = y.activeValuesIterator.foldLeft(Map[Float, Int]()) { (acc, x) =>
         if (acc.contains(x)) acc + (x -> (acc(x) + 1)) else acc + (x -> 1)
       }.toArray.sortBy(_._1).maxBy(_._2)._1
 

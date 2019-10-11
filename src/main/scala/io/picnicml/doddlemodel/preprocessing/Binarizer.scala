@@ -28,18 +28,18 @@ object Binarizer {
     *
     *     val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature))
     *     val x = DenseMatrix(
-    *       List(1.0, 0.0),
-    *       List(-1.0, 1.0),
-    *       List(2.0, 0.0)
+    *       List(1.0f, 0.0f),
+    *       List(-1.0f, 1.0f),
+    *       List(2.0f, 0.0f)
     *     )
-    *     // equivalently, DenseVector(0.0) could be used
-    *     val threshold = 0.0
+    *     // equivalently, DenseVector(0.0f) could be used
+    *     val threshold = 0.0f
     *     val binarizer = Binarizer(threshold, featureIndex)
     *     // Note: no fitting required
     *     val xTransformed = ev.transform(binarizer, x)
     *   }}}
     */
-  def apply(threshold: Double, featureIndex: FeatureIndex): Binarizer = {
+  def apply(threshold: Float, featureIndex: FeatureIndex): Binarizer = {
     val numNumeric: Int = featureIndex.numerical.columnIndices.length
     val thresholdsExtended = DenseVector.fill(numNumeric) { threshold }
     Binarizer(thresholdsExtended, featureIndex)
@@ -57,7 +57,7 @@ object Binarizer {
       model.featureIndex.numerical.columnIndices.zipWithIndex.foreach {
         case (colIndex, thresholdIndex) => (0 until xCopy.rows).foreach {
           rowIndex =>
-            xCopy(rowIndex, colIndex) = if (xCopy(rowIndex, colIndex) > model.thresholds(thresholdIndex)) 1.0 else 0.0
+            xCopy(rowIndex, colIndex) = if (xCopy(rowIndex, colIndex) > model.thresholds(thresholdIndex)) 1.0f else 0.0f
         }
       }
 

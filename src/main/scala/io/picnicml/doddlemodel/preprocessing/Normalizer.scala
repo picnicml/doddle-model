@@ -36,7 +36,7 @@ object Normalizer {
     override protected def transformSafe(model: Normalizer, x: Features): Features = {
       val rowNorms = model.normFunction(x)
       // no-op for zero vector
-      rowNorms(rowNorms :== 0.0) := 1.0
+      rowNorms(rowNorms :== 0.0f) := 1.0f
       x(::, *) /:/ rowNorms
     }
   }

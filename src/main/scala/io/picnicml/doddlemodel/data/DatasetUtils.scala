@@ -13,7 +13,7 @@ object DatasetUtils {
   }
 
   /** Splits the dataset into two subsets for training and testing. */
-  def splitDataset(x: Features, y: Target, proportionTrain: Double = 0.5): TrainTestSplit = {
+  def splitDataset(x: Features, y: Target, proportionTrain: Float = 0.5f): TrainTestSplit = {
     val numTrain = numberOfTrainExamplesBasedOnProportion(x.rows, proportionTrain)
     val trIndices = 0 until numTrain
     val teIndices = numTrain until x.rows
@@ -24,7 +24,7 @@ object DatasetUtils {
   def splitDatasetWithGroups(x: Features,
                              y: Target,
                              groups: IntVector,
-                             proportionTrain: Double = 0.5): GroupTrainTestSplit = {
+                             proportionTrain: Float = 0.5f): GroupTrainTestSplit = {
     val numTrain = numberOfTrainExamplesBasedOnProportion(x.rows, proportionTrain)
     val numSamplesPerGroup = hist(groups, numberOfUniqueGroups(groups)).hist.toArray
     val (sortedNumSamplesPerGroup, toOriginalGroupIndex) = numSamplesPerGroup.zipWithIndex.sorted.unzip
@@ -54,9 +54,9 @@ object DatasetUtils {
     )
   }
 
-  private def numberOfTrainExamplesBasedOnProportion(numTotal: Int, proportionTrain: Double): Int = {
+  private def numberOfTrainExamplesBasedOnProportion(numTotal: Int, proportionTrain: Float): Int = {
     require(proportionTrain > 0.0 && proportionTrain < 1.0, "proportionTrain must be between 0 and 1")
-    val numTrain = (proportionTrain * numTotal.toDouble).toInt
+    val numTrain = (proportionTrain * numTotal.toFloat).toInt
     require(numTrain > 0 && numTrain < numTotal, "the value of proportionTrain is either too high or too low")
     numTrain
   }

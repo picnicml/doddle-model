@@ -1,6 +1,6 @@
 package io.picnicml.doddlemodel.preprocessing
 
-import breeze.linalg.*
+import breeze.linalg.{*, convert}
 import breeze.stats.{mean, stddev}
 import cats.syntax.option._
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
@@ -33,8 +33,8 @@ object StandardScaler {
 
     override def fit(model: StandardScaler, x: Features): StandardScaler = {
       val xToPreprocess = x(::, model.featureIndex.numerical.columnIndices)
-      val sampleStdDev = stddev(xToPreprocess(::, *)).t.toDenseVector
-      sampleStdDev(sampleStdDev :== 0.0) := 1.0
+      val sampleStdDev = convert(stddev(xToPreprocess(::, *)).t.toDenseVector, Float)
+      sampleStdDev(sampleStdDev :== 0.0f) := 1.0f
       model.copy(mean(xToPreprocess(::, *)).t.toDenseVector.some, sampleStdDev.some)
     }
 
