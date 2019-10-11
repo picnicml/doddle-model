@@ -23,38 +23,31 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
 
   private implicit val ec: CVExecutionContext = new CVExecutionContext()
 
-  /**
-    * @param reusable indicates whether to shutdown the thread pool after the cv score is computed
-    *  and by default it is, if the same CrossValidation instance is needed after the first call
-    *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
-    *  after the instance is not needed anymore
-    */
   def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = none)
-              (implicit ev: Predictor[A],
-               reusable: CrossValReusable = CrossValReusable(false),
-               rand: Random = new Random()): Float = {
+              (implicit ev: Predictor[A], rand: Random = new Random()): Float = {
+    val completedFolds = Await.result(Future.sequence(this.folds(model, x, y, groups = groups)), Duration.Inf).toSeq
+    this.ec.shutdownNow()
+    completedFolds.map(_.score).sum / completedFolds.length
+  }
 
+  private[modelselection] def folds[A](model: A,
+                                       x: Features,
+                                       y: Target,
+                                       crossValId: Int = 0,
+                                       groups: Option[IntVector] = none)
+                                      (implicit ev: Predictor[A],
+                                       rand: Random = new Random()): Iterator[Future[CVFold[A]]] = {
     val dataSplits =
       groups.fold(this.dataSplitter.splitData(x, y))(groups => this.dataSplitter.splitData(x, y, groups))
-
-    val futureFoldsScores = Future.traverse(dataSplits)(split => this.foldScore(model, split))
-    val completedFoldsScores = Await.result(futureFoldsScores, Duration.Inf)
-
-    if (!reusable.yes)
-      this.ec.shutdownNow()
-
-    completedFoldsScores.sum / completedFoldsScores.length
+    dataSplits.iterator.map(split => this.fold(model, split, crossValId))
   }
 
-  private def foldScore[A](model: A, split: TrainTestSplit)(implicit ev: Predictor[A]): Future[Float] = Future {
-    this.metric(split.yTe, ev.predict(ev.fit(model, split.xTr, split.yTr), split.xTe))
+  private def fold[A](model: A,
+                      split: TrainTestSplit,
+                      crossValId: Int)
+                     (implicit ev: Predictor[A]): Future[CVFold[A]] = Future {
+    CVFold(model, this.metric(split.yTe, ev.predict(ev.fit(model, split.xTr, split.yTr), split.xTe)), crossValId)
   }
-
-  /**
-    * Shuts down the current thread pool. Call this if the CrossValidation instance is not needed
-    * anymore and CrossValReusable(true) is in scope.
-    */
-  def shutdownNow(): Unit = this.ec.shutdownNow()
  }
 
 object CrossValidation {

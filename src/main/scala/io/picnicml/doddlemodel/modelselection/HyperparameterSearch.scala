@@ -5,6 +5,8 @@ import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
 import io.picnicml.doddlemodel.typeclasses.Predictor
 
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 import scala.util.Random
 
 
@@ -24,32 +26,36 @@ import scala.util.Random
   */
 class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossValidation, verbose: Boolean) {
 
-  implicit val cvReusable: CrossValReusable = CrossValReusable(true)
+  private implicit val ec: CVExecutionContext = new CVExecutionContext()
 
   def bestOf[A](x: Features, y: Target, groups: Option[IntVector] = none)(generatePredictor: => A)
                (implicit ev: Predictor[A], rand: Random = new Random()): A = {
-
-    case class PredictorWithScore(predictor: A, score: Float)
-
-    val scoresPredictors = (0 until this.numIterations).map { _ =>
-      val predictor = generatePredictor
-      PredictorWithScore(predictor, this.crossVal.score(predictor, x, y, groups))
+    val allFolds = (0 until this.numIterations).flatMap { iterationId =>
+      this.crossVal.folds(generatePredictor, x, y, crossValId = iterationId, groups)
     }
 
-    // this is needed because of cvReusable, see
-    // io.picnicml.doddlemodel.modelselection.CrossValidation for details
-    this.crossVal.shutdownNow()
+    val predictorsScores: Seq[PredictorWithScore[A]] = Await
+      .result(Future.sequence(allFolds), Duration.Inf)
+      .groupBy(_.crossValId)
+      .toSeq
+      .map { case (_, folds) =>
+        PredictorWithScore[A](folds(0).predictor, folds.map(_.score).sum / folds.length)
+      }
+
+    this.ec.shutdownNow()
 
     val bestScorePredictor = if (this.crossVal.metric.higherValueIsBetter)
-      scoresPredictors.maxBy(_.score)
+      predictorsScores.maxBy(_.score)
     else
-      scoresPredictors.minBy(_.score)
+      predictorsScores.minBy(_.score)
 
     if (verbose)
       println(f"Validation ${this.crossVal.metric} of the selected model: ${bestScorePredictor.score}%1.4f")
 
     ev.fit(bestScorePredictor.predictor, x, y)
   }
+
+  case class PredictorWithScore[A: Predictor](predictor: A, score: Float)
 }
 
 object HyperparameterSearch {

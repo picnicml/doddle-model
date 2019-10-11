@@ -7,6 +7,8 @@ import scala.util.Random
 
 trait DataSplitter {
 
+  val numFolds: Int
+
   def splitData(x: Features, y: Target)(implicit rand: Random): LazyListCompat[TrainTestSplit]
 
   def splitData(x: Features, y: Target, groups: IntVector)(implicit rand: Random): LazyListCompat[TrainTestSplit]
