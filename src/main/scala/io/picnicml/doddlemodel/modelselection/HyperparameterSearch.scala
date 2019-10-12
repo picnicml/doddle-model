@@ -1,7 +1,7 @@
 package io.picnicml.doddlemodel.modelselection
 
 import cats.syntax.option._
-import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
+import io.picnicml.doddlemodel.CrossScalaCompat.{floatOrdering, lazyListCompatFromSeq}
 import io.picnicml.doddlemodel.data.{Features, IntVector, Target}
 import io.picnicml.doddlemodel.typeclasses.Predictor
 
@@ -30,7 +30,7 @@ class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossV
 
   def bestOf[A](x: Features, y: Target, groups: Option[IntVector] = none)(generatePredictor: => A)
                (implicit ev: Predictor[A], rand: Random = new Random()): A = {
-    val allFolds = (0 until this.numIterations).flatMap { iterationId =>
+    val allFolds = lazyListCompatFromSeq(0 until this.numIterations).flatMap { iterationId =>
       this.crossVal.folds(generatePredictor, x, y, crossValId = iterationId, groups)
     }
 
