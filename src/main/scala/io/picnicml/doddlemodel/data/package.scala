@@ -20,17 +20,19 @@ package object data {
 
   /** Loads and returns the Boston Housing prices dataset. */
   def loadBostonDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBostonDataset
+
   /** Loads and returns the Breast cancer Wisconsin (diagnostic) dataset.
     *
     * @see <a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29" target="_blank">
     *        Breast cancer dataset on UCI Machine Learning Repository </a>
-    * */
+    */
   def loadBreastCancerDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBreastCancerDataset
+
   /** Loads and returns the Iris dataset.
     *
     * @see <a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29" target="_blank">
     *        Iris dataset on UCI Machine Learning Repository </a>
-    * */
+    */
   def loadIrisDataset: DatasetWithIndex = ResourceDatasetLoaders.loadIrisDataset
 
   /** Loads and returns an artificial dataset with a Poisson target variable. */
