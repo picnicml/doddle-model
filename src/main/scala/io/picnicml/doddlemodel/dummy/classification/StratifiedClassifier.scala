@@ -18,15 +18,17 @@ case class StratifiedClassifier private (numClasses: Option[Int],
   }
 }
 
-/** An immutable dummy classifier that samples predictions from a stratified categorical distribution.
-  *
-  * @example
-  *   {{{
-  *     val model = StratifiedClassifier()
-  *   }}}
-  */
+/** An immutable dummy classifier that samples predictions from a stratified categorical distribution. */
 object StratifiedClassifier {
 
+  /** Create a stratified classifier.
+    *
+    * @example
+    *   {{{
+    *     import io.picnicml.doddlemodel.dummy.classification.StratifiedClassifier
+    *     val model = StratifiedClassifier()
+    *   }}}
+    */
   def apply(): StratifiedClassifier = StratifiedClassifier(none, none)
 
   @SerialVersionUID(0L)

@@ -6,17 +6,19 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Target}
 import io.picnicml.doddlemodel.typeclasses.Regressor
 
-/** An immutable dummy regressor that always predicts the sample median.
-  *
-  * @example
-  *   {{{
-  *     val model = MedianRegressor()
-  *   }}}
-  */
 case class MedianRegressor private (median: Option[Float])
 
+/** An immutable dummy regressor that always predicts the sample median. */
 object MedianRegressor {
 
+  /** Create a median regressor.
+    *
+    * @example
+    * {{{
+    *   import io.picnicml.doddlemodel.dummy.regression.MedianRegressor
+    *   val model = MedianRegressor()
+    * }}}
+    */
   def apply(): MedianRegressor = MedianRegressor(none)
 
   @SerialVersionUID(0L)

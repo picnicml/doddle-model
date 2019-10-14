@@ -6,17 +6,20 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, Target}
 import io.picnicml.doddlemodel.typeclasses.Regressor
 
-/** An immutable dummy regressor that always predicts the sample mean.
-  *
-  * @example
-  *   {{{
-  *     val model = MeanRegressor()
-  *   }}}
-  */
+
 case class MeanRegressor private (mean: Option[Float])
 
+/** An immutable dummy regressor that always predicts the sample mean. */
 object MeanRegressor {
 
+  /** Create a mean regressor.
+    *
+    * @example
+    * {{{
+    *   import io.picnicml.doddlemodel.dummy.regression.MeanRegressor
+    *   val model = MeanRegressor()
+    * }}}
+    */
   def apply(): MeanRegressor = MeanRegressor(none)
 
   @SerialVersionUID(0L)

@@ -8,15 +8,17 @@ import io.picnicml.doddlemodel.typeclasses.Classifier
 
 case class UniformClassifier private (numClasses: Option[Int])
 
-/** An immutable dummy classifier that samples predictions from a uniform categorical distribution.
-  *
-  * @example
-  *   {{{
-  *     val model = UniformClassifier()
-  *   }}}
-  */
+/** An immutable dummy classifier that samples predictions from a uniform categorical distribution. */
 object UniformClassifier {
 
+  /** Create a uniform classifier.
+    *
+    * @example
+    *   {{{
+    *     import io.picnicml.doddlemodel.dummy.classification.UniformClassifier
+    *     val model = UniformClassifier()
+    *   }}}
+    */
   def apply(): UniformClassifier = UniformClassifier(none)
 
   @SerialVersionUID(0L)
