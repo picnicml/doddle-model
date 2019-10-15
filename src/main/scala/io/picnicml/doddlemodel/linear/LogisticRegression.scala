@@ -15,17 +15,19 @@ object LogisticRegression {
 
   /** Create a regularized logistic regression model.
     *
-    * @param lambda L2 regularization strength, must be non-negative, 0.0 means no regularization
+    * @param lambda L2 regularization strength - must be non-negative, 0.0 means no regularization
     *
-    * @example Create and fit a logistic regression model with lambda = 1.5.
-    * {{{
-    *     import io.picnicml.doddlemodel.linear.LogisticRegression.ev
+    * @example Create and fit a logistic regression model with lambda 1.5.
+    *   {{{
+    *     import breeze.linalg.{DenseMatrix, DenseVector}
+    *     import io.picnicml.doddlemodel.linear.LogisticRegression
+    *     import io.picnicml.doddlemodel.syntax.ClassifierSyntax._
     *
-    *     val X: Features = DenseMatrix(List(1.0, 2.0), List(3.0, 4.0))
-    *     val y: Target = DenseVector(0.0, 1.0)
+    *     val X = DenseMatrix(List(1.0f, 2.0f), List(3.0f, 4.0f))
+    *     val y = DenseVector(0.0f, 1.0f)
     *     val model = LogisticRegression(lambda = 1.5f)
-    *     val fittedModel = ev.fit(model, X, y)
-    * }}}
+    *     val fittedModel = model.fit(X, y)
+    *   }}}
     */
   def apply(lambda: Float = 0.0f): LogisticRegression = {
     require(lambda >= 0.0f, "L2 regularization strength must be non-negative")

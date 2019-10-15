@@ -13,16 +13,18 @@ object LinearRegression {
 
   /** Create a regularized linear regression model.
     *
-    * @param lambda L2 regularization strength, must be non-negative, 0.0 means no regularization
+    * @param lambda L2 regularization strength - must be non-negative, 0.0 means no regularization
     *
-    * @example Create and fit a regularized linear regression model with lambda = 1.5.
+    * @example Create and fit a regularized linear regression model with lambda 1.5.
     *   {{{
-    *     import io.picnicml.doddlemodel.linear.LinearRegression.ev
+    *     import breeze.linalg.{DenseMatrix, DenseVector}
+    *     import io.picnicml.doddlemodel.linear.LinearRegression
+    *     import io.picnicml.doddlemodel.syntax.RegressorSyntax._
     *
-    *     val X: Features = DenseMatrix(List(1.0, 2.0), List(3.0, 4.0))
-    *     val y: Target = DenseVector(-3.0, 2.0)
+    *     val X = DenseMatrix(List(1.0f, 2.0f), List(3.0f, 4.0f))
+    *     val y = DenseVector(-3.0f, 2.0f)
     *     val model = LinearRegression(lambda = 1.5f)
-    *     val fittedModel = ev.fit(model, X, y)
+    *     val fittedModel = model.fit(X, y)
     *   }}}
     */
   def apply(lambda: Float = 0.0f): LinearRegression = {
