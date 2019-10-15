@@ -7,11 +7,11 @@ import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 
-/** An immutable multiple multinomial regression model with ridge regularization. */
 case class SoftmaxClassifier private (lambda: Float, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: Simplex = _
 }
 
+/** An immutable multiple multinomial regression model with ridge regularization. */
 object SoftmaxClassifier {
 
   /** Create a regularized softmax model.

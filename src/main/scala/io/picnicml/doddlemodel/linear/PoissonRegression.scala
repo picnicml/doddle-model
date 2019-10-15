@@ -6,11 +6,11 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 
-/** An immutable multiple Poisson regression model with ridge regularization. */
 case class PoissonRegression private (lambda: Float, private val w: Option[RealVector]) {
   private var yPredMeanCache: Target = _
 }
 
+/** An immutable multiple Poisson regression model with ridge regularization. */
 object PoissonRegression {
 
   /** Create a regularized Poisson regression model.

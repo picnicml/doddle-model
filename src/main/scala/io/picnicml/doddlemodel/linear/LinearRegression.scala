@@ -4,11 +4,11 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 
-/** An immutable multiple linear regression model with ridge regularization. */
 case class LinearRegression private (lambda: Float, private val w: Option[RealVector]) {
   private var yPredCache: Target = _
 }
 
+/** An immutable multiple linear regression model with ridge regularization. */
 object LinearRegression {
 
   /** Create a regularized linear regression model.

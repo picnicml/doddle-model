@@ -6,11 +6,11 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 
-/** An immutable multiple logistic regression model with ridge regularization. */
 case class LogisticRegression private (lambda: Float, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: RealVector = _
 }
 
+/** An immutable multiple logistic regression model with ridge regularization. */
 object LogisticRegression {
 
   /** Create a regularized logistic regression model.
