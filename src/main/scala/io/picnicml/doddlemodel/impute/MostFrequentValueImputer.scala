@@ -9,26 +9,39 @@ import io.picnicml.doddlemodel.typeclasses.Transformer
 
 case class MostFrequentValueImputer private (private[impute] val mostFrequent: Option[RealVector],
                                              private val featureIndex: FeatureIndex)
-/** An immutable simple imputer that replaces all NaN values with most frequent value of a corresponding column. */
+
+/** An immutable simple imputer that replaces categorical NaN values with most frequent value of the corresponding
+  * column. Numerical values are left untouched. */
 object MostFrequentValueImputer {
 
   /** Create an imputer based on a feature index.
     *
-    * @param featureIndex feature index associated with features, this is needed so that only categorical features
+    * @param featureIndex feature index associated with features - this is needed so that only categorical features
     *                     are transformed by this preprocessor, could be a subset of columns to be transformed
     *
-    * @example Impute values for all (numerical) features.
+    * @example Impute values for all (categorical) features.
     *   {{{
-    *     val featureIndex = FeatureIndex(List(NumericalFeature, CategoricalFeature, NumericalFeature,
-    *       NumericalFeature))
-    *     val imputer = MostFrequentValueImputer(featureIndex)
+    *     import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
+    *     import io.picnicml.doddlemodel.impute.MostFrequentValueImputer
+    *     import io.picnicml.doddlemodel.syntax.TransformerSyntax._
+    *
+    *     val (data, featureInfo) = loadCsvDataset("src/main/resources/datasets/dummy_csv_reading.csv", "NA")
+    *     val imputer = MostFrequentValueImputer(featureInfo)
+    *     val fittedImputer = imputer.fit(data)
+    *     // Note: only second (index 1) column gets imputed as it's the only categorical column with NAs
+    *     fittedImputer.transform(data)
     *   }}}
     *
     * @example Impute values for a subset of features.
     *   {{{
-    *     val featureIndex = FeatureIndex(List("f0", "f1", "f2"), List(NumericalFeature, NumericalFeature,
-    *       NumericalFeature), List(0, 1, 2))
-    *     val imputerSubsetOfColumns = MostFrequentValueImputer(featureIndex.subset("f0", "f2"))
+    *     import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
+    *     import io.picnicml.doddlemodel.impute.MostFrequentValueImputer
+    *     import io.picnicml.doddlemodel.syntax.TransformerSyntax._
+    *
+    *     val (data, featureInfo) = loadCsvDataset("src/main/resources/datasets/dummy_csv_reading.csv", "NA")
+    *     val imputerSubset = MostFrequentValueImputer(featureInfo.subset("f1"))
+    *     val fittedImputer = imputerSubset.fit(data)
+    *     fittedImputer.transform(data)
     *   }}}
     */
   def apply(featureIndex: FeatureIndex): MostFrequentValueImputer =
