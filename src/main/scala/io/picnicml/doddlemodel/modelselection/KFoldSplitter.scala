@@ -60,8 +60,11 @@ object KFoldSplitter {
     *
     * @example Split data into 3 folds.
     * {{{
-    *   val x = DenseMatrix.rand(7, 2)
-    *   val y = DenseVector(0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0)
+    *   import breeze.linalg.{DenseMatrix, DenseVector, convert}
+    *   import io.picnicml.doddlemodel.modelselection.KFoldSplitter
+    *
+    *   val x = convert(DenseMatrix.rand(7, 2), Float)
+    *   val y = DenseVector(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f)
     *
     *   val splitter = KFoldSplitter(numFolds = 3)
     *   splitter.splitData(x, y)

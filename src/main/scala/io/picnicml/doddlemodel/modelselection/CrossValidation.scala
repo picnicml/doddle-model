@@ -15,10 +15,33 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
 
   /** Obtain the average score of all folds.
     *
-    * @param reusable indicates whether to shutdown the thread pool after the cv score is computed
-    *  and by default it is, if the same CrossValidation instance is needed after the first call
-    *  to score(...), bring implicit CrossValReusable(true) to scope and call CrossValidation.shutdownNow()
-    *  after the instance is not needed anymore
+    * @param reusable indicates whether to shutdown the thread pool after the cv score is computed.
+    *  By default it is shutdown.
+    *
+    *  @note If the same `CrossValidation` instance is needed after the first call to `score(...)`, bring an implicit
+    *        `CrossValReusable(true)` to scope and call `CrossValidation.shutdownNow()` after the instance is not
+    *        needed anymore.
+    *
+    *  @example Reuse a `CrossValidation` instance.
+    *   {{{
+    *     import breeze.linalg.{DenseMatrix, DenseVector}
+    *     import io.picnicml.doddlemodel.metrics.rmse
+    *     import io.picnicml.doddlemodel.linear.LogisticRegression
+    *     import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
+    *     import io.picnicml.doddlemodel.modelselection.CrossValReusable
+    *
+    *     implicit val cvReusable = CrossValReusable(true)
+    *     val X = DenseMatrix(List(1.0f, 2.0f), List(3.0f, 4.0f), List(5.0f, 6.0f), List(7.0f, 8.0f))
+    *     val y = DenseVector(0.0f, 1.0f, 0.0f, 1.0f)
+    *     val model = LogisticRegression(1.0f)
+    *
+    *     val splitter = KFoldSplitter(numFolds = 2)
+    *     val cv = CrossValidation(metric = rmse, dataSplitter = splitter)
+    *     cv.score(model, X, y)
+    *     // would throw a `RejectedExecutionException` if an implicit `CrossValReusable` instance was not defined
+    *     cv.score(model, X, y)
+    *     cv.shutdownNow()
+    *   }}}
     */
   def score[A](model: A, x: Features, y: Target, groups: Option[IntVector] = none)
               (implicit ev: Predictor[A],
@@ -43,7 +66,7 @@ class CrossValidation private (val metric: Metric, val dataSplitter: DataSplitte
 
   /**
     * Shuts down the current thread pool. Call this if the CrossValidation instance is not needed
-    * anymore and CrossValReusable(true) is in scope.
+    * anymore and `CrossValReusable(true)` is in scope.
     */
   def shutdownNow(): Unit = this.ec.shutdownNow()
  }
@@ -58,16 +81,18 @@ object CrossValidation {
     * @example Perform 2-fold cross validation using logistic regression and evaluate its performance
     *          using root mean squared error.
     *   {{{
-    *   import io.picnicml.doddlemodel.metrics.rmse
-    *   import io.picnicml.doddlemodel.linear.LogisticRegression
+    *     import breeze.linalg.{DenseMatrix, DenseVector}
+    *     import io.picnicml.doddlemodel.metrics.rmse
+    *     import io.picnicml.doddlemodel.linear.LogisticRegression
+    *     import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
     *
-    *   val X: Features = DenseMatrix(List(1.0, 2.0), List(3.0, 4.0), List(5.0, 6.0), List(7.0, 8.0))
-    *   val y: Target = DenseVector(0.0, 1.0, 0.0, 1.0)
-    *   val model = LogisticRegression(1.0)
+    *     val X = DenseMatrix(List(1.0f, 2.0f), List(3.0f, 4.0f), List(5.0f, 6.0f), List(7.0f, 8.0f))
+    *     val y = DenseVector(0.0f, 1.0f, 0.0f, 1.0f)
+    *     val model = LogisticRegression(1.0f)
     *
-    *   val splitter = KFoldSplitter(numFolds = 2)
-    *   val cv = CrossValidation(metric = rmse, dataSplitter = splitter))
-    *   cv.score(model, X, y)
+    *     val splitter = KFoldSplitter(numFolds = 2)
+    *     val cv = CrossValidation(metric = rmse, dataSplitter = splitter)
+    *     cv.score(model, X, y)
     *   }}}
     *
     * @see [[io.picnicml.doddlemodel.metrics Metrics in doddle-model]]

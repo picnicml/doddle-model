@@ -61,8 +61,11 @@ object GroupKFoldSplitter {
     * @example Split 10 examples, corresponding to data of 3 patients into 3 folds, making sure that data of a patient
     *          never appears in both training and test set in the same fold.
     * {{{
-    *   val patientFeatures = DenseMatrix.rand(10, 3)
-    *   val isSick = DenseVector(0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0)
+    *   import breeze.linalg.{DenseMatrix, DenseVector, convert}
+    *   import io.picnicml.doddlemodel.modelselection.GroupKFoldSplitter
+    *
+    *   val patientFeatures = convert(DenseMatrix.rand(10, 3), Float)
+    *   val isSick = DenseVector(0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f)
     *   val idPatient = DenseVector(1, 2, 2, 0, 0, 0, 2, 1, 1, 2)
     *
     *   val splitter = GroupKFoldSplitter(numFolds = 3)
