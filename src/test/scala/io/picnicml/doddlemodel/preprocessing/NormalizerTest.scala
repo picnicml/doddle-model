@@ -5,9 +5,10 @@ import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.preprocessing.Normalizer.ev
 import io.picnicml.doddlemodel.preprocessing.Norms.{L1Norm, MaxNorm}
 import org.scalactic.{Equality, TolerantNumerics}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class NormalizerTest extends FlatSpec with Matchers with TestingUtils {
+class NormalizerTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-4f)
 

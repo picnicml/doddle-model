@@ -1,11 +1,12 @@
 package io.picnicml.doddlemodel.modelselection
 
 import io.picnicml.doddlemodel.TestingUtils
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class KFoldSplitterTest extends FlatSpec with Matchers with TestingUtils {
+class KFoldSplitterTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   val splitter = KFoldSplitter(numFolds = 3, shuffleRows = false)
 

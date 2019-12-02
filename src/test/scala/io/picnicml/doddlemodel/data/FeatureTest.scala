@@ -1,9 +1,10 @@
 package io.picnicml.doddlemodel.data
 
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class FeatureTest extends FlatSpec with Matchers {
+class FeatureTest extends AnyFlatSpec with Matchers {
 
   "Feature index" should "return a subset of categorical features" in {
     val featureIndex = FeatureIndex(List(CategoricalFeature, NumericalFeature, CategoricalFeature))

@@ -4,11 +4,12 @@ import breeze.linalg.DenseVector
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.DatasetUtils.{shuffleDataset, splitDataset, splitDatasetWithGroups}
 import org.scalactic.{Equality, TolerantNumerics}
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class DatasetUtilsTest extends FlatSpec with Matchers with TestingUtils {
+class DatasetUtilsTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   implicit val rand: Random = new Random(0)
   implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1.0f)

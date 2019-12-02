@@ -5,11 +5,12 @@ import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.linear.LogisticRegression
 import io.picnicml.doddlemodel.linear.LogisticRegression.ev
 import io.picnicml.doddlemodel.metrics.accuracy
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class HyperparameterSearchTest extends FlatSpec with Matchers {
+class HyperparameterSearchTest extends AnyFlatSpec with Matchers {
 
   "Hyperparameter search" should "return the best model from available candidates" in {
     val (x, y, _) = loadBreastCancerDataset

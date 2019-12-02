@@ -3,9 +3,10 @@ package io.picnicml.doddlemodel.preprocessing
 import breeze.linalg.{DenseMatrix, DenseVector}
 import io.picnicml.doddlemodel.TestingUtils
 import org.scalactic.{Equality, TolerantNumerics}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class NormsTest extends FlatSpec with Matchers with TestingUtils {
+class NormsTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-4f)
 

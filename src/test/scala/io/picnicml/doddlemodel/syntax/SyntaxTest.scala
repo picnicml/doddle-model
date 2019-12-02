@@ -4,9 +4,10 @@ import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 import io.picnicml.doddlemodel.linear.{LinearRegression, LogisticRegression}
 import io.picnicml.doddlemodel.preprocessing.StandardScaler
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class SyntaxTest extends FlatSpec with Matchers with TestingUtils {
+class SyntaxTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   val (x, y) = dummyData(2)
 

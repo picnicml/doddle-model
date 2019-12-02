@@ -5,11 +5,12 @@ import io.picnicml.doddlemodel.data.loadBostonDataset
 import io.picnicml.doddlemodel.linear.LinearRegression
 import io.picnicml.doddlemodel.metrics.rmse
 import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class LinearRegressionTest extends FlatSpec with Matchers {
+class LinearRegressionTest extends AnyFlatSpec with Matchers {
 
   "Linear regression" should "achieve a reasonable score on the Boston housing dataset" in {
     val (x, y, _) = loadBostonDataset

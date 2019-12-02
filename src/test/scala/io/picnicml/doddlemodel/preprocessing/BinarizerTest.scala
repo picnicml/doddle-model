@@ -4,9 +4,10 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 import io.picnicml.doddlemodel.preprocessing.Binarizer.ev
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class BinarizerTest extends FlatSpec with Matchers with TestingUtils {
+class BinarizerTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   private val x = DenseMatrix(
     List(0.0f, 1.0f, 0.0f),

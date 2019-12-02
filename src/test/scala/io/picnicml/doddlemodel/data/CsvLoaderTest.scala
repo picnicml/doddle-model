@@ -4,9 +4,10 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, NumericalFeature}
 import io.picnicml.doddlemodel.data.ResourceDatasetLoaders.loadDummyCsvReadingDataset
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class CsvLoaderTest extends FlatSpec with Matchers with TestingUtils {
+class CsvLoaderTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   "Csv loader" should "load and encode data" in {
     val (x, y, featureIndex) = loadDummyCsvReadingDataset

@@ -4,9 +4,10 @@ import breeze.linalg.DenseMatrix
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 import io.picnicml.doddlemodel.syntax.TransformerSyntax._
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class OneHotEncoderTest extends FlatSpec with Matchers with TestingUtils {
+class OneHotEncoderTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   "One hot encoder" should "encode all categorical features" in {
     val x = DenseMatrix(

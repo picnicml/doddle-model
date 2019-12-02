@@ -5,9 +5,10 @@ import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 import io.picnicml.doddlemodel.preprocessing.RangeScaler.ev
 import org.scalactic.{Equality, TolerantNumerics}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class RangeScalerTest extends FlatSpec with Matchers with TestingUtils {
+class RangeScalerTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-4f)
 

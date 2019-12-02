@@ -3,9 +3,11 @@ package io.picnicml.doddlemodel.dummy.classification
 import breeze.linalg.sum
 import io.picnicml.doddlemodel.data.{loadBreastCancerDataset, loadIrisDataset}
 import io.picnicml.doddlemodel.dummy.classification.MostFrequentClassifier.ev
-import org.scalatest.{FlatSpec, Matchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class MostFrequentClassifierTest extends FlatSpec with Matchers with OptionValues {
+class MostFrequentClassifierTest extends AnyFlatSpec with Matchers with OptionValues {
 
   "Most frequent classifier" should "infer the most frequent class from the iris dataset" in {
     val (x, y, _) = loadIrisDataset

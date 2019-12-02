@@ -5,9 +5,10 @@ import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{loadBreastCancerDataset, loadIrisDataset}
 import io.picnicml.doddlemodel.dummy.classification.StratifiedClassifier.ev
 import org.scalactic.{Equality, TolerantNumerics}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class StratifiedClassifierTest extends FlatSpec with Matchers with TestingUtils {
+class StratifiedClassifierTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-3f)
 

@@ -5,11 +5,12 @@ import io.picnicml.doddlemodel.data.loadHighSchoolTestDataset
 import io.picnicml.doddlemodel.linear.PoissonRegression
 import io.picnicml.doddlemodel.metrics.rmse
 import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class PoissonRegressionTest extends FlatSpec with Matchers {
+class PoissonRegressionTest extends AnyFlatSpec with Matchers {
 
   "Poisson regression" should "achieve a reasonable score on the high school test dataset" in {
     val (x, y, _) = loadHighSchoolTestDataset

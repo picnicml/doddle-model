@@ -2,9 +2,10 @@ package io.picnicml.doddlemodel.modelselection
 
 import breeze.linalg.DenseVector
 import io.picnicml.doddlemodel.TestingUtils
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class GroupKFoldSplitterTest extends FlatSpec with Matchers with TestingUtils {
+class GroupKFoldSplitterTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   "GroupKFoldSplitter" should "split data so that folds are i.i.d" in {
     val (x, y) = dummyData(10)

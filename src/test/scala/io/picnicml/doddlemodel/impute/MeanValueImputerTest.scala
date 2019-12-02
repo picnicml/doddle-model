@@ -4,9 +4,11 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.Feature.{CategoricalFeature, FeatureIndex, NumericalFeature}
 import io.picnicml.doddlemodel.impute.MeanValueImputer.ev
-import org.scalatest.{FlatSpec, Matchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class MeanValueImputerTest extends FlatSpec with Matchers with TestingUtils with OptionValues {
+class MeanValueImputerTest extends AnyFlatSpec with Matchers with TestingUtils with OptionValues {
 
   "Mean value imputer" should "impute the numerical features" in {
     val xMissing = DenseMatrix(
