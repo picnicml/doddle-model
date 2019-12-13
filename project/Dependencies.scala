@@ -6,7 +6,7 @@ object Dependencies {
     val breeze = "1.0"
     val cats = "2.0.0"
     val scalaTest = "3.0.8"
-    val scalaCollectionCompat = "2.1.2"
+    val scalaCollectionCompat = "2.1.3"
   }
 
   val compileDependencies: Seq[ModuleID] = Seq(
