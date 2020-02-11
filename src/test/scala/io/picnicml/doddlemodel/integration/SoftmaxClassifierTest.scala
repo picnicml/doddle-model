@@ -5,11 +5,12 @@ import io.picnicml.doddlemodel.data.loadIrisDataset
 import io.picnicml.doddlemodel.linear.SoftmaxClassifier
 import io.picnicml.doddlemodel.metrics.accuracy
 import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class SoftmaxClassifierTest extends FlatSpec with Matchers {
+class SoftmaxClassifierTest extends AnyFlatSpec with Matchers {
 
   "Softmax classifier" should "achieve a reasonable score on the iris dataset" in {
     val (x, y, _) = loadIrisDataset

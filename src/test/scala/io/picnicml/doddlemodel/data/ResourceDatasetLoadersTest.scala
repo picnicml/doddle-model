@@ -2,9 +2,10 @@ package io.picnicml.doddlemodel.data
 
 import breeze.linalg.sum
 import io.picnicml.doddlemodel.data.Feature.NumericalFeature
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ResourceDatasetLoadersTest extends FlatSpec with Matchers {
+class ResourceDatasetLoadersTest extends AnyFlatSpec with Matchers {
 
   "Data loaders" should "load the boston housing prices dataset" in {
     val (x, y, featureIndex) = loadBostonDataset

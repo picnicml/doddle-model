@@ -8,9 +8,10 @@ import io.picnicml.doddlemodel.linear.LogisticRegression
 import io.picnicml.doddlemodel.metrics.accuracy
 import io.picnicml.doddlemodel.pipeline.Pipeline.{ev, pipe}
 import io.picnicml.doddlemodel.preprocessing.StandardScaler
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class PipelineTest extends FlatSpec with Matchers {
+class PipelineTest extends AnyFlatSpec with Matchers {
 
   "Pipeline" should "implement the isFitted function" in {
     val (x, y, featureIndex) = loadBreastCancerDataset

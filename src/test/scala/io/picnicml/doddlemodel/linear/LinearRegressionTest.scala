@@ -5,9 +5,10 @@ import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.LinearRegression.ev
 import org.scalactic.{Equality, TolerantNumerics}
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class LinearRegressionTest extends FlatSpec with Matchers with TestingUtils {
+class LinearRegressionTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   implicit val tolerance: Equality[Float] = TolerantNumerics.tolerantFloatEquality(1e-3f)
 

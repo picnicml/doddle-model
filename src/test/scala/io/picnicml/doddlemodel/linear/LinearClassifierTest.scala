@@ -6,11 +6,13 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
-import org.scalatest.{FlatSpec, Matchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 case class DummyLinearClassifier(numClasses: Option[Int], w: Option[RealVector])
 
-class LinearClassifierTest extends FlatSpec with Matchers with OptionValues with TestingUtils {
+class LinearClassifierTest extends AnyFlatSpec with Matchers with OptionValues with TestingUtils {
 
   val ev: LinearClassifier[DummyLinearClassifier] = new LinearClassifier[DummyLinearClassifier] {
 

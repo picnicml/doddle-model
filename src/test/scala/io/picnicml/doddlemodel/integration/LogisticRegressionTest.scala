@@ -5,11 +5,12 @@ import io.picnicml.doddlemodel.data.loadBreastCancerDataset
 import io.picnicml.doddlemodel.linear.LogisticRegression
 import io.picnicml.doddlemodel.metrics.accuracy
 import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter}
-import org.scalatest.{FlatSpec, Matchers}
 
 import scala.util.Random
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class LogisticRegressionTest extends FlatSpec with Matchers {
+class LogisticRegressionTest extends AnyFlatSpec with Matchers {
 
   "Logistic regression" should "achieve a reasonable score on the breast cancer dataset" in {
     val (x, y, _) = loadBreastCancerDataset

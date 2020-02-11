@@ -5,11 +5,12 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.TestingUtils
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 case class DummyLinearRegressor(w: Option[RealVector])
 
-class LinearRegressorTest extends FlatSpec with Matchers with TestingUtils {
+class LinearRegressorTest extends AnyFlatSpec with Matchers with TestingUtils {
 
   val ev: LinearRegressor[DummyLinearRegressor] = new LinearRegressor[DummyLinearRegressor] {
 

@@ -2,9 +2,11 @@ package io.picnicml.doddlemodel.dummy.regression
 
 import io.picnicml.doddlemodel.data.loadBostonDataset
 import io.picnicml.doddlemodel.dummy.regression.MedianRegressor.ev
-import org.scalatest.{FlatSpec, Matchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class MedianRegressorTest extends FlatSpec with Matchers with OptionValues {
+class MedianRegressorTest extends AnyFlatSpec with Matchers with OptionValues {
 
   "Median regressor" should "infer median from the boston housing dataset" in {
     val (x, y, _) = loadBostonDataset

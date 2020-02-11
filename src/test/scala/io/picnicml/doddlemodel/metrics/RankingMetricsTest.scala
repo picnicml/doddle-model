@@ -1,9 +1,10 @@
 package io.picnicml.doddlemodel.metrics
 
 import breeze.linalg.DenseVector
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class RankingMetricsTest extends FlatSpec with Matchers {
+class RankingMetricsTest extends AnyFlatSpec with Matchers {
 
   "Ranking metrics" should "calculate the AUC value" in {
     val y = DenseVector(1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f)

@@ -1,9 +1,10 @@
 package io.picnicml.doddlemodel.metrics
 
 import breeze.linalg.DenseVector
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class RegressionMetricsTest extends FlatSpec with Matchers {
+class RegressionMetricsTest extends AnyFlatSpec with Matchers {
 
   "Regression metrics" should "calculate the rmse value" in {
     val y = DenseVector(1.0f, 4.1f, 2.2f, 5.1f, 9.6f)
