@@ -7,7 +7,10 @@ import io.picnicml.doddlemodel.data.Target
 
 object RegressionMetrics {
 
-  /** Root mean squared error. */
+  /** Root mean squared error - defined as the square root of mean squared error.
+    *
+    * @see [[https://en.wikipedia.org/wiki/Root-mean-square_deviation]]q
+    * */
   object Rmse extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = false
@@ -17,7 +20,10 @@ object RegressionMetrics {
     override def toString: String = "RMSE"
   }
 
-  /** Mean squared error. */
+  /** Mean squared error - defined as the average of the squares of error.
+    *
+    * @see [[https://en.wikipedia.org/wiki/Mean_squared_error]]
+    * */
   object Mse extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = false
@@ -30,7 +36,10 @@ object RegressionMetrics {
     override def toString: String = "MSE"
   }
 
-  /** Mean absolute error. */
+  /** Mean absolute error - defined as the average of absolute error.
+    *
+    * @see [[https://en.wikipedia.org/wiki/Mean_absolute_error]]
+    * */
   object Mae extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = false
@@ -41,7 +50,10 @@ object RegressionMetrics {
   }
 
 
-  /** Explained variance. */
+  /** Explained variance - measures the proportion of variance in dataset that is captured by the model.
+    *
+    * @see [[https://en.wikipedia.org/wiki/Explained_variation]]
+    * */
   object ExplainedVariance extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = true

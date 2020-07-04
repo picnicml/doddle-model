@@ -4,15 +4,6 @@ import io.picnicml.doddlemodel.data.{Features, IntVector, Target, TrainTestSplit
 
 import scala.util.Random
 
-/** K-Folds strategy for splitting data.
-  *
-  * @param numFolds number of folds
-  * @param shuffleRows indicates whether examples should be shuffled prior to calculating the score
-  *
-  * Examples:
-  * val dataSplitter = KFoldSplitter(folds = 3)
-  * datasplitter.splitData(x, y)
-  */
 class KFoldSplitter private (val numFolds: Int, val shuffleRows: Boolean) extends DataSplitter {
 
   override def splitData(x: Features, y: Target)
@@ -60,8 +51,25 @@ class KFoldSplitter private (val numFolds: Int, val shuffleRows: Boolean) extend
     throw new NotImplementedError("KFoldSplitter doesn't split data based on groups")
 }
 
+/** K-folds strategy for splitting data. */
 object KFoldSplitter {
 
+  /** Create a k-fold splitter instance.
+    * @param numFolds number of folds
+    * @param shuffleRows a flag indicating whether examples should be shuffled prior to calculating the splits
+    *
+    * @example Split data into 3 folds.
+    * {{{
+    *   import breeze.linalg.{DenseMatrix, DenseVector, convert}
+    *   import io.picnicml.doddlemodel.modelselection.KFoldSplitter
+    *
+    *   val x = convert(DenseMatrix.rand(7, 2), Float)
+    *   val y = DenseVector(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f)
+    *
+    *   val splitter = KFoldSplitter(numFolds = 3)
+    *   splitter.splitData(x, y)
+    * }}}
+    */
   def apply(numFolds: Int, shuffleRows: Boolean = true): KFoldSplitter = {
     require(numFolds > 0, "Number of folds must be positive")
     new KFoldSplitter(numFolds, shuffleRows)

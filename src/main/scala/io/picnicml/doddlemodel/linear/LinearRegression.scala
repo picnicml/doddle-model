@@ -4,20 +4,29 @@ import cats.syntax.option._
 import io.picnicml.doddlemodel.data.{Features, RealVector, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearRegressor
 
-/** An immutable multiple linear regression model with ridge regularization.
-  *
-  * @param lambda L2 regularization strength, must be positive, 0 means no regularization
-  *
-  * Examples:
-  * val model = LinearRegression()
-  * val model = LinearRegression(lambda = 1.5f)
-  */
 case class LinearRegression private (lambda: Float, private val w: Option[RealVector]) {
   private var yPredCache: Target = _
 }
 
+/** An immutable multiple linear regression model with ridge regularization. */
 object LinearRegression {
 
+  /** Create a regularized linear regression model.
+    *
+    * @param lambda L2 regularization strength - must be non-negative, 0.0 means no regularization
+    *
+    * @example Create and fit a regularized linear regression model with lambda 1.5.
+    *   {{{
+    *     import breeze.linalg.{DenseMatrix, DenseVector}
+    *     import io.picnicml.doddlemodel.linear.LinearRegression
+    *     import io.picnicml.doddlemodel.syntax.RegressorSyntax._
+    *
+    *     val X = DenseMatrix(List(1.0f, 2.0f), List(3.0f, 4.0f))
+    *     val y = DenseVector(-3.0f, 2.0f)
+    *     val model = LinearRegression(lambda = 1.5f)
+    *     val fittedModel = model.fit(X, y)
+    *   }}}
+    */
   def apply(lambda: Float = 0.0f): LinearRegression = {
     require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     LinearRegression(lambda, none)

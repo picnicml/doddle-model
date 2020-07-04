@@ -7,21 +7,6 @@ import io.picnicml.doddlemodel.typeclasses.Predictor
 
 import scala.util.Random
 
-
-/** A parallel hyperparameter search using n-fold cross validation.
-  *
-  * @param numIterations number of predictors for which the cross validation score is calculated
-  * @param verbose flag that specifies whether validation score of the selected model is
-  *                printed to standard output
-  *
-  * Examples:
-  * val splitter = KFoldSplitter(numFolds = 3)
-  * val cv: CrossValidation = CrossValidation(metric = accuracy, dataSplitter = splitter)
-  * val search = HyperparameterSearch(numIterations = 3, crossValidation = cv)
-  * val bestModel = search.bestOf(x, y) {
-  *   LogisticRegression(lambda = gamma.draw())
-  * }
-  */
 class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossValidation, verbose: Boolean) {
 
   implicit val cvReusable: CrossValReusable = CrossValReusable(true)
@@ -52,8 +37,35 @@ class HyperparameterSearch private (val numIterations: Int, val crossVal: CrossV
   }
 }
 
+/** A parallel hyperparameter search using k-fold cross validation. */
 object HyperparameterSearch {
 
+  /** Create a hyperparameter search instance.
+    * @param numIterations number of predictors for which the cross validation score is calculated
+    * @param crossValidation k-fold cross validation instance
+    * @param verbose flag that specifies whether validation score of the selected model is printed to standard output
+    *
+    * @example Search among 3 different regularization values (0.1, 0.2, 0.5) for logistic regression using
+    *          3-fold cross validation and store the (re-fitted on entire dataset) model that obtains highest accuracy.
+    * {{{
+    *   import breeze.linalg.{DenseMatrix, DenseVector, convert}
+    *   import io.picnicml.doddlemodel.metrics.accuracy
+    *   import io.picnicml.doddlemodel.linear.LogisticRegression
+    *   import io.picnicml.doddlemodel.modelselection.{CrossValidation, KFoldSplitter, HyperparameterSearch}
+    *
+    *   val x = convert(DenseMatrix.rand(10, 3), Float)
+    *   val y = DenseVector(0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f)
+    *
+    *   val splitter = KFoldSplitter(numFolds = 3)
+    *   val cv = CrossValidation(metric = accuracy, dataSplitter = splitter)
+    *   val search = HyperparameterSearch(numIterations = 3, crossValidation = cv)
+    *   val lambdas = List(0.1f, 0.2f, 0.5f).iterator
+    *
+    *   val modelBestParams = search.bestOf(x, y) {
+    *     LogisticRegression(lambda = lambdas.next)
+    *   }
+    * }}}
+    */
   def apply(numIterations: Int, crossValidation: CrossValidation, verbose: Boolean = true): HyperparameterSearch = {
     require(numIterations > 0, "Number of iterations must be positive")
     new HyperparameterSearch(numIterations, crossValidation, verbose)

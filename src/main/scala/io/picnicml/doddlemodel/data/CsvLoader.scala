@@ -9,7 +9,27 @@ import scala.io.{BufferedSource, Source}
 
 object CsvLoader {
 
-  /** Loads a csv dataset with 2 header lines (1st line for feature names and 2nd for types). */
+  /** Loads a csv dataset with 2 header lines (first line for feature names and second for types).
+    * @param datasetFilePath csv file to load
+    * @param na value to interpret as N/A data in the given dataset
+    *
+    * @example Reading the iris dataset.
+    *   {{{
+    *     import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
+    *
+    *     val (data, featureInfo) = loadCsvDataset("src/main/resources/datasets/iris.csv")
+    *     // separate features from the label
+    *     val (irisFeatures, irisLabels) = (data(::, 0 to 3), data(::, -1))
+    *   }}}
+    *
+    * @example Reading a dataset where N/A values are marked with `NA`.
+    *   {{{
+    *     import io.picnicml.doddlemodel.data.CsvLoader.loadCsvDataset
+    *
+    *     // specify a value to interpret as N/A data
+    *     val (data, featureInfo) = loadCsvDataset("src/main/resources/datasets/dummy_csv_reading.csv", "NA")
+    *   }}}
+    */
   def loadCsvDataset(datasetFilePath: String, na: String = "NA"): FeaturesWithIndex =
     loadCsvDataset(Source.fromFile(datasetFilePath), na)
 

@@ -4,7 +4,7 @@ import io.picnicml.doddlemodel.data.{Target, numberOfTargetClasses}
 
 object ClassificationMetrics {
 
-  /** Classification accuracy. */
+  /** Classification accuracy - measures the proportion of correctly classified examples among all examples. */
   object Accuracy extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = true
@@ -15,7 +15,12 @@ object ClassificationMetrics {
     override def toString: String = "accuracy"
   }
 
-  /** Positive predictive value. */
+  /** Precision (positive predictive value) - measures the proportion of correctly classified positive examples
+    * (true positives) among all examples classified as positive.
+    *
+    * @note Only defined for a binary classification task.
+    * @see [[https://en.wikipedia.org/wiki/Precision_and_recall]]
+    * */
   object Precision extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = true
@@ -36,7 +41,12 @@ object ClassificationMetrics {
     override def toString: String = "precision"
   }
 
-  /** Sensitivity. */
+  /** Recall (sensitivity) - measures the proportion of correctly classified positive examples (true positives)
+    * among all <b>actual</b> positive examples.
+    *
+    * @note Only defined for a binary classification task.
+    * @see [[https://en.wikipedia.org/wiki/Precision_and_recall]]
+    * */
   object Recall extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = true
@@ -57,7 +67,11 @@ object ClassificationMetrics {
     override def toString: String = "recall"
   }
 
-  /** F1 score. */
+  /** F1 score - defined as the harmonic average of precision and recall.
+    *
+    * @note Only defined for a binary classification task.
+    * @see [[https://en.wikipedia.org/wiki/F1_score]]
+    * */
   object F1Score extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = true
@@ -77,7 +91,7 @@ object ClassificationMetrics {
     override def toString: String = "F1 score"
   }
 
-  /** Hamming loss. */
+  /** Hamming loss - measures the proportion of incorrectly classified examples. */
   object HammingLoss extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = false

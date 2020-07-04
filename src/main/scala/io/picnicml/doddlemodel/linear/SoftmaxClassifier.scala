@@ -7,20 +7,29 @@ import io.picnicml.doddlemodel.data.{Features, RealVector, Simplex, Target}
 import io.picnicml.doddlemodel.linear.typeclasses.LinearClassifier
 import io.picnicml.doddlemodel.syntax.OptionSyntax._
 
-/** An immutable multiple multinomial regression model with ridge regularization.
-  *
-  * @param lambda L2 regularization strength, must be positive, 0 means no regularization
-  *
-  * Examples:
-  * val model = SoftmaxClassifier()
-  * val model = SoftmaxClassifier(lambda = 1.5f)
-  */
 case class SoftmaxClassifier private (lambda: Float, numClasses: Option[Int], private val w: Option[RealVector]) {
   private var yPredProbaCache: Simplex = _
 }
 
+/** An immutable multiple multinomial regression model with ridge regularization. */
 object SoftmaxClassifier {
 
+  /** Create a regularized softmax model.
+    *
+    * @param lambda L2 regularization strength - must be non-negative, 0.0 means no regularization
+    *
+    * @example Create and fit a regularized softmax classifier with lambda 1.5.
+    *   {{{
+    *     import breeze.linalg.{DenseMatrix, DenseVector}
+    *     import io.picnicml.doddlemodel.linear.SoftmaxClassifier
+    *     import io.picnicml.doddlemodel.syntax.ClassifierSyntax._
+    *
+    *     val X = DenseMatrix(List(1.0f, 2.0f), List(3.0f, 4.0f))
+    *     val y = DenseVector(0.0f, 1.0f)
+    *     val model = SoftmaxClassifier(lambda = 1.5f)
+    *     val fittedModel = model.fit(X, y)
+    *   }}}
+    */
   def apply(lambda: Float = 0.0f): SoftmaxClassifier = {
     require(lambda >= 0.0f, "L2 regularization strength must be non-negative")
     SoftmaxClassifier(lambda, none, none)

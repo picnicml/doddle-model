@@ -7,7 +7,14 @@ import scala.collection.compat.immutable.ArraySeq
 
 object RankingMetrics {
 
-  /** Area under the ROC-curve. **/
+  /** Area under the ROC-curve.
+    *
+    * Can be interpreted as the probability that a classifier will rank a randomly chosen positive example higher
+    * than a randomly chosen negative example.
+    *
+    * @note Only defined for a binary classification task.
+    * @see [[https://en.wikipedia.org/wiki/Receiver_operating_characteristic#Area_under_the_curve]]
+    * */
   object Auc extends Metric {
 
     override lazy val higherValueIsBetter: Boolean = true
@@ -27,7 +34,15 @@ object RankingMetrics {
 
   /** Receiver operating characteristic curve (ROC-curve).
     *
+    * Presents the ability of a binary classifier (in terms of true positive rate and false positive rate) as the
+    * discrimination threshold is varied.
+    *
+    * @param y ground truth labels
+    * @param yPredProba predicted probabilities
     * @param length the number of thresholds to take into account, i.e. the number of coordinates returned
+    * @note Only defined for a binary classification task.
+    * @note Currently, ROC-curve is only defined for probability scores (i.e. `yPredProba` needs to contain values
+    *       between 0.0 and 1.0)
     */
   def rocCurve(y: Target, yPredProba: RealVector, length: Int = 30): RocCurve = {
     require(length >= 5, "Number of points of the ROC-curve must be at least 3")

@@ -6,15 +6,19 @@ import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.{Features, Simplex, Target}
 import io.picnicml.doddlemodel.typeclasses.Classifier
 
-/** An immutable dummy classifier that always predicts the most frequent label.
-  *
-  * Examples:
-  * val model = MostFrequentClassifier()
-  */
 case class MostFrequentClassifier private (numClasses: Option[Int], mostFrequentClass: Option[Float])
 
+/** An immutable dummy classifier that always predicts the most frequent label. */
 object MostFrequentClassifier {
 
+  /** Create a majority classifier.
+    *
+    * @example
+    *   {{{
+    *     import io.picnicml.doddlemodel.dummy.classification.MostFrequentClassifier
+    *     val model = MostFrequentClassifier()
+    *   }}}
+    */
   def apply(): MostFrequentClassifier = MostFrequentClassifier(none, none)
 
   @SerialVersionUID(0L)

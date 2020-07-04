@@ -4,6 +4,7 @@ import breeze.linalg.{DenseMatrix, DenseVector, unique}
 import io.picnicml.doddlemodel.CrossScalaCompat.floatOrdering
 import io.picnicml.doddlemodel.data.Feature.FeatureIndex
 
+/** Provides data management utilities and definitions of custom doddle-model data types. */
 package object data {
 
   type RealVector = DenseVector[Float]
@@ -17,9 +18,24 @@ package object data {
   type Dataset = (Features, Target)
   type DatasetWithIndex = (Features, Target, FeatureIndex)
 
+  /** Loads and returns the Boston Housing prices dataset. */
   def loadBostonDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBostonDataset
+
+  /** Loads and returns the Breast cancer Wisconsin (diagnostic) dataset.
+    *
+    * @see <a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29" target="_blank">
+    *        Breast cancer dataset on UCI Machine Learning Repository </a>
+    */
   def loadBreastCancerDataset: DatasetWithIndex = ResourceDatasetLoaders.loadBreastCancerDataset
+
+  /** Loads and returns the Iris dataset.
+    *
+    * @see <a href="https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+%28Diagnostic%29" target="_blank">
+    *        Iris dataset on UCI Machine Learning Repository </a>
+    */
   def loadIrisDataset: DatasetWithIndex = ResourceDatasetLoaders.loadIrisDataset
+
+  /** Loads and returns an artificial dataset with a Poisson target variable. */
   def loadHighSchoolTestDataset: DatasetWithIndex = ResourceDatasetLoaders.loadHighSchoolTestDataset
 
   def numberOfUniqueGroups(groups: IntVector): Int = {
