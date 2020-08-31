@@ -5,7 +5,7 @@ object Dependencies {
   object DependencyVersion {
     val breeze = "1.0"
     val cats = "2.0.0"
-    val scalaTest = "3.1.1"
+    val scalaTest = "3.1.4"
     val scalaCollectionCompat = "2.1.4"
   }
 
